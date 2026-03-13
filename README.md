@@ -1,11 +1,29 @@
-# Motes
-Gym健身搭子智能匹配与协同训练
->>>>>>> 81d03c1cb8e458ae507da772e62d9d42f456afca
-# 健身搭子智能匹配与协同训练系统
+# Motes - 健身搭子智能匹配与协同训练系统
 
 ## 项目简介
 
 聚焦"找搭子难、监督弱、易放弃"的健身痛点，打造「多维度精准匹配 + 实时协同训练 + 趣味激励」的闭环系统。
+
+## 应用截图
+
+### 登录与首页
+<p align="center">
+  <img src="screenshots/图片1.png" width="200" alt="登录页面">
+  <img src="screenshots/图片2.png" width="200" alt="首页">
+  <img src="screenshots/Snipaste_2026-03-13_15-24-00.png" width="200" alt="邀请弹窗">
+</p>
+
+### 个人档案
+<p align="center">
+  <img src="screenshots/图片3.png" width="200" alt="个人档案">
+  <img src="screenshots/Snipaste_2026-03-13_14-22-19.png" width="200" alt="编辑档案">
+</p>
+
+### 搭子组与聊天
+<p align="center">
+  <img src="screenshots/Snipaste_2026-03-13_14-22-53.png" width="200" alt="群组详情">
+  <img src="screenshots/Snipaste_2026-03-13_15-16-48.png" width="200" alt="聊天室">
+</p>
 
 ## 核心功能
 
@@ -268,26 +286,9 @@ Gym/
 │   ├── gym.sql              # 数据库脚本
 │   ├── DATABASE_SETUP.md    # 数据库设置指南
 │   └── CHAT_FEATURE.md      # 聊天功能说明
-├── CODE_DOCUMENTATION.md    # 代码注释文档
-└── target/                   # Maven构建输出
+├── screenshots/              # 应用截图
+└── CODE_DOCUMENTATION.md    # 代码注释文档
 ```
-
-## 重点
-
-### 匹配算法设计
-- 多维度权重打分
-- Redis分桶优化
-- 缓存策略
-
-### 并发处理
-- Redis事务保证一致性
-- 定时任务最终一致性
-- 防重机制
-
-### 实时通信
-- WebSocket长连接管理
-- 心跳检测
-- 消息推送
 
 ## 数据库设置
 
@@ -299,14 +300,6 @@ Gym/
 mysql -u root -p gym < docs/gym.sql
 ```
 
-
-包含内容：
-- 前端核心文件说明（main.js, App.vue, api.js, http.js 等）
-- 后端配置类详解（Security, Redis, WebSocket, MinIO 等）
-- 工具类使用说明（JwtUtils）
-- 代码规范和命名约定
-- 关键技术点详解（JWT认证、小程序兼容、Redis缓存）
-
 ## 后续优化方向
 
 1. AI动作标准度评分（MediaPipe集成）
@@ -315,11 +308,6 @@ mysql -u root -p gym < docs/gym.sql
 4. 数据可视化（ECharts前端）
 5. 性能优化（索引优化、缓存预热）
 
-
 ## 许可证
 
 MIT License
-=======
-# Motes
-Gym健身搭子智能匹配与协同训练
->>>>>>> 81d03c1cb8e458ae507da772e62d9d42f456afca
