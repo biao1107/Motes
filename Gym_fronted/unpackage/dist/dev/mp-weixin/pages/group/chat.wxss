@@ -1,0 +1,383 @@
+
+/* 基础容器样式 - 高级渐变+细腻质感 */
+.container.data-v-394fd9eb {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf5 100%);
+	position: relative;
+}
+
+/* 聊天容器样式 - 半透磨砂质感 */
+.chat-container.data-v-394fd9eb {
+	flex: 1;
+	padding: 30rpx 24rpx;
+	background: rgba(255, 255, 255, 0.2);
+	-webkit-backdrop-filter: blur(12rpx);
+	        backdrop-filter: blur(12rpx);
+	box-sizing: border-box;
+	overflow: hidden;
+	border-radius: 0;
+}
+.message-list.data-v-394fd9eb {
+	padding-bottom: 30rpx;
+}
+
+/* 加载更多提示 - 精致卡片+动效 */
+.loading-more.data-v-394fd9eb {
+	text-align: center;
+	padding: 16rpx 24rpx;
+	font-size: 24rpx;
+	color: #6e7c94;
+	background-color: rgba(255, 255, 255, 0.8);
+	border-radius: 16rpx;
+	margin: 16rpx 0;
+	box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+	animation: pulse-394fd9eb 1.5s infinite ease-in-out;
+}
+
+/* 消息项样式 - 更自然的间距+流畅动画 */
+.message-item.data-v-394fd9eb {
+	margin-bottom: 36rpx;
+	animation: fadeInUp-394fd9eb 0.4s ease-out;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+/* 消息头部样式优化 */
+.message-header.data-v-394fd9eb {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10rpx;
+	flex-wrap: wrap;
+	width: 100%;
+}
+.sender-name.data-v-394fd9eb {
+	font-size: 26rpx;
+	color: #3a4b67;
+	font-weight: 600;
+	margin-right: 12rpx;
+	letter-spacing: 0.5rpx;
+	text-shadow: 0 1rpx 0 rgba(0,0,0,0.02);
+}
+.message-time.data-v-394fd9eb {
+	font-size: 22rpx;
+	color: #8a96aa;
+	margin-left: 8rpx;
+	font-style: italic;
+	z-index: 1;
+	position: relative;
+	max-width: 30%;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+/* 他人消息布局优化 */
+.other-message.data-v-394fd9eb {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	width: 100%;
+	margin-bottom: 8rpx;
+}
+
+/* 自己消息布局优化 */
+.self-message.data-v-394fd9eb {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	width: 100%;
+	margin-bottom: 8rpx;
+}
+.self-header.data-v-394fd9eb {
+	justify-content: flex-end;
+	align-self: flex-end;
+	margin-bottom: 8rpx;
+	min-height: 32rpx;
+	width: 100%;
+	text-align: right;
+}
+
+/* 消息内容容器 - 极致精致的视觉效果 */
+.message-content.data-v-394fd9eb {
+	width: -webkit-fit-content;
+	width: fit-content;
+	max-width: calc(100% - 80rpx);
+	min-width: 120rpx;
+	padding: 26rpx 30rpx;
+	border-radius: 24rpx;
+	word-wrap: break-word;
+	word-break: break-word;
+	box-shadow: 0 6rpx 20rpx rgba(0,0,0,0.08);
+	font-size: 28rpx;
+	line-height: 1.7;
+	display: inline-block;
+	box-sizing: border-box;
+	position: relative;
+	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 他人消息气泡 - 纯白+细腻质感 */
+.other-content.data-v-394fd9eb {
+	background-color: #ffffff;
+	color: #2d3748;
+	z-index: 0;
+	margin-left: 16rpx;
+	border-top-left-radius: 10rpx; /* 差异化圆角更自然 */
+}
+.other-content.data-v-394fd9eb:hover {
+	box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.1);
+}
+.other-content.data-v-394fd9eb:active {
+	transform: scale(0.985);
+	box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+}
+
+/* 自己消息气泡 - 高级渐变+光泽感 */
+.self-content.data-v-394fd9eb {
+	background: linear-gradient(135deg, #6a7ef8 0%, #7b68ee 100%);
+	color: #ffffff;
+	margin-left: auto;
+	margin-right: 16rpx;
+	border-top-right-radius: 10rpx; /* 差异化圆角更自然 */
+}
+.self-content.data-v-394fd9eb:hover {
+	box-shadow: 0 8rpx 24rpx rgba(106, 126, 248, 0.2);
+}
+.self-content.data-v-394fd9eb:active {
+	transform: scale(0.985);
+	box-shadow: 0 4rpx 16rpx rgba(106, 126, 248, 0.15);
+}
+
+/* 消息文字样式优化 */
+.message-text.data-v-394fd9eb {
+	word-wrap: break-word;
+	word-break: break-word;
+	white-space: pre-wrap;
+	font-size: inherit;
+	line-height: inherit;
+	max-width: 100%;
+	overflow-wrap: break-word;
+}
+
+/* 他人消息气泡尖角 - 更自然的样式 */
+.other-content.data-v-394fd9eb:before {
+	content: '';
+	position: absolute;
+	left: -14rpx;
+	top: 22rpx;
+	width: 0;
+	height: 0;
+	border-right: 14rpx solid #ffffff;
+	border-top: 12rpx solid transparent;
+	border-bottom: 12rpx solid transparent;
+	z-index: -1;
+	filter: drop-shadow(0 3rpx 3rpx rgba(0,0,0,0.06));
+}
+
+/* 自己消息气泡尖角 - 渐变匹配 */
+.self-content.data-v-394fd9eb:after {
+	content: '';
+	position: absolute;
+	right: -14rpx;
+	top: 22rpx;
+	width: 0;
+	height: 0;
+	border-left: 14rpx solid #6a7ef8;
+	border-top: 12rpx solid transparent;
+	border-bottom: 12rpx solid transparent;
+	z-index: -1;
+	filter: drop-shadow(0 3rpx 3rpx rgba(106, 126, 248, 0.1));
+}
+
+/* 输入区域 - 卡片式悬浮效果 */
+.input-container.data-v-394fd9eb {
+	display: flex;
+	align-items: center;
+	padding: 20rpx 24rpx;
+	background: #fff;
+	border-top: 1rpx solid #eee;
+}
+.input-actions.data-v-394fd9eb {
+	display: flex;
+	gap: 16rpx;
+	margin-right: 16rpx;
+}
+.action-btn.data-v-394fd9eb {
+	width: 72rpx;
+	height: 72rpx;
+	border-radius: 50%;
+	background: #f5f5f5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.action-icon.data-v-394fd9eb {
+	font-size: 36rpx;
+}
+
+/* 输入框 - 高级质感+聚焦动效 */
+.message-input.data-v-394fd9eb {
+	flex: 1;
+	padding: 20rpx 24rpx;
+	border-radius: 40rpx;
+	font-size: 28rpx;
+	background: #f5f5f5;
+	border: none;
+}
+.message-input.data-v-394fd9eb:focus {
+	background: #fff;
+	box-shadow: 0 0 0 2rpx #667eea;
+}
+.message-input.data-v-394fd9eb::-webkit-input-placeholder {
+	color: #999;
+	font-size: 26rpx;
+}
+.message-input.data-v-394fd9eb::placeholder {
+	color: #999;
+	font-size: 26rpx;
+}
+
+/* 发送按钮 - 圆形渐变+精致动效 */
+.send-btn.data-v-394fd9eb {
+	width: 72rpx;
+	height: 72rpx;
+	border-radius: 50%;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: 16rpx;
+	padding: 0;
+	border: none;
+}
+.send-btn.data-v-394fd9eb:not(.btn-disabled):hover {
+	box-shadow: 0 6rpx 20rpx rgba(106, 126, 248, 0.35);
+	transform: translateY(-2rpx);
+}
+.send-btn.data-v-394fd9eb:not(.btn-disabled):active {
+	transform: translateY(1rpx);
+	box-shadow: 0 2rpx 10rpx rgba(106, 126, 248, 0.2);
+}
+
+/* 禁用状态样式优化 */
+.send-btn.btn-disabled.data-v-394fd9eb {
+	background: #e9ecef;
+	box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.05);
+	cursor: not-allowed;
+}
+.send-icon.data-v-394fd9eb {
+	color: #fff;
+	font-size: 32rpx;
+	font-weight: 600;
+	transition: all 0.2s ease;
+}
+.send-btn.btn-disabled .send-icon.data-v-394fd9eb {
+	color: #adb5bd;
+}
+
+/* 图片消息样式 */
+.message-image.data-v-394fd9eb {
+	max-width: 400rpx;
+	border-radius: 16rpx;
+	margin-left: 16rpx;
+}
+.message-image.self-image.data-v-394fd9eb {
+	margin-left: auto;
+	margin-right: 16rpx;
+}
+.bottom-placeholder.data-v-394fd9eb {
+	height: 24rpx;
+}
+
+/* 动画效果优化 */
+@keyframes fadeInUp-394fd9eb {
+0% {
+		opacity: 0;
+		transform: translateY(16rpx);
+}
+100% {
+		opacity: 1;
+		transform: translateY(0);
+}
+}
+@keyframes pulse-394fd9eb {
+0% {
+		opacity: 0.8;
+		transform: scale(0.98);
+}
+50% {
+		opacity: 1;
+		transform: scale(1);
+}
+100% {
+		opacity: 0.8;
+		transform: scale(0.98);
+}
+}
+
+/* 滚动条样式 - 更精致的自定义样式 */
+.data-v-394fd9eb::-webkit-scrollbar {
+	width: 6rpx;
+	height: 6rpx;
+}
+.data-v-394fd9eb::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.6);
+	border-radius: 8rpx;
+	margin: 10rpx 0;
+}
+.data-v-394fd9eb::-webkit-scrollbar-thumb {
+	background: #d1d9e6;
+	border-radius: 8rpx;
+	-webkit-transition: all 0.2s ease;
+	transition: all 0.2s ease;
+}
+.data-v-394fd9eb::-webkit-scrollbar-thumb:hover {
+	background: #6a7ef8;
+}
+
+/* 错误提示区域 - 高级卡片+居中样式 */
+.error-container.data-v-394fd9eb {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+	padding: 80rpx 40rpx;
+	text-align: center;
+	background-color: rgba(255, 255, 255, 0.9);
+	border-radius: 24rpx;
+	margin: 40rpx;
+	box-shadow: 0 8rpx 30rpx rgba(0,0,0,0.1);
+	-webkit-backdrop-filter: blur(8rpx);
+	        backdrop-filter: blur(8rpx);
+}
+.error-text.data-v-394fd9eb {
+	font-size: 32rpx;
+	color: #6e7c94;
+	margin-bottom: 50rpx;
+	line-height: 1.8;
+	font-weight: 500;
+}
+.back-btn.data-v-394fd9eb {
+	padding: 24rpx 48rpx;
+	border-radius: 16rpx;
+	background: linear-gradient(135deg, #f8f9fc 0%, #e8ebf2 100%);
+	color: #3a4b67;
+	border: 1rpx solid #e0e7ff;
+	font-size: 28rpx;
+	font-weight: 600;
+	transition: all 0.2s ease;
+	box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.05);
+}
+.back-btn.data-v-394fd9eb:hover {
+	transform: translateY(-2rpx);
+	box-shadow: 0 6rpx 20rpx rgba(0,0,0,0.08);
+}
+.back-btn.data-v-394fd9eb:active {
+	background: #f0f2f5;
+	transform: translateY(1rpx);
+	box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.05);
+}

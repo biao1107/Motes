@@ -1,0 +1,31 @@
+# Compiled class files
+target/
+*.class
+
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Frontend build files
+Gym_fronted/unpackage/
+Gym_fronted/node_modules/
+
+# Local configuration
+application-local.yml
+application-dev.yml
+
+# MinIO data (if any)
+minio-data/

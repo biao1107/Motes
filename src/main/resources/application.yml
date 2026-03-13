@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: gym
+  datasource:
+    url: jdbc:mysql://localhost:3306/gym?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  sql:
+    init:
+      mode: never  # 先设为never避免冲突
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 123456
+      timeout: 2000ms
+    rabbitmq:
+      host: localhost
+      # 5672 = AMQP port (used by Spring AMQP). 15672 is RabbitMQ Management UI (HTTP).
+      port: 5672
+      virtual-host: /gym
+      username: gym
+      password: 123
+
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      table-prefix: t_
+      id-type: auto
+  mapper-locations: classpath*:mapper/**/*.xml
+  rabbitmq:
+    host: localhost
+    # 5672 = AMQP port (used by Spring AMQP). 15672 is RabbitMQ Management UI (HTTP).
+    port: 5672
+    virtual-host: /gym
+    username: gym
+    password: 123
+
+server:
+  port: 8080
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+jwt:
+  secret: "change_me_please_change_me_please_change_me!"
+  expire-ms: 86400000
+
+minio:
+  endpoint: http://localhost:9000
+  access-key: minioadmin
+  secret-key: minioadmin123
+  actions-bucket: actions
+  trophy-bucket: trophy
+  avatars-bucket: avatars
+  courses-bucket: courses
+  challenges-bucket: challenges
+
+logging:
+  level:
+    root: INFO
+    com.gym: DEBUG
+
+
+
+
+

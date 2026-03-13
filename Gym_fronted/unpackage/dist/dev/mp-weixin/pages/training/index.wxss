@@ -1,0 +1,298 @@
+
+/* 基础容器样式 */
+.container.data-v-ab00163c {
+	padding: 30rpx;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	min-height: 100vh;
+}
+
+/* 状态卡片样式 */
+.status-card.data-v-ab00163c {
+	background: #ffffff;
+	border-radius: 20rpx;
+	padding: 30rpx;
+	margin-bottom: 30rpx;
+	box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+.status-header.data-v-ab00163c {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20rpx;
+}
+.status-title.data-v-ab00163c {
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #333;
+}
+.status-indicator.data-v-ab00163c {
+	padding: 8rpx 16rpx;
+	border-radius: 20rpx;
+	background: #f5f5f5;
+}
+.status-indicator.active.data-v-ab00163c {
+	background: rgba(102, 126, 234, 0.15);
+}
+.status-text.data-v-ab00163c {
+	font-size: 24rpx;
+	color: #666;
+}
+.status-indicator.active .status-text.data-v-ab00163c {
+	color: #667eea;
+}
+.progress-summary.data-v-ab00163c {
+	display: flex;
+	justify-content: space-around;
+	padding: 20rpx 0;
+	border-top: 1rpx solid #f0f0f0;
+}
+.progress-item.data-v-ab00163c {
+	text-align: center;
+}
+.progress-label.data-v-ab00163c {
+	display: block;
+	font-size: 24rpx;
+	color: #999;
+	margin-bottom: 8rpx;
+}
+.progress-value.data-v-ab00163c {
+	display: block;
+	font-size: 36rpx;
+	font-weight: 700;
+	color: #667eea;
+}
+
+/* 设置卡片样式 */
+.setup-card.data-v-ab00163c, .collaboration-card.data-v-ab00163c, .messages-card.data-v-ab00163c {
+	background: #ffffff;
+	border-radius: 20rpx;
+	padding: 30rpx;
+	margin-bottom: 30rpx;
+	box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+.setup-header.data-v-ab00163c, .collaboration-header.data-v-ab00163c, .messages-header.data-v-ab00163c {
+	margin-bottom: 20rpx;
+}
+.setup-title.data-v-ab00163c, .collaboration-title.data-v-ab00163c, .messages-title.data-v-ab00163c {
+	font-size: 30rpx;
+	font-weight: 600;
+	color: #333;
+	display: block;
+	margin-bottom: 8rpx;
+}
+.setup-desc.data-v-ab00163c, .collaboration-desc.data-v-ab00163c {
+	font-size: 24rpx;
+	color: #999;
+}
+.input-section.data-v-ab00163c, .settings-container.data-v-ab00163c {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+}
+.input-group.data-v-ab00163c {
+	display: flex;
+	flex-direction: column;
+	gap: 12rpx;
+}
+.input-label.data-v-ab00163c {
+	font-size: 26rpx;
+	color: #666;
+}
+.debug-info.data-v-ab00163c {
+	font-size: 20rpx;
+	color: #999;
+	margin-left: 10rpx;
+}
+.input-action.data-v-ab00163c {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 20rpx;
+	border: 1rpx dashed #ddd;
+	border-radius: 12rpx;
+	gap: 8rpx;
+}
+.action-text.data-v-ab00163c {
+	font-size: 24rpx;
+	color: #999;
+}
+.action-icon.data-v-ab00163c {
+	font-size: 20rpx;
+	color: #999;
+}
+.input-select.data-v-ab00163c {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20rpx;
+	border: 1rpx solid #e9ecef;
+	border-radius: 12rpx;
+	background: #f8f9fa;
+}
+.input-select.small.data-v-ab00163c {
+	padding: 12rpx 16rpx;
+}
+.select-text.data-v-ab00163c {
+	font-size: 26rpx;
+	color: #333;
+}
+.select-icon.data-v-ab00163c {
+	font-size: 24rpx;
+	color: #999;
+}
+.input-field.data-v-ab00163c {
+	padding: 20rpx;
+	border: 1rpx solid #e9ecef;
+	border-radius: 12rpx;
+	font-size: 26rpx;
+	background: #f8f9fa;
+}
+.button-group.data-v-ab00163c {
+	display: flex;
+	flex-direction: column;
+	gap: 16rpx;
+	margin-top: 10rpx;
+}
+.current-info.data-v-ab00163c {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	padding: 16rpx 24rpx;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	border-radius: 16rpx;
+	margin-bottom: 16rpx;
+}
+.info-text.data-v-ab00163c {
+	color: rgba(255, 255, 255, 0.9);
+	font-size: 26rpx;
+	margin-right: 8rpx;
+}
+.info-group.data-v-ab00163c {
+	color: #fff;
+	font-size: 28rpx;
+	font-weight: 600;
+}
+.info-challenge.data-v-ab00163c {
+	color: rgba(255, 255, 255, 0.9);
+	font-size: 26rpx;
+}
+.action-btn.data-v-ab00163c {
+	flex: 1;
+	padding: 20rpx;
+	border-radius: 12rpx;
+	border: none;
+}
+.action-btn.data-v-ab00163c:disabled {
+	opacity: 0.6;
+}
+.action-btn.primary.data-v-ab00163c {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.action-btn.secondary.data-v-ab00163c {
+	background: linear-gradient(135deg, #ef476f 0%, #ffd166 100%);
+}
+.action-btn.success.data-v-ab00163c {
+	background: linear-gradient(135deg, #4ecdc4 0%, #1a936f 100%);
+}
+.action-btn.view.data-v-ab00163c {
+	background: #f5f5f5;
+	padding: 12rpx 20rpx;
+}
+.btn-text.data-v-ab00163c {
+	font-size: 26rpx;
+	color: #ffffff;
+}
+.action-btn.view .btn-text.data-v-ab00163c {
+	color: #333;
+	font-size: 24rpx;
+}
+
+/* 设置项样式 */
+.setting-item.data-v-ab00163c {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20rpx 0;
+	border-bottom: 1rpx solid #eee;
+}
+.setting-item.data-v-ab00163c:last-child {
+	border-bottom: none;
+}
+.setting-content.data-v-ab00163c {
+	flex: 1;
+}
+.setting-label.data-v-ab00163c {
+	font-size: 28rpx;
+	color: #333;
+	display: block;
+	margin-bottom: 4rpx;
+}
+.setting-desc.data-v-ab00163c {
+	font-size: 22rpx;
+	color: #999;
+}
+
+/* 消息中心样式 */
+.messages-container.data-v-ab00163c {
+	max-height: 400rpx;
+	overflow-y: auto;
+}
+.messages-count.data-v-ab00163c {
+	font-size: 22rpx;
+	color: #667eea;
+}
+.msg-item.data-v-ab00163c {
+	background: linear-gradient(to bottom, #ffffff, #fafafa);
+	padding: 20rpx;
+	border-radius: 16rpx;
+	margin-bottom: 16rpx;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+	border: 1rpx solid #e9ecef;
+}
+.msg-row.data-v-ab00163c {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 6rpx;
+}
+.msg-type.data-v-ab00163c {
+	font-size: 24rpx;
+	color: #667eea;
+	font-weight: 600;
+}
+.msg-time.data-v-ab00163c {
+	font-size: 22rpx;
+	color: #999;
+}
+.msg-text.data-v-ab00163c {
+	font-size: 26rpx;
+	color: #333;
+}
+.msg-extra.data-v-ab00163c {
+	margin-top: 4rpx;
+}
+.msg-extra-text.data-v-ab00163c {
+	font-size: 22rpx;
+	color: #666;
+}
+
+/* 空状态样式 */
+.empty-state.data-v-ab00163c {
+	text-align: center;
+	padding: 40rpx;
+}
+.empty-text.data-v-ab00163c {
+	font-size: 26rpx;
+	color: #999;
+}
+
+/* 响应式适配 */
+@media (max-width: 750rpx) {
+.container.data-v-ab00163c {
+		padding: 20rpx;
+}
+.button-group.data-v-ab00163c {
+		flex-direction: column;
+}
+}

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <!-- 页面风格渐变定义 -->
+    <linearGradient id="pageStyleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#667eea" />
+      <stop offset="100%" stop-color="#764ba2" />
+    </linearGradient>
+    
+    <!-- 径向渐变用于阴影效果 -->
+    <radialGradient id="shadowGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="rgba(0,0,0,0.1)" />
+      <stop offset="100%" stop-color="rgba(0,0,0,0.05)" />
+    </radialGradient>
+    
+    <!-- 发光效果滤镜 -->
+    <filter id="pageGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur"/>
+      <feFlood flood-color="#667eea" flood-opacity="0.3" result="glowColor"/>
+      <feComposite in="glowColor" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景阴影圆 -->
+  <circle cx="50" cy="52" r="45" fill="url(#shadowGradient)" />
+  
+  <!-- 主体圆圈 -->
+  <circle cx="50" cy="50" r="45" fill="url(#pageStyleGradient)" filter="url(#pageGlow)"/>
+  
+  <!-- 内圈细线 -->
+  <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+  
+  <!-- 页面风格运动人物剪影 -->
+  <g transform="translate(50,50) scale(0.8)">
+    <!-- 人体主干 -->
+    <path d="M-8 -15 L-8 5" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M8 -15 L8 5" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    
+    <!-- 头部 -->
+    <circle cx="0" cy="-22" r="5" fill="white"/>
+    
+    <!-- 手臂 -->
+    <path d="M-8 -15 L-18 -10" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <path d="M8 -15 L18 -10" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    
+    <!-- 腿部 -->
+    <path d="M-8 5 L-15 15" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M8 5 L15 15" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    
+    <!-- 运动轨迹线 -->
+    <path d="M-25 0 Q-15 -10 0 0 T30 0" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-dasharray="3,3"/>
+  </g>
+  
+  <!-- 底部品牌标识字母 -->
+  <text x="50" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" opacity="0.9">GYM</text>
+</svg>

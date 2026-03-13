@@ -1,0 +1,29 @@
+{
+  "pages": [
+    "pages/auth/login",
+    "pages/index/index",
+    "pages/auth/register",
+    "pages/user/profile",
+    "pages/user/setting",
+    "pages/match/index",
+    "pages/group/index",
+    "pages/group/detail",
+    "pages/group/chat",
+    "pages/group/messages",
+    "pages/training/index",
+    "pages/training/today",
+    "pages/challenge/index",
+    "pages/challenge/detail",
+    "pages/stat/index",
+    "pages/course/index",
+    "pages/course/detail"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "健身搭子",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "usingComponents": {},
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,237 @@
+
+/* 页面全局样式：统一背景、字体，适配全屏 */
+.setting-page.data-v-806b15dc {
+  width: 100%;
+  height: 100vh;
+  background-color: #f7f8fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+/* 滚动容器：适配全屏，预留底部操作空间 */
+.main-scroll.data-v-806b15dc {
+  width: 100%;
+  height: 100vh;
+  box-sizing: border-box;
+  padding-bottom: 40rpx;
+}
+.content-wrapper.data-v-806b15dc {
+  width: 100%;
+  padding: 30rpx 24rpx;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+}
+/* 全局按钮点击反馈：小程序专属，统一缩放+降透 */
+.btn-hover.data-v-806b15dc {
+  transform: scale(0.98) !important;
+  opacity: 0.95 !important;
+}
+
+/* 顶部渐变背景：和首页/档案页视觉统一，品牌化设计 */
+.page-top-bg.data-v-806b15dc {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 180rpx;
+  background: linear-gradient(135deg, #6378f6 0%, #8F5FE8 100%);
+  border-radius: 0 0 40rpx 40rpx;
+  z-index: 1;
+  box-shadow: 0 8rpx 30rpx rgba(99, 120, 246, 0.2);
+}
+
+/* 页面标题区：渐变背景上的白色文字，和其他页面呼应 */
+.page-header.data-v-806b15dc {
+  margin-bottom: 30rpx;
+}
+.page-title.data-v-806b15dc {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  display: block;
+  margin-bottom: 8rpx;
+}
+.page-desc.data-v-806b15dc {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+  display: block;
+  line-height: 1.5;
+}
+
+/* 设置卡片：轻玻璃拟态+微阴影，和其他页面卡片质感统一 */
+.setting-card.data-v-806b15dc {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24rpx;
+  -webkit-backdrop-filter: blur(10rpx);
+          backdrop-filter: blur(10rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 40rpx;
+  overflow: hidden;
+}
+/* 设置项：统一内边距，flex布局适配 */
+.setting-item.data-v-806b15dc {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 30rpx;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+/* 设置项轻触背景：提升交互感知 */
+.setting-item.data-v-806b15dc:active {
+  background-color: #F7F8FA;
+}
+/* 分割线：左对齐，浅灰色，弱化视觉割裂 */
+.divider.data-v-806b15dc {
+  height: 1rpx;
+  background-color: #F2F3F5;
+  margin: 0 30rpx;
+}
+/* 项标签：深黑色，粗体，保证辨识度 */
+.item-label.data-v-806b15dc {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1D2129;
+  flex-shrink: 0;
+  width: 120rpx;
+}
+
+/* 头像容器：flex布局，对齐箭头 */
+.avatar-wrap.data-v-806b15dc {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+/* 头像图片：圆形，加轻微边框，提升精致度 */
+.avatar-img.data-v-806b15dc {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  border: 2rpx solid #F2F3F5;
+}
+/* 默认头像：主色渐变，替代原粉色，品牌视觉统一 */
+.avatar-initial.data-v-806b15dc {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6378f6 0%, #8F5FE8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx solid #F2F3F5;
+}
+.initial-text.data-v-806b15dc {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* 用户名输入容器：flex布局，对齐箭头 */
+.input-wrap.data-v-806b15dc {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex: 1;
+  justify-content: flex-end;
+}
+/* 用户名输入框：右对齐，无边框，适配设置页风格 */
+.nickname-input.data-v-806b15dc {
+  text-align: right;
+  font-size: 28rpx;
+  color: #1D2129;
+  flex: 1;
+  padding: 8rpx 0;
+}
+/* 输入框占位符：低饱和灰色，区分输入态 */
+.input-placeholder.data-v-806b15dc {
+  color: #86909C;
+  font-size: 26rpx;
+}
+
+/* 手机号容器：flex布局，适配绑定/未绑定状态 */
+.phone-wrap.data-v-806b15dc {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex: 1;
+  justify-content: flex-end;
+}
+.phone-text.data-v-806b15dc {
+  font-size: 28rpx;
+  color: #86909C;
+}
+/* 右侧箭头：统一样式，浅灰色，弱化视觉 */
+.item-arrow.data-v-806b15dc {
+  font-size: 32rpx;
+  color: #C9CDD4;
+  flex-shrink: 0;
+}
+
+/* 退出登录容器：间距优化，突出操作 */
+.logout-wrap.data-v-806b15dc {
+  margin-bottom: 30rpx;
+  padding: 0 10rpx;
+  position: relative;
+  z-index: 2;
+}
+/* 退出登录按钮：白色背景+警示红边框/文字，市场通用设计 */
+.logout-btn.data-v-806b15dc {
+  width: 100%;
+  height: 96rpx;
+  background: #fff;
+  border: 2rpx solid #F53F3F;
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  box-shadow: 0 4rpx 15rpx rgba(245, 63, 63, 0.1);
+  transition: all 0.2s ease;
+}
+.logout-icon.data-v-806b15dc {
+  font-size: 32rpx;
+  color: #F53F3F;
+}
+.logout-text.data-v-806b15dc {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #F53F3F;
+}
+
+/* 保存按钮容器：间距优化，视觉聚焦 */
+.save-btn-wrap.data-v-806b15dc {
+  padding: 0 10rpx;
+  position: relative;
+  z-index: 2;
+}
+/* 保存主按钮：蓝紫渐变+呼吸动效，和其他页面主按钮统一 */
+.save-primary-btn.data-v-806b15dc {
+  width: 100%;
+  height: 100rpx;
+  background: linear-gradient(135deg, #6378f6 0%, #8F5FE8 100%);
+  border: none;
+  border-radius: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 25rpx rgba(99, 120, 246, 0.3);
+  animation: breath-806b15dc 3s infinite ease-in-out;
+}
+/* 呼吸动效：全局统一，提升视觉焦点 */
+@keyframes breath-806b15dc {
+0%, 100% {
+    box-shadow: 0 8rpx 25rpx rgba(99, 120, 246, 0.3);
+}
+50% {
+    box-shadow: 0 12rpx 35rpx rgba(99, 120, 246, 0.4);
+}
+}
+.save-text.data-v-806b15dc {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #fff;
+}

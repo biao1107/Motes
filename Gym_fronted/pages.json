@@ -1,0 +1,113 @@
+{
+	"pages": [
+		{
+			"path": "pages/auth/login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/auth/register",
+			"style": {
+				"navigationBarTitleText": "注册"
+			}
+		},
+		{
+			"path": "pages/user/profile",
+			"style": {
+				"navigationBarTitleText": "个人档案"
+			}
+		},
+		{
+			"path": "pages/user/setting",
+			"style": {
+				"navigationBarTitleText": "账户设置"
+			}
+		},
+		{
+			"path": "pages/match/index",
+			"style": {
+				"navigationBarTitleText": "智能匹配"
+			}
+		},
+		{
+			"path": "pages/group/index",
+			"style": {
+				"navigationBarTitleText": "搭子组"
+			}
+		},
+		{
+			"path": "pages/group/detail",
+			"style": {
+				"navigationBarTitleText": "组详情"
+			}
+		},
+		{
+			"path": "pages/group/chat",
+			"style": {
+				"navigationBarTitleText": "聊天室"
+			}
+		},
+		{
+			"path": "pages/group/messages",
+			"style": {
+				"navigationBarTitleText": "消息"
+			}
+		},
+		{
+			"path": "pages/training/index",
+			"style": {
+				"navigationBarTitleText": "协同训练"
+			}
+		},
+		{
+			"path": "pages/training/today",
+			"style": {
+				"navigationBarTitleText": "今日训练"
+			}
+		},
+		{
+			"path": "pages/challenge/index",
+			"style": {
+				"navigationBarTitleText": "挑战"
+			}
+		},
+		{
+			"path": "pages/challenge/detail",
+			"style": {
+				"navigationBarTitleText": "挑战详情"
+			}
+		},
+		{
+			"path": "pages/stat/index",
+			"style": {
+				"navigationBarTitleText": "数据统计"
+			}
+		},
+		{
+			"path": "pages/course/index",
+			"style": {
+				"navigationBarTitleText": "精品课程"
+			}
+		},
+		{
+			"path": "pages/course/detail",
+			"style": {
+				"navigationBarTitleText": "课程详情"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "健身搭子",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {}
+}

@@ -1,0 +1,78 @@
+
+/* 每个页面公共 css 可写在这里 */
+
+/* 全局健身主题样式 */
+
+/* 页面背景 */
+.page-bg {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+  min-height: 100vh;
+}
+
+/* 健身主题卡片 */
+.fitness-card {
+  background: white;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
+  padding: 30rpx;
+  margin: 20rpx;
+}
+
+/* 健身主题标题 */
+.fitness-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20rpx;
+  text-align: center;
+}
+
+/* 健身主题分割线 */
+.fitness-divider {
+  height: 2rpx;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+  margin: 30rpx 0;
+}
+
+/* 健身主题标签 */
+.fitness-tag {
+  display: inline-block;
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  margin: 10rpx;
+}
+
+/* 健身主题徽章 */
+.fitness-badge {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  background: #ff6b6b;
+  color: white;
+  border-radius: 50%;
+  width: 36rpx;
+  height: 36rpx;
+  font-size: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 健身主题动画 */
+@keyframes pulse {
+0% { transform: scale(1);
+}
+50% { transform: scale(1.05);
+}
+100% { transform: scale(1);
+}
+}
+.pulse-animation {
+  animation: pulse 2s infinite;
+}
+
+page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px}[data-c-h="true"]{display: none !important;}

@@ -1,0 +1,276 @@
+
+.container.data-v-b94ccfa4 {
+	padding: 20rpx;
+	background-color: #f5f5f5;
+	min-height: 100vh;
+}
+
+/* 头部区域 */
+.header-section.data-v-b94ccfa4 {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	border-radius: 20rpx;
+	padding: 40rpx 30rpx;
+	margin-bottom: 30rpx;
+	color: white;
+}
+.header-title.data-v-b94ccfa4 {
+	font-size: 36rpx;
+	font-weight: bold;
+	display: block;
+	margin-bottom: 10rpx;
+}
+.header-subtitle.data-v-b94ccfa4 {
+	font-size: 28rpx;
+	opacity: 0.9;
+}
+
+/* 筛选区域 */
+.filter-section.data-v-b94ccfa4 {
+	background: white;
+	border-radius: 20rpx;
+	padding: 30rpx;
+	margin-bottom: 30rpx;
+}
+.search-box.data-v-b94ccfa4 {
+	display: flex;
+	align-items: center;
+	background: #f0f0f0;
+	border-radius: 50rpx;
+	padding: 0 30rpx;
+	margin-bottom: 30rpx;
+}
+.search-input.data-v-b94ccfa4 {
+	flex: 1;
+	height: 70rpx;
+	font-size: 28rpx;
+}
+.search-icon.data-v-b94ccfa4 {
+	font-size: 32rpx;
+	margin-left: 20rpx;
+}
+.filter-tabs.data-v-b94ccfa4 {
+	display: flex;
+	gap: 20rpx;
+	margin-bottom: 20rpx;
+}
+.filter-tab.data-v-b94ccfa4 {
+	padding: 15rpx 30rpx;
+	background: #f0f0f0;
+	border-radius: 50rpx;
+	font-size: 26rpx;
+	transition: all 0.3s;
+}
+.filter-tab.active.data-v-b94ccfa4 {
+	background: #667eea;
+	color: white;
+}
+.difficulty-filter.data-v-b94ccfa4 {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15rpx;
+}
+.difficulty-item.data-v-b94ccfa4 {
+	padding: 10rpx 25rpx;
+	background: #f8f8f8;
+	border-radius: 40rpx;
+	font-size: 24rpx;
+	border: 1rpx solid #e0e0e0;
+}
+.difficulty-item.active.data-v-b94ccfa4 {
+	background: #667eea;
+	color: white;
+	border-color: #667eea;
+}
+
+/* 推荐区域 */
+.recommend-section.data-v-b94ccfa4 {
+	margin-bottom: 30rpx;
+}
+.section-header.data-v-b94ccfa4 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20rpx;
+}
+.section-title.data-v-b94ccfa4 {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #333;
+}
+.recommend-scroll.data-v-b94ccfa4 {
+	white-space: nowrap;
+}
+.recommend-list.data-v-b94ccfa4 {
+	display: flex;
+	gap: 20rpx;
+	padding: 10rpx 0;
+}
+.recommend-card.data-v-b94ccfa4 {
+	width: 400rpx;
+	background: white;
+	border-radius: 20rpx;
+	overflow: hidden;
+	flex-shrink: 0;
+	box-shadow: 0 10rpx 30rpx rgba(0,0,0,0.1);
+}
+.course-cover.data-v-b94ccfa4 {
+	width: 100%;
+	height: 200rpx;
+}
+.course-info.data-v-b94ccfa4 {
+	padding: 20rpx;
+}
+.course-name.data-v-b94ccfa4 {
+	font-size: 28rpx;
+	font-weight: bold;
+	display: block;
+	margin-bottom: 10rpx;
+	color: #333;
+}
+.course-desc.data-v-b94ccfa4 {
+	font-size: 24rpx;
+	color: #666;
+	display: block;
+	margin-bottom: 15rpx;
+	lines: 2;
+	text-overflow: ellipsis;
+}
+.course-meta.data-v-b94ccfa4 {
+	display: flex;
+	justify-content: space-between;
+	font-size: 22rpx;
+	color: #888;
+}
+
+/* 课程列表 */
+.courses-section.data-v-b94ccfa4 {
+	background: white;
+	border-radius: 20rpx;
+	padding: 30rpx;
+}
+.section-count.data-v-b94ccfa4 {
+	font-size: 26rpx;
+	color: #888;
+}
+.courses-list.data-v-b94ccfa4 {
+	display: flex;
+	flex-direction: column;
+	gap: 30rpx;
+}
+.course-item.data-v-b94ccfa4 {
+	display: flex;
+	gap: 20rpx;
+	background: #fafafa;
+	border-radius: 15rpx;
+	padding: 20rpx;
+	transition: all 0.3s;
+}
+.course-item.data-v-b94ccfa4:active {
+	transform: scale(0.98);
+	background: #f0f0f0;
+}
+.item-cover.data-v-b94ccfa4 {
+	width: 180rpx;
+	height: 180rpx;
+	border-radius: 10rpx;
+	flex-shrink: 0;
+}
+.item-content.data-v-b94ccfa4 {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+.item-header.data-v-b94ccfa4 {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 15rpx;
+}
+.item-name.data-v-b94ccfa4 {
+	font-size: 30rpx;
+	font-weight: bold;
+	color: #333;
+	flex: 1;
+	margin-right: 20rpx;
+}
+.item-tags.data-v-b94ccfa4 {
+	display: flex;
+	gap: 10rpx;
+}
+.tag.data-v-b94ccfa4 {
+	padding: 5rpx 15rpx;
+	border-radius: 20rpx;
+	font-size: 22rpx;
+}
+.type-tag.data-v-b94ccfa4 {
+	background: #e3f2fd;
+	color: #1976d2;
+}
+.difficulty-tag.data-v-b94ccfa4 {
+	background: #fce4ec;
+	color: #c2185b;
+}
+.difficulty-tag.diff-beginner.data-v-b94ccfa4 {
+	background: #e8f5e8;
+	color: #388e3c;
+}
+.difficulty-tag.diff-elementary.data-v-b94ccfa4 {
+	background: #fff3e0;
+	color: #f57c00;
+}
+.difficulty-tag.diff-intermediate.data-v-b94ccfa4 {
+	background: #ffebee;
+	color: #d32f2f;
+}
+.difficulty-tag.diff-advanced.data-v-b94ccfa4 {
+	background: #f3e5f5;
+	color: #7b1fa2;
+}
+.item-desc.data-v-b94ccfa4 {
+	font-size: 26rpx;
+	color: #666;
+	margin-bottom: 15rpx;
+	lines: 2;
+	text-overflow: ellipsis;
+}
+.item-meta.data-v-b94ccfa4 {
+	display: flex;
+	gap: 20rpx;
+	font-size: 22rpx;
+	color: #888;
+}
+.meta-item.data-v-b94ccfa4 {
+	display: flex;
+	align-items: center;
+	gap: 5rpx;
+}
+
+/* 加载更多 */
+.load-more.data-v-b94ccfa4 {
+	text-align: center;
+	padding: 30rpx;
+	color: #667eea;
+	font-size: 28rpx;
+}
+
+/* 空状态 */
+.empty-state.data-v-b94ccfa4 {
+	text-align: center;
+	padding: 100rpx 0;
+}
+.empty-icon.data-v-b94ccfa4 {
+	font-size: 80rpx;
+	display: block;
+	margin-bottom: 20rpx;
+}
+.empty-text.data-v-b94ccfa4 {
+	font-size: 32rpx;
+	color: #666;
+	display: block;
+	margin-bottom: 10rpx;
+}
+.empty-subtext.data-v-b94ccfa4 {
+	font-size: 26rpx;
+	color: #999;
+}
