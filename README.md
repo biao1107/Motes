@@ -1,3 +1,6 @@
+# Motes
+Gym健身搭子智能匹配与协同训练
+>>>>>>> 81d03c1cb8e458ae507da772e62d9d42f456afca
 # 健身搭子智能匹配与协同训练系统
 
 ## 项目简介
@@ -328,5 +331,7 @@ mysql -u root -p gym < docs/gym.sql
 ## 许可证
 
 MIT License
-
-
+=======
+# Motes
+Gym健身搭子智能匹配与协同训练
+>>>>>>> 81d03c1cb8e458ae507da772e62d9d42f456afca
