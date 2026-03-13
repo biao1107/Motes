@@ -14,7 +14,6 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -147,62 +146,6 @@ public class ChatController {
     }
 
     /**
-     * HTTP 发送群组聊天消息（供小程序使用）
-     * 
-     * 【接口地址】POST /chat/group/{groupId}/send
-     * 【参数】groupId: 群组ID，content: 消息内容，type: 消息类型（TEXT/IMAGE）
-     * 【返回】发送成功的消息对象
-     * 
-     * 【使用场景】
-     * 小程序环境不支持 WebSocket STOMP，通过 HTTP 发送消息
-     * 
-     * @param groupId 群组ID
-     * @param request 消息请求
-     * @return 发送成功的消息
-     */
-    @PostMapping("/group/{groupId}/send")
-    public ApiResponse<ChatMessageDto> sendMessageByHttp(
-            @PathVariable Long groupId,
-            @RequestBody ChatMessageRequest request) {
-        try {
-            // 从 SecurityContext 获取当前用户
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || !(authentication.getPrincipal() instanceof Long)) {
-                return ApiResponse.error(401, "未认证或认证信息无效");
-            }
-            
-            Long userId = (Long) authentication.getPrincipal();
-            String nickname = userService.getUserNickname(userId);
-            
-            log.debug("HTTP发送聊天消息: groupId={}, userId={}, content={}", 
-                    groupId, userId, request.getContent());
-            
-            // 保存消息到数据库
-            ChatMessageDto messageDto = chatService.sendGroupMessage(
-                groupId,
-                userId,
-                nickname,
-                request.getContent(),
-                request.getImageUrl(),
-                request.getType() != null ? request.getType() : "TEXT"
-            );
-            
-            // 推送给群组内所有成员（WebSocket）
-            messagingTemplate.convertAndSend(
-                "/topic/group/" + groupId, 
-                messageDto
-            );
-            
-            log.debug("HTTP消息发送成功，ID: {}", messageDto.getId());
-            return ApiResponse.ok(messageDto);
-            
-        } catch (Exception e) {
-            log.error("HTTP发送聊天消息失败: {}", e.getMessage(), e);
-            return ApiResponse.error(500, "发送失败: " + e.getMessage());
-        }
-    }
-
-    /**
      * 获取群组聊天历史记录
      * 
      * 【接口地址】GET /chat/group/{groupId}/history
@@ -328,6 +271,59 @@ public class ChatController {
         log.debug("重置用户阅读状态: groupId={}, userId={}", groupId, userId);
         chatService.resetUserReadStatus(groupId, userId);
         return ApiResponse.ok(null);
+    }
+    
+    /**
+     * 通过 HTTP 发送群组聊天消息（小程序专用）
+     * 
+     * 【接口地址】POST /chat/send
+     * 【参数】请求体包含 groupId、content、imageUrl、type
+     * 【返回】发送的消息详情
+     * 
+     * 【使用场景】
+     * 小程序环境不支持 WebSocket STOMP，使用 HTTP 接口发送消息
+     * 消息发送后，服务器会通过 WebSocket 推送给其他在线用户
+     * 
+     * @param request 聊天消息请求
+     * @param authentication 认证信息
+     * @return 发送的消息DTO
+     */
+    @PostMapping("/send")
+    public ApiResponse<ChatMessageDto> sendMessageHttp(
+            @RequestBody ChatMessageRequest request,
+            Authentication authentication) {
+        try {
+            // 获取当前用户ID
+            Long userId = (Long) authentication.getPrincipal();
+            
+            // 获取用户昵称
+            String nickname = userService.getUserNickname(userId);
+            
+            log.debug("HTTP发送聊天消息: groupId={}, userId={}, content={}", 
+                    request.getGroupId(), userId, request.getContent());
+            
+            // 保存消息到数据库
+            ChatMessageDto messageDto = chatService.sendGroupMessage(
+                request.getGroupId(),
+                userId,
+                nickname,
+                request.getContent(),
+                request.getImageUrl(),
+                request.getType()
+            );
+            
+            // 通过 WebSocket 推送给群组内其他成员
+            messagingTemplate.convertAndSend(
+                "/topic/group/" + request.getGroupId(), 
+                messageDto
+            );
+            
+            log.debug("消息发送成功: messageId={}", messageDto.getId());
+            return ApiResponse.ok(messageDto);
+        } catch (Exception e) {
+            log.error("发送聊天消息失败: {}", e.getMessage(), e);
+            return ApiResponse.error(500, "发送消息失败: " + e.getMessage());
+        }
     }
 
     /**

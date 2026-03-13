@@ -11,6 +11,7 @@ import com.gym.mapper.ChatMessageMapper;
 import com.gym.mapper.GroupMemberMapper;
 import com.gym.service.ChatService;
 import com.gym.service.GroupService;
+import com.gym.service.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -73,6 +74,12 @@ public class ChatServiceImpl implements ChatService {
      * 用于获取群组详情信息
      */
     private final GroupService groupService;
+    
+    /**
+     * 存储服务
+     * 用于转换图片URL（将旧的预签名URL转换为固定直链）
+     */
+    private final StorageService storageService;
 
     /**
      * 发送群组聊天消息
@@ -482,12 +489,27 @@ public class ChatServiceImpl implements ChatService {
      * Spring 提供的工具方法，自动复制同名属性
      * 相当于：dto.setId(entity.getId()); dto.setContent(entity.getContent()); ...
      * 
+     * 【图片URL转换】
+     * 数据库中可能存储的是旧的预签名URL（已过期），需要转换为固定直链
+     * 
      * @param entity 聊天消息实体
      * @return 聊天消息DTO
      */
     private ChatMessageDto convertToDto(ChatMessage entity) {
         ChatMessageDto dto = new ChatMessageDto();
         BeanUtils.copyProperties(entity, dto);
+        
+        // 转换图片URL：将旧的预签名URL转换为固定直链，避免403错误
+        if (dto.getImageUrl() != null && !dto.getImageUrl().isEmpty()) {
+            try {
+                String newUrl = storageService.getFileUrl(dto.getImageUrl());
+                dto.setImageUrl(newUrl);
+            } catch (Exception e) {
+                // 如果转换失败，保留原URL（可能已经是有效URL）
+                log.debug("图片URL转换失败，保留原URL: {}", dto.getImageUrl());
+            }
+        }
+        
         return dto;
     }
 }

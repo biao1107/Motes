@@ -85,10 +85,12 @@
 </template>
 
 <script>
-import { apiGetGroupChatHistory, apiGetLatestMessages, apiUploadAction, apiGetFileUrl, apiMarkGroupRead } from '@/common/api.js';
+import { apiGetGroupChatHistory, apiGetLatestMessages, apiUploadAction, apiGetFileUrl, apiMarkGroupRead, apiSendChatMessage } from '@/common/api.js';
 import { requireLogin, getUserIdFromToken, getUserNickname } from '@/common/auth.js';
 import { sendChatMessage, subscribeGroupChat, isConnected, initWebSocket } from '@/common/ws.js';
-import { initNativeWebSocket, subscribeGroup, setMessageCallback, isConnected as isNativeConnected } from '@/common/ws-native.js';
+
+// 检测运行环境
+const isMiniProgram = typeof wx !== 'undefined' && wx.getSystemInfoSync;
 
 export default {
 	data() {
@@ -105,7 +107,9 @@ export default {
 			lastMessageId: 0,
 			firstLoadMap: {}, // 用于跟踪每个群组的加载状态
 			subscription: null, // 添加订阅引用
-			showError: false // 是否显示错误信息
+			showError: false, // 是否显示错误信息
+			pollingTimer: null, // 轮询定时器（小程序环境使用）
+			pollingInterval: 3000 // 轮询间隔（毫秒）
 		};
 	},
 	
@@ -152,7 +156,7 @@ export default {
 		
 		// 确保用户信息加载完成后再初始化WebSocket和加载历史记录
 		this.$nextTick(() => {
-			// 初始化WebSocket连接（H5用STOMP，小程序用原生WebSocket）
+			// 初始化WebSocket连接
 			this.initWebSocketConnection().then(() => {
 				this.loadChatHistory();
 				this.startListening();
@@ -220,21 +224,11 @@ export default {
 			});
 		},
 		async initWebSocketConnection() {
-			// #ifdef H5
 			if (!isConnected()) {
-				console.log('H5环境：初始化STOMP WebSocket连接...');
+				console.log('初始化WebSocket连接...');
 				await initWebSocket();
-				console.log('H5环境：WebSocket连接初始化完成');
+				console.log('WebSocket连接初始化完成');
 			}
-			// #endif
-			
-			// #ifdef MP-WEIXIN
-			if (!isNativeConnected()) {
-				console.log('小程序环境：初始化原生WebSocket连接...');
-				await initNativeWebSocket();
-				console.log('小程序环境：原生WebSocket连接初始化完成');
-			}
-			// #endif
 		},
 		
 		loadUserProfile() {
@@ -351,35 +345,52 @@ export default {
 		sendMessage() {
 			if (!this.inputMessage.trim()) return;
 			
-			// #ifdef H5
-			// H5环境使用STOMP发送
-			sendChatMessage(Number(this.id), this.inputMessage.trim());
-			// #endif
-			
-			// #ifdef MP-WEIXIN
-			// 小程序环境使用HTTP API发送消息（因为原生WebSocket只支持接收）
-			this.sendMessageByHttp(this.inputMessage.trim());
-			// #endif
+			// 小程序环境使用HTTP API发送消息
+			if (isMiniProgram) {
+				this.sendMessageHttp(this.inputMessage.trim());
+			} else {
+				// H5环境使用WebSocket发送消息
+				sendChatMessage(Number(this.id), this.inputMessage.trim());
+			}
 			
 			// 清空输入框
 			this.inputMessage = '';
 			this.inputFocus = true;
 		},
 		
-		// 小程序环境通过HTTP发送消息
-		async sendMessageByHttp(content) {
+		// HTTP方式发送消息（小程序环境使用）
+		async sendMessageHttp(content, imageUrl = '', type = 'TEXT') {
 			try {
-				const { apiSendChatMessage } = require('@/common/api.js');
-				await apiSendChatMessage({
+				const res = await apiSendChatMessage({
 					groupId: Number(this.id),
 					content: content,
-					type: 'TEXT'
+					imageUrl: imageUrl,
+					type: type
 				});
-				console.log('小程序环境：消息发送成功');
-				// 发送成功后立即刷新消息列表
-				this.loadChatHistory();
+				
+				if (res && res.id) {
+					// 添加自己发送的消息到列表
+					const newMessage = {
+						id: res.id,
+						groupId: res.groupId,
+						userId: res.userId,
+						nickname: res.nickname,
+						content: res.content,
+						imageUrl: res.imageUrl,
+						type: res.type || 'TEXT',
+						createTime: res.createTime ? new Date(res.createTime) : new Date(),
+						isSelf: true
+					};
+					this.messages.push(newMessage);
+					this.lastMessageId = res.id;
+					
+					// 滚动到底部
+					this.$nextTick(() => {
+						this.scrollToBottom();
+					});
+				}
 			} catch (e) {
-				console.error('小程序环境：消息发送失败:', e);
+				console.error('发送消息失败:', e);
 				uni.showToast({
 					title: '发送失败',
 					icon: 'none'
@@ -416,8 +427,15 @@ export default {
 						
 						if (imageUrl) {
 							// 发送图片消息
-							sendChatMessage(Number(this.id), '[图片]', imageUrl, 'IMAGE');
-							uni.showToast({ title: '图片已发送', icon: 'success' });
+							if (isMiniProgram) {
+								// 小程序环境使用HTTP API
+								await this.sendMessageHttp('[图片]', imageUrl, 'IMAGE');
+								uni.showToast({ title: '图片已发送', icon: 'success' });
+							} else {
+								// H5环境使用WebSocket
+								sendChatMessage(Number(this.id), '[图片]', imageUrl, 'IMAGE');
+								uni.showToast({ title: '图片已发送', icon: 'success' });
+							}
 						} else {
 							throw new Error('图片上传失败');
 						}
@@ -438,43 +456,109 @@ export default {
 				return;
 			}
 			
-			// #ifdef H5
-			console.log('H5环境：检查STOMP WebSocket连接状态...');
+			// 小程序环境使用轮询方式获取新消息
+			if (isMiniProgram) {
+				console.log('小程序环境，启动轮询获取新消息');
+				this.startPolling();
+				return;
+			}
+				
+			console.log('检查WebSocket连接状态...');
+			// 检查WebSocket连接状态
 			if (!isConnected()) {
-				console.error('H5环境：WebSocket未连接，无法订阅消息');
+				console.error('WebSocket未连接，无法订阅消息');
+				// 尝试重新初始化WebSocket连接
 				initWebSocket().then(() => {
-					console.log('H5环境：WebSocket重新连接成功');
+					console.log('WebSocket重新连接成功');
+					// 重新尝试订阅
 					this.subscription = subscribeGroupChat(this.id, this.handleWsMessage);
 				}).catch((error) => {
-					console.error('H5环境：WebSocket重新连接失败:', error);
+					console.error('WebSocket重新连接失败:', error);
 				});
 				return;
 			}
-			console.log('H5环境：WebSocket已连接，开始订阅消息');
+				
+			console.log('WebSocket已连接，开始订阅消息');
+			// 使用WebSocket客户端订阅组聊天消息
 			this.subscription = subscribeGroupChat(this.id, this.handleWsMessage);
-			// #endif
+		},
+		
+		// 启动轮询获取新消息（小程序环境）
+		startPolling() {
+			if (this.pollingTimer) {
+				clearInterval(this.pollingTimer);
+			}
 			
-			// #ifdef MP-WEIXIN
-			console.log('小程序环境：检查原生WebSocket连接状态...');
-			if (!isNativeConnected()) {
-				console.error('小程序环境：原生WebSocket未连接，无法订阅消息');
-				initNativeWebSocket().then(() => {
-					console.log('小程序环境：原生WebSocket重新连接成功');
-					subscribeGroup(this.id);
-					setMessageCallback(this.handleWsMessage);
-				}).catch((error) => {
-					console.error('小程序环境：原生WebSocket重新连接失败:', error);
-				});
+			// 立即执行一次
+			this.pollNewMessages();
+			
+			// 设置定时轮询
+			this.pollingTimer = setInterval(() => {
+				this.pollNewMessages();
+			}, this.pollingInterval);
+			
+			console.log('轮询已启动，间隔:', this.pollingInterval, 'ms');
+		},
+		
+		// 停止轮询
+		stopPolling() {
+			if (this.pollingTimer) {
+				clearInterval(this.pollingTimer);
+				this.pollingTimer = null;
+				console.log('轮询已停止');
+			}
+		},
+		
+		// 轮询获取新消息
+		async pollNewMessages() {
+			if (!this.lastMessageId || this.lastMessageId <= 0) {
 				return;
 			}
-			console.log('小程序环境：原生WebSocket已连接，开始订阅消息');
-			subscribeGroup(this.id);
-			setMessageCallback(this.handleWsMessage);
-			// #endif
+			
+			try {
+				const newMessages = await apiGetLatestMessages(Number(this.id), this.lastMessageId);
+				
+				if (newMessages && Array.isArray(newMessages) && newMessages.length > 0) {
+					console.log('轮询获取到新消息:', newMessages.length);
+					
+					// 添加新消息
+					newMessages.forEach(msg => {
+						// 避免重复添加
+						const exists = this.messages.some(m => m.id === msg.id);
+						if (!exists) {
+							const newMessage = {
+								id: msg.id,
+								groupId: msg.groupId,
+								userId: msg.userId,
+								nickname: msg.nickname,
+								content: msg.content,
+								imageUrl: msg.imageUrl,
+								type: msg.type || 'TEXT',
+								createTime: msg.createTime && typeof msg.createTime === 'string' ? new Date(msg.createTime) : (msg.createTime || new Date()),
+								isSelf: msg.userId === Number(this.userId)
+							};
+							this.messages.push(newMessage);
+						}
+					});
+					
+					// 更新最后消息ID
+					this.lastMessageId = Math.max(...newMessages.map(m => m.id));
+					
+					// 滚动到底部
+					this.$nextTick(() => {
+						this.scrollToBottom();
+					});
+				}
+			} catch (e) {
+				console.error('轮询获取新消息失败:', e);
+			}
 		},
 		
 		stopListening() {
-			// 取消订阅
+			// 停止轮询（小程序环境）
+			this.stopPolling();
+			
+			// 取消WebSocket订阅（H5环境）
 			if (this.subscription) {
 				this.subscription.unsubscribe();
 				this.subscription = null;

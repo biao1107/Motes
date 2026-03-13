@@ -246,9 +246,9 @@ export function apiMarkGroupRead(groupId, userId) {
 	return post(`/chat/group/${groupId}/read?userId=${userId}`, {});
 }
 
-// 发送聊天消息（小程序环境使用HTTP）
+// 发送聊天消息（小程序专用HTTP接口）
 export function apiSendChatMessage(data) {
-	return post(`/chat/group/${data.groupId}/send`, data);
+	return post('/chat/send', data);
 }
 
 // 重置群组消息阅读状态
