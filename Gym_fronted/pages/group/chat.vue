@@ -88,6 +88,7 @@
 import { apiGetGroupChatHistory, apiGetLatestMessages, apiUploadAction, apiGetFileUrl, apiMarkGroupRead } from '@/common/api.js';
 import { requireLogin, getUserIdFromToken, getUserNickname } from '@/common/auth.js';
 import { sendChatMessage, subscribeGroupChat, isConnected, initWebSocket } from '@/common/ws.js';
+import { initNativeWebSocket, subscribeGroup, setMessageCallback, isConnected as isNativeConnected } from '@/common/ws-native.js';
 
 export default {
 	data() {
@@ -151,7 +152,7 @@ export default {
 		
 		// 确保用户信息加载完成后再初始化WebSocket和加载历史记录
 		this.$nextTick(() => {
-			// 初始化WebSocket连接
+			// 初始化WebSocket连接（H5用STOMP，小程序用原生WebSocket）
 			this.initWebSocketConnection().then(() => {
 				this.loadChatHistory();
 				this.startListening();
@@ -219,11 +220,21 @@ export default {
 			});
 		},
 		async initWebSocketConnection() {
+			// #ifdef H5
 			if (!isConnected()) {
-				console.log('初始化WebSocket连接...');
+				console.log('H5环境：初始化STOMP WebSocket连接...');
 				await initWebSocket();
-				console.log('WebSocket连接初始化完成');
+				console.log('H5环境：WebSocket连接初始化完成');
 			}
+			// #endif
+			
+			// #ifdef MP-WEIXIN
+			if (!isNativeConnected()) {
+				console.log('小程序环境：初始化原生WebSocket连接...');
+				await initNativeWebSocket();
+				console.log('小程序环境：原生WebSocket连接初始化完成');
+			}
+			// #endif
 		},
 		
 		loadUserProfile() {
@@ -340,12 +351,40 @@ export default {
 		sendMessage() {
 			if (!this.inputMessage.trim()) return;
 			
-			// 发送聊天消息
+			// #ifdef H5
+			// H5环境使用STOMP发送
 			sendChatMessage(Number(this.id), this.inputMessage.trim());
+			// #endif
+			
+			// #ifdef MP-WEIXIN
+			// 小程序环境使用HTTP API发送消息（因为原生WebSocket只支持接收）
+			this.sendMessageByHttp(this.inputMessage.trim());
+			// #endif
 			
 			// 清空输入框
 			this.inputMessage = '';
 			this.inputFocus = true;
+		},
+		
+		// 小程序环境通过HTTP发送消息
+		async sendMessageByHttp(content) {
+			try {
+				const { apiSendChatMessage } = require('@/common/api.js');
+				await apiSendChatMessage({
+					groupId: Number(this.id),
+					content: content,
+					type: 'TEXT'
+				});
+				console.log('小程序环境：消息发送成功');
+				// 发送成功后立即刷新消息列表
+				this.loadChatHistory();
+			} catch (e) {
+				console.error('小程序环境：消息发送失败:', e);
+				uni.showToast({
+					title: '发送失败',
+					icon: 'none'
+				});
+			}
 		},
 		
 		// 选择图片并发送
@@ -398,25 +437,40 @@ export default {
 				console.error('无效的群组ID，无法启动监听:', this.id);
 				return;
 			}
-				
-			console.log('检查WebSocket连接状态...');
-			// 检查WebSocket连接状态
+			
+			// #ifdef H5
+			console.log('H5环境：检查STOMP WebSocket连接状态...');
 			if (!isConnected()) {
-				console.error('WebSocket未连接，无法订阅消息');
-				// 尝试重新初始化WebSocket连接
+				console.error('H5环境：WebSocket未连接，无法订阅消息');
 				initWebSocket().then(() => {
-					console.log('WebSocket重新连接成功');
-					// 重新尝试订阅
+					console.log('H5环境：WebSocket重新连接成功');
 					this.subscription = subscribeGroupChat(this.id, this.handleWsMessage);
 				}).catch((error) => {
-					console.error('WebSocket重新连接失败:', error);
+					console.error('H5环境：WebSocket重新连接失败:', error);
 				});
 				return;
 			}
-				
-			console.log('WebSocket已连接，开始订阅消息');
-			// 使用WebSocket客户端订阅组聊天消息
+			console.log('H5环境：WebSocket已连接，开始订阅消息');
 			this.subscription = subscribeGroupChat(this.id, this.handleWsMessage);
+			// #endif
+			
+			// #ifdef MP-WEIXIN
+			console.log('小程序环境：检查原生WebSocket连接状态...');
+			if (!isNativeConnected()) {
+				console.error('小程序环境：原生WebSocket未连接，无法订阅消息');
+				initNativeWebSocket().then(() => {
+					console.log('小程序环境：原生WebSocket重新连接成功');
+					subscribeGroup(this.id);
+					setMessageCallback(this.handleWsMessage);
+				}).catch((error) => {
+					console.error('小程序环境：原生WebSocket重新连接失败:', error);
+				});
+				return;
+			}
+			console.log('小程序环境：原生WebSocket已连接，开始订阅消息');
+			subscribeGroup(this.id);
+			setMessageCallback(this.handleWsMessage);
+			// #endif
 		},
 		
 		stopListening() {

@@ -169,32 +169,6 @@ function sendFrame(command, headers, body) {
     cleanupConnection();
   }
 }
-function subscribeGroupChat(groupId, callback) {
-  if (isMiniProgram) {
-    common_vendor.index.__f__("log", "at common/ws.js:254", "小程序环境，不支持订阅组聊天");
-    return null;
-  }
-  if (!stompClient || !connected) {
-    common_vendor.index.__f__("error", "at common/ws.js:259", "WebSocket未连接，无法订阅消息");
-    return null;
-  }
-  const token = common_auth.getToken();
-  const destination = `/topic/group/${groupId}`;
-  common_vendor.index.__f__("log", "at common/ws.js:265", "订阅组聊天消息:", destination);
-  const headers = {
-    "Authorization": `Bearer ${token}`,
-    "content-type": "application/json"
-  };
-  return stompClient.subscribe(destination, (message) => {
-    common_vendor.index.__f__("log", "at common/ws.js:274", "收到组聊天消息:", message);
-    try {
-      const payload = JSON.parse(message.body);
-      callback(payload);
-    } catch (e) {
-      common_vendor.index.__f__("error", "at common/ws.js:279", "解析消息失败:", e);
-    }
-  }, headers);
-}
 function sendChatMessage(groupId, content, imageUrl = "", type = "TEXT") {
   if (isMiniProgram) {
     common_vendor.index.__f__("log", "at common/ws.js:288", "小程序环境，不支持发送聊天消息");
@@ -224,19 +198,6 @@ function doSendChatMessage(groupId, content, imageUrl = "", type = "TEXT") {
   const body = JSON.stringify(message);
   common_vendor.index.__f__("log", "at common/ws.js:318", "发送聊天消息:", destination, headers, body);
   sendFrame("SEND", headers, body);
-}
-function isConnected() {
-  if (isMiniProgram) {
-    return false;
-  }
-  if (connected && stompClient && stompClient.connected) {
-    return true;
-  } else if (connected) {
-    common_vendor.index.__f__("log", "at common/ws.js:358", "检测到连接状态不一致，清理连接状态");
-    cleanupConnection();
-    return false;
-  }
-  return false;
 }
 let userSubscription = null;
 function subscribeUserMessages(callback) {
@@ -278,7 +239,5 @@ function subscribeUserMessages(callback) {
   return userSubscription;
 }
 exports.initWebSocket = initWebSocket;
-exports.isConnected = isConnected;
 exports.sendChatMessage = sendChatMessage;
-exports.subscribeGroupChat = subscribeGroupChat;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/common/ws.js.map
