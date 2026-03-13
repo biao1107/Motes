@@ -272,7 +272,7 @@ Gym/
 └── target/                   # Maven构建输出
 ```
 
-## 面试重点
+## 重点
 
 ### 匹配算法设计
 - 多维度权重打分
@@ -299,9 +299,6 @@ Gym/
 mysql -u root -p gym < docs/gym.sql
 ```
 
-## 代码文档
-
-详细代码注释文档见：[CODE_DOCUMENTATION.md](./CODE_DOCUMENTATION.md)
 
 包含内容：
 - 前端核心文件说明（main.js, App.vue, api.js, http.js 等）
@@ -318,15 +315,6 @@ mysql -u root -p gym < docs/gym.sql
 4. 数据可视化（ECharts前端）
 5. 性能优化（索引优化、缓存预热）
 
-## 近期优化记录
-
-### 2026年2月
-- ✅ 添加详细代码注释（config包、util包）
-- ✅ 清理未使用的配置类（RedisHealthConfig, FallbackRedisConfig）
-- ✅ 清理未使用的工具类（RedisLockHelper, RedisUtil）
-- ✅ 迁移 ChallengeMapper 从 XML 到 MyBatis-Plus
-- ✅ 完善挑战报告推送功能
-- ✅ 添加打卡提醒定时任务
 
 ## 许可证
 
