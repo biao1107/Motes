@@ -1,6 +1,12 @@
 package com.gym.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gym.common.ApiResponse;
+import com.gym.common.ErrorCode;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -42,6 +48,8 @@ import com.gym.config.JwtAuthFilter;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /**
      * JWT 认证过滤器，在 UsernamePasswordAuthenticationFilter 之前执行
@@ -104,22 +112,49 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",     // OpenAPI 文档数据
                                 "/actuator/health",    // 健康检查
                                 "/auth/**",            // 登录、注册接口
-                                "/ws/**"               // WebSocket 端点
+                                "/ws/**",              // WebSocket 端点
+                                "/course/**",          // 课程页允许未登录浏览
+                                "/storage/avatar-url/**",
+                                "/error"
                         ).permitAll()
-                        // 其他所有请求：本项目暂时全部放行
-                        .anyRequest().permitAll()
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/storage/url"
+                        ).permitAll()
+                        // 其他业务接口必须先完成认证，避免 token 失效时进入控制器触发空指针
+                        .anyRequest().authenticated()
                 )
 
-                // 【5. 禁用表单登录】
+                // 【5. 统一返回 JSON 认证错误】
+                // 过期 / 无效 token 应直接返回 401，而不是继续进入控制器后抛 500。
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) ->
+                                writeJsonResponse(response, HttpServletResponse.SC_UNAUTHORIZED, ErrorCode.UNAUTHORIZED))
+                        .accessDeniedHandler((request, response, accessDeniedException) ->
+                                writeJsonResponse(response, HttpServletResponse.SC_FORBIDDEN, ErrorCode.FORBIDDEN))
+                )
+
+                // 【6. 禁用表单登录】
                 // 传统 Web 应用使用表单登录，本项目是 RESTful API，使用 JWT
                 .formLogin(form -> form.disable())
 
-                // 【6. 添加 JWT 过滤器】
+                // 【7. 添加 JWT 过滤器】
                 // 在 UsernamePasswordAuthenticationFilter 之前执行 JwtAuthFilter
                 // 这样每次请求都会先尝试 JWT 认证
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    private static void writeJsonResponse(HttpServletResponse response, int status, ErrorCode errorCode)
+            throws java.io.IOException {
+        response.setStatus(status);
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        OBJECT_MAPPER.writeValue(
+                response.getWriter(),
+                ApiResponse.error(errorCode.getCode(), errorCode.getMessage())
+        );
     }
 
     /**

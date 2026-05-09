@@ -4,17 +4,17 @@
  * ============================================
  * 作用：
  * 提供健身搝子组的训练进度管理功能
- * 
+ *
  * 什么是训练进度？
  * 用户在搝子组里完成训练任务，记录并展示各成员的完成情况
- * 
+ *
  * 核心功能：
  * 1. 开始训练 - 搝子组成员进行训练前点击开始
  * 2. 上报进度 - 训练过程中实时上报完成进度
  * 3. 放弃训练 - 中途放弃训练任务
  * 4. 获取今日记录 - 查询今天的训练完成情况
  * 5. 获取待办数量 - 获取今日未完成的训练任务数
- * 
+ *
  * 接口列表：
  * 1. POST /training/start  - 开始训练
  * 2. POST /training/report - 上报训练进度
@@ -103,7 +103,7 @@ public class TrainingController {
     public ApiResponse<Void> startTraining(@RequestBody @Validated StartReq req, org.springframework.security.core.Authentication authentication) {
         // 从Authentication中获取用户ID
         Long userId = (Long) authentication.getPrincipal();
-        
+
         trainingService.startTraining(userId, req.getGroupId());
         return ApiResponse.ok();
     }
@@ -112,11 +112,11 @@ public class TrainingController {
     public ApiResponse<Void> abandonTraining(@RequestBody @Validated AbandonReq req, Authentication authentication) {
         // 从Authentication中获取用户ID
         Long userId = (Long) authentication.getPrincipal();
-        
+
         trainingService.abandonTraining(userId, req.getGroupId(), req.getDate());
         return ApiResponse.ok();
     }
-    
+
     /**
      * 获取用户的今日训练记录
      *
@@ -165,7 +165,7 @@ public class TrainingController {
          */
         @NotNull
         private Long groupId;
-    
+
         /**
          * 训练日期
          * @DateTimeFormat 说明：接收ISO格式日期字符串，例如 "2024-01-15"
@@ -173,21 +173,21 @@ public class TrainingController {
         @NotNull
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         private LocalDate date;
-    
+
         /**
          * 已完成数量
          * @Min(0) 表示最小为0，不能负数
          */
         @Min(0)
         private int done;
-    
+
         /**
          * 目标数量
          * @Min(1) 表示最小为1，目标至少为1
          */
         @Min(1)
         private int target;
-    
+
         /**
          * 关联的组内挥战ID（可选）
          * 传了此字段则训练完成后自动为该挥战打卡
@@ -226,6 +226,3 @@ public class TrainingController {
         private LocalDate date;
     }
 }
-
-
-

@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("/challenge")
 @RequiredArgsConstructor
 @Validated
-public class ChallengeController {
+public class ChallengeController extends BaseAuthenticatedController {
 
     private static final String CHALLENGE_COVER_IMAGE_DEFAULT = "default_challenge_cover.jpg";
     
@@ -33,11 +33,20 @@ public class ChallengeController {
      */
     @PostMapping("/create")
     public ApiResponse<Long> createChallenge(@RequestBody @Validated CreateChallengeReq req, Authentication authentication) {
-        Long creatorId = (Long) authentication.getPrincipal();
+        Long creatorId = requireUserId(authentication);
         Long challengeId = challengeService.createChallenge(creatorId, req.getName(),
                 req.getStartDate(), req.getEndDate(), req.getTrainRequire(), req.getMaxMembers(), 
                 req.getCoverImage(), req.getGroupId());
         return ApiResponse.ok(challengeId);
+    }
+
+    /**
+     * 兼容前端历史调用路径：创建组内挑战
+     */
+    @PostMapping("/create-group-challenge")
+    public ApiResponse<Long> createGroupChallenge(@RequestBody @Validated CreateChallengeReq req,
+                                                  Authentication authentication) {
+        return createChallenge(req, authentication);
     }
 
     /**
@@ -46,7 +55,7 @@ public class ChallengeController {
     @PostMapping("/join")
     public ApiResponse<Void> joinChallenge(@RequestBody @Validated JoinChallengeReq req, Authentication authentication) {
         // 从Authentication中获取用户ID
-        Long userId = (Long) authentication.getPrincipal();
+        Long userId = requireUserId(authentication);
         
         challengeService.joinChallenge(userId, req.getChallengeId(), req.getGroupId());
         return ApiResponse.ok();
@@ -58,7 +67,7 @@ public class ChallengeController {
     @PostMapping("/punch")
     public ApiResponse<Void> punch(@RequestBody @Validated PunchReq req, Authentication authentication) {
         // 从Authentication中获取用户ID
-        Long userId = (Long) authentication.getPrincipal();
+        Long userId = requireUserId(authentication);
         
         challengeService.punch(userId, req.getChallengeId(), req.getDate(), req.getActionFile());
         return ApiResponse.ok();
@@ -113,7 +122,7 @@ public class ChallengeController {
      */
     @GetMapping("/{challengeId}/participation")
     public ApiResponse<Boolean> checkParticipation(@PathVariable @NotNull Long challengeId, Authentication authentication) {
-        Long userId = (Long) authentication.getPrincipal();
+        Long userId = requireUserId(authentication);
         boolean participated = challengeService.checkUserChallengeParticipation(userId, challengeId);
         return ApiResponse.ok(participated);
     }

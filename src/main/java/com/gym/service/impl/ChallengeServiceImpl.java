@@ -4,11 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gym.common.ErrorCode;
 import com.gym.common.exception.BizException;
 import com.gym.dto.ChallengeReportDto;
-import com.gym.entity.Challenge;
-import com.gym.entity.ChallengeParticipant;
-import com.gym.entity.GroupMember;
-import com.gym.entity.PartnerGroup;
-import com.gym.entity.TrainRecord;
+import com.gym.entity.*;
 import com.gym.mapper.ChallengeMapper;
 import com.gym.mapper.ChallengeParticipantMapper;
 import com.gym.mapper.PartnerGroupMapper;
@@ -176,7 +172,7 @@ public class ChallengeServiceImpl implements ChallengeService {
         // 第4步：构建挑战对象
         // buildChallenge 是一个私有方法，负责创建 Challenge 对象并设置各种属性
         // 如果是组内挑战，把groupId传进去；如果是公开挑战，传null
-        Challenge challenge = buildChallenge(name, startDate, endDate, trainRequire, maxMembers, coverImage, 
+        Challenge challenge = buildChallenge(name, startDate, endDate, trainRequire, maxMembers, coverImage,
                                             isGroupChallenge ? groupId : null);
         
         // 第5步：保存到数据库

@@ -5,6 +5,8 @@ import com.gym.common.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -42,10 +44,21 @@ public class GlobalExceptionHandler {
         return ApiResponse.error(ErrorCode.BAD_REQUEST.getCode(), "参数绑定失败: " + message);
     }
 
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ApiResponse<?> handleMethodNotSupported(HttpRequestMethodNotSupportedException e) {
+        log.warn("请求方法不支持: {}", e.getMessage());
+        return ApiResponse.error(ErrorCode.BAD_REQUEST.getCode(), "请求方法不支持");
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ApiResponse<?> handleNoResourceFound(NoResourceFoundException e) {
+        log.warn("资源不存在: {}", e.getMessage());
+        return ApiResponse.error(ErrorCode.NOT_FOUND.getCode(), "资源不存在");
+    }
+
     @ExceptionHandler(Exception.class)
     public ApiResponse<?> handleException(Exception e) {
         log.error("系统异常", e);
         return ApiResponse.error(ErrorCode.INTERNAL_ERROR.getCode(), "系统异常，请稍后重试");
     }
 }
-

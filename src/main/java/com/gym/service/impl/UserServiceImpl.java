@@ -108,18 +108,14 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void updateProfile(User profile) {
-        // ========== 第1步：获取旧的用户信息 ==========
-        // 为什么要查旧信息？
-        // 因为需要知道用户原来的分桶（健身目标+训练时间+训练场景的组合）
+        // ========== 第1步：获取旧的用户信息 =========
         // 如果分桶变了，需要从旧分桶移除，添加到新分桶
         User oldUser = userMapper.selectById(profile.getId());
-        
-        // 旧分桶的key，初始为null
+
         String oldBucketKey = null;
         
         if (oldUser != null) {
             // 构建旧的分桶key
-            // 格式：match:bucket:{健身目标}_{训练时间}_{训练场景}
             // 例如：match:bucket:减脂_晚上_健身房
             oldBucketKey = "match:bucket:" + safe(oldUser.getFitnessGoal()) + "_" + 
                           safe(oldUser.getTrainTime()) + "_" + safe(oldUser.getTrainScene());
@@ -130,8 +126,6 @@ public class UserServiceImpl implements UserService {
         profile.setUpdateTime(LocalDateTime.now());
         
         // 调用MyBatis-Plus的updateById方法更新数据库
-        // 等同于 SQL: UPDATE t_user SET ... WHERE id = #{id}
-        // 注意：updateById只更新非null的字段
         userMapper.updateById(profile);
         
         // ========== 第3步：处理缓存 ==========

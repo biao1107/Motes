@@ -78,7 +78,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 这里会自动注入 UserService，不需要写 @Autowired
  */
 @RequiredArgsConstructor
-public class UserController {
+public class UserController extends BaseAuthenticatedController {
 
     /**
      * userService: 用户服务层对象
@@ -109,7 +109,7 @@ public class UserController {
     public ApiResponse<User> profile(Authentication auth) {
         // 1. 从认证对象中获取用户ID
         // auth.getPrincipal() 返回的是登录时设置的userId（Long类型）
-        Long uid = (Long) auth.getPrincipal();
+        Long uid = requireUserId(auth);
         
         // 2. 调用service层查询用户信息
         // userService.getProfile(uid) 会根据ID查询数据库
@@ -154,7 +154,7 @@ public class UserController {
             Authentication auth                 // 认证信息参数
     ) {
         // 1. 获取当前登录用户的ID
-        Long uid = (Long) auth.getPrincipal();
+        Long uid = requireUserId(auth);
         
         // 2. 先查询用户是否存在
         // 安全做法：先查再改，防止操作不存在的用户
@@ -201,7 +201,7 @@ public class UserController {
      */
     @GetMapping("/info")
     public ApiResponse<User> getCurrentUserInfo(Authentication auth) {
-        Long userId = (Long) auth.getPrincipal();
+        Long userId = requireUserId(auth);
         return ApiResponse.ok(userService.getProfile(userId));
     }
 

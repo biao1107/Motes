@@ -116,6 +116,9 @@ function apiStatChallenge(params) {
 function apiGetGroupChatHistory(groupId, limit = 50) {
   return common_http.get(`/chat/group/${groupId}/history?limit=${limit}`);
 }
+function apiGetLatestMessages(groupId, lastMessageId) {
+  return common_http.get(`/chat/group/${groupId}/latest?lastMessageId=${lastMessageId}`);
+}
 function apiGetUnreadCount(userId) {
   return common_http.get(`/chat/unread/count?userId=${userId}`);
 }
@@ -124,6 +127,9 @@ function apiGetUnreadDetail(userId) {
 }
 function apiMarkGroupRead(groupId, userId) {
   return common_http.post(`/chat/group/${groupId}/read?userId=${userId}`, {});
+}
+function apiSendChatMessage(data) {
+  return common_http.post("/chat/send", data);
 }
 function apiUploadAction(filePath) {
   return new Promise((resolve, reject) => {
@@ -225,6 +231,7 @@ exports.apiGetFileUrl = apiGetFileUrl;
 exports.apiGetGroupChallenges = apiGetGroupChallenges;
 exports.apiGetGroupChatHistory = apiGetGroupChatHistory;
 exports.apiGetInvitations = apiGetInvitations;
+exports.apiGetLatestMessages = apiGetLatestMessages;
 exports.apiGetProfile = apiGetProfile;
 exports.apiGetRecommendCourses = apiGetRecommendCourses;
 exports.apiGetTodayTraining = apiGetTodayTraining;
@@ -242,6 +249,7 @@ exports.apiMyGroups = apiMyGroups;
 exports.apiRegister = apiRegister;
 exports.apiRejectInvite = apiRejectInvite;
 exports.apiSearchCourses = apiSearchCourses;
+exports.apiSendChatMessage = apiSendChatMessage;
 exports.apiSendCode = apiSendCode;
 exports.apiStatChallenge = apiStatChallenge;
 exports.apiStatGroup = apiStatGroup;
