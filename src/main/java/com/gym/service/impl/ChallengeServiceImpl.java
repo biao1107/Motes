@@ -257,23 +257,6 @@ public class ChallengeServiceImpl implements ChallengeService {
      * @throws BizException 不符合打卡条件时抛出
      */
     @Override
-    // 【@Transactional 详解】
-    // 这个注解表示"事务"，保证打卡操作的原子性（要么全成功，要么全失败）
-    // 
-    // 【propagation = Propagation.REQUIRES_NEW 是什么意思？】
-    // 
-    // 想象事务是一个"工作单元"：
-    // - 普通 @Transactional：如果有外层事务，就加入它（一起成功/失败）
-    // - REQUIRES_NEW：不管有没有外层事务，都开启一个全新的事务
-    // 
-    // 【为什么要用 REQUIRES_NEW？】
-    // 打卡是一个独立的重要操作，即使外层出错了，打卡记录也应该保存。
-    // 比如：用户在完成训练后打卡，即使训练记录更新失败，打卡也应该成功记录。
-    // 
-    // 【通俗比喻】
-    // 就像你去餐厅吃饭：
-    // - 普通事务：和朋友AA制，一起结账，有人没带钱大家都走不了
-    // - REQUIRES_NEW：各付各的，你付你的，不影响别人
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRES_NEW)
     public void punch(Long userId, Long challengeId, LocalDate date, String actionFile) {
         // 【第1步：验证打卡资格】
