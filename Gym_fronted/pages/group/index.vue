@@ -1,124 +1,129 @@
 <template>
-	<view class="container" v-if="loaded">
-		<!-- 页面头部 -->
-		<view class="page-header">
-			<text class="header-subtitle">找到志同道合的健身伙伴</text>
-		</view>
+  <view class="group-page">
+    <template v-if="loaded">
+      <view class="hero-card">
+        <view class="hero-badge">Partner Group</view>
+        <text class="hero-title">把搭子关系、固定训练时间和组内协作放在一个地方管理</text>
+        <text class="hero-desc">
+          这里更像你的“训练小队主页”。你可以创建新的搭子组，也可以查看已有小组的协同安排。
+        </text>
+      </view>
 
-		<!-- 创建组按钮 -->
-		<view class="create-section">
-			<button class="btn-fitness-primary" @tap="showCreate = true">
-				<text class="btn-text">创建搭子组</text>
-			</button>
-		</view>
+      <view class="action-bar">
+        <view class="create-btn" @tap="showCreate = true">
+          <text class="create-btn-text">创建搭子组</text>
+        </view>
+      </view>
 
-		<!-- 组列表 -->
-		<view class="groups-section" v-if="groups.length > 0">
-			<view class="section-header">
-				<text class="fitness-subtitle">我的搭子组</text>
-				<text class="section-count">{{ groups.length }}个组</text>
-			</view>
-			<view class="groups-list">
-				<view class="group-card" v-for="item in groups" :key="item.id">
-					<view class="group-header" @tap="goDetail(item.id)">
-						<view class="group-icon">
-							<text class="icon-text">💪</text>
-						</view>
-						<view class="group-info">
-							<text class="group-name">{{ item.groupName || '未命名搭子组' }}</text>
-							<view class="group-stats">
-								<text class="stat-item">⏰ {{ item.fixedTime || '-' }}</text>
-							</view>
-						</view>
-						<text class="arrow">›</text>
-					</view>
-					<view class="group-meta" v-if="item.desc">
-						<text class="group-desc">{{ item.desc }}</text>
-					</view>
-					<!-- 管理员删除按钮 -->
-					<view class="admin-actions" v-if="isAdminInGroup(item.id)">
-						<button class="btn-delete" @tap.stop="showDeleteConfirm(item.id, item.groupName)">
-							<text class="btn-delete-text">删除</text>
-						</button>
-					</view>
-				</view>
-			</view>
-		</view>
+      <view v-if="groups.length > 0" class="section-card">
+        <view class="section-head">
+          <view>
+            <text class="section-title">我的搭子组</text>
+            <text class="section-subtitle">优先展示你已经建立好协作关系的小组</text>
+          </view>
+          <text class="section-count">{{ groups.length }} 个组</text>
+        </view>
 
-		<!-- 空状态 -->
-		<view class="empty-state" v-else>
-			<view class="empty-icon">👥</view>
-			<text class="empty-text">还没有加入任何搭子组</text>
-			<text class="empty-subtext">创建或加入一个搭子组，开始协同健身之旅</text>
-			<button class="btn-fitness-primary" @tap="showCreate = true">
-				<text class="btn-text">创建第一个搭子组</text>
-			</button>
-		</view>
+        <view class="group-list">
+          <view v-for="item in groups" :key="item.id" class="group-card">
+            <view class="card-main" @tap="goDetail(item.id)">
+              <view class="group-icon">组</view>
 
-		<!-- 创建组弹窗 -->
-		<view v-if="showCreate" class="popup-mask" @tap="showCreate = false">
-			<view class="popup" @tap.stop>
-				<view class="popup-header">
-					<text class="popup-title">创建搭子组</text>
-					<text class="popup-close" @tap="showCreate = false">✕</text>
-				</view>
-				<view class="input-area">
-					<textarea
-					  class="input-fitness"
-					  v-model="createForm.name"
-					  placeholder="请输入组名（如：晨跑搭子群）"
-					  :adjust-position="true"
-					  :show-confirm-bar="false"
-					  auto-height
-					  style="min-height: 80rpx;"
-					/>
-				</view>
-				<view class="input-area">
-					<textarea
-					  class="input-fitness"
-					  v-model="createForm.fixedTime"
-					  placeholder="请输入训练时间（如：每天早上7点）"
-					  :adjust-position="true"
-					  auto-height
-					  style="min-height: 70rpx;"
-					/>
-				</view>
-				<view class="popup-actions">
-					<button class="btn-fitness-secondary" @tap="showCreate = false">
-						<text class="btn-text">取消</text>
-					</button>
-					<button class="btn-fitness-primary" @tap="onCreateGroup">
-						<text class="btn-text">创建</text>
-					</button>
-				</view>
-			</view>
-		</view>
+              <view class="group-content">
+                <view class="group-head">
+                  <text class="group-name">{{ item.groupName || '未命名搭子组' }}</text>
+                  <text class="group-arrow">查看</text>
+                </view>
 
-		<!-- 删除确认弹窗 -->
-		<view v-if="showDeleteConfirmPopup" class="popup-mask" @tap="hideDeleteConfirm">
-			<view class="popup" @tap.stop>
-				<view class="popup-header">
-					<text class="popup-title">确认删除</text>
-					<text class="popup-close" @tap="hideDeleteConfirm">✕</text>
-				</view>
-				<text class="confirm-text">确定要删除搭子组"{{ deleteGroupName }}"吗？此操作不可恢复。</text>
-				<view class="popup-actions">
-					<button class="btn-fitness-secondary" @tap="hideDeleteConfirm">
-						<text class="btn-text">取消</text>
-					</button>
-					<button class="btn-fitness-danger" @tap="confirmDeleteGroup">
-						<text class="btn-text">删除</text>
-					</button>
-				</view>
-			</view>
-		</view>
-	</view>
+                <view class="meta-row">
+                  <text class="meta-chip">{{ item.fixedTime || '未设置固定时间' }}</text>
+                  <text class="meta-chip">{{ isAdminInGroup(item.id) ? '你是管理员' : '普通成员' }}</text>
+                </view>
 
-	<!-- 加载状态 -->
-	<view v-else class="loading-container">
-		<view class="loading-spinner"></view>
-		<text class="loading-text">加载中...</text>
-	</view>
+                <text v-if="item.desc" class="group-desc">{{ item.desc }}</text>
+                <text v-else class="group-desc muted">还没有补充组内说明，可以去详情页完善。</text>
+              </view>
+            </view>
+
+            <view v-if="isAdminInGroup(item.id)" class="admin-bar">
+              <view class="delete-btn" @tap.stop="showDeleteConfirm(item.id, item.groupName)">删除小组</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view v-else class="empty-card">
+        <view class="empty-icon">组</view>
+        <text class="empty-title">你还没有加入任何搭子组</text>
+        <text class="empty-desc">先创建一个小组，把固定训练时间和组内协同关系建立起来。</text>
+        <view class="empty-action" @tap="showCreate = true">
+          <text class="empty-action-text">创建第一个搭子组</text>
+        </view>
+      </view>
+
+      <view v-if="showCreate" class="modal-mask" @tap="showCreate = false">
+        <view class="modal-card" @tap.stop>
+          <view class="modal-head">
+            <text class="modal-title">创建搭子组</text>
+            <text class="modal-close" @tap="showCreate = false">×</text>
+          </view>
+
+          <view class="field-block">
+            <text class="field-label">小组名称</text>
+            <textarea
+              class="field-input"
+              v-model="createForm.name"
+              placeholder="例如：晨跑搭子组、下班力量组"
+              :adjust-position="true"
+              :show-confirm-bar="false"
+              auto-height
+            />
+          </view>
+
+          <view class="field-block">
+            <text class="field-label">固定训练时间</text>
+            <textarea
+              class="field-input"
+              v-model="createForm.fixedTime"
+              placeholder="例如：每周一三五晚 8 点"
+              :adjust-position="true"
+              :show-confirm-bar="false"
+              auto-height
+            />
+          </view>
+
+          <view class="modal-actions">
+            <view class="modal-btn secondary" @tap="showCreate = false">取消</view>
+            <view class="modal-btn primary" @tap="onCreateGroup">确认创建</view>
+          </view>
+        </view>
+      </view>
+
+      <view v-if="showDeleteConfirmPopup" class="modal-mask" @tap="hideDeleteConfirm">
+        <view class="modal-card" @tap.stop>
+          <view class="modal-head">
+            <text class="modal-title">确认删除</text>
+            <text class="modal-close" @tap="hideDeleteConfirm">×</text>
+          </view>
+
+          <text class="confirm-copy">
+            确定要删除“{{ deleteGroupName }}”吗？这个操作不可恢复，组内成员和协同关系会一起失效。
+          </text>
+
+          <view class="modal-actions">
+            <view class="modal-btn secondary" @tap="hideDeleteConfirm">取消</view>
+            <view class="modal-btn danger" @tap="confirmDeleteGroup">删除小组</view>
+          </view>
+        </view>
+      </view>
+    </template>
+
+    <view v-else class="loading-panel">
+      <view class="loading-spinner"></view>
+      <text class="loading-title">正在加载你的搭子组</text>
+      <text class="loading-copy">准备同步你和搭子之间的训练协作关系</text>
+    </view>
+  </view>
 </template>
 
 <script>
@@ -126,584 +131,569 @@ import { apiMyGroups, apiCreateGroup, apiGroupDetailWithMembers, apiDeleteGroup 
 import { requireLogin, getUserIdFromToken } from '@/common/auth.js';
 
 export default {
-	data() {
-		return {
-			loaded: false,
-			groups: [],
-			showCreate: false,
-			showDeleteConfirmPopup: false,
-			groupToDelete: null,
-			deleteGroupName: '',
-			createForm: {
-				name: '',
-				fixedTime: ''
-			},
-			groupMembers: {} // 缓存组成员信息
-		};
-	},
-	onShow() {
-		if (!requireLogin()) return;
-		this.loadData();
-	},
-	methods: {
-		onInputFocus() {
-			// 强制聚焦输入框
-			console.log('输入框聚焦');
-		},
+  data() {
+    return {
+      loaded: false,
+      groups: [],
+      showCreate: false,
+      showDeleteConfirmPopup: false,
+      groupToDelete: null,
+      deleteGroupName: '',
+      createForm: {
+        name: '',
+        fixedTime: ''
+      },
+      groupMembers: {}
+    };
+  },
+  onShow() {
+    if (!requireLogin()) return;
+    this.loadData();
+  },
+  methods: {
+    async loadData() {
+      try {
+        uni.showLoading({ title: '加载中...' });
+        const userId = getUserIdFromToken();
 
-		async loadData() {
-			try {
-				uni.showLoading({ title: '加载中...' });
-				console.log('Calling apiMyGroups');
-				const userId = getUserIdFromToken();
-				if (!userId) {
-					console.error('无法获取用户ID');
-					this.loaded = true;
-					uni.hideLoading();
-					return;
-				}
-				const res = await apiMyGroups(userId);
-				console.log('apiMyGroups response:', res);
-				this.groups = res?.data || res || [];
-				this.loaded = true;
-				uni.hideLoading();
-				
-				// 预加载所有组的成员信息以检查权限
-				await this.loadAllGroupMembers();
-			} catch (e) {
-				console.error('Error loading groups:', e);
-				uni.hideLoading();
-				this.loaded = true;
-				uni.showToast({
-					title: '加载失败，请重试',
-					icon: 'none'
-				});
-			}
-		},
-		
-		// 加载所有组的成员信息
-		async loadAllGroupMembers() {
-			for (const group of this.groups) {
-				try {
-					const detail = await apiGroupDetailWithMembers(group.id);
-					this.groupMembers[group.id] = detail.members || [];
-				} catch (e) {
-					console.error(`加载组 ${group.id} 成员信息失败:`, e);
-					this.groupMembers[group.id] = [];
-				}
-			}
-		},
-		
-		// 检查用户是否是组的管理员
-		isAdminInGroup(groupId) {
-			const members = this.groupMembers[groupId] || [];
-			const userId = getUserIdFromToken();
-			const userMember = members.find(m => m.userId == userId);
-			return userMember && userMember.role === 'ADMIN';
-		},
-		
-		async onCreateGroup() {
-			if (!this.createForm.name) {
-				uni.showToast({ title: '请输入组名', icon: 'none' });
-				return;
-			}
-			
-			if (this.createForm.name.trim().length < 2) {
-				uni.showToast({ title: '组名至少需要2个字符', icon: 'none' });
-				return;
-			}
-			
-			if (!this.createForm.fixedTime) {
-				uni.showToast({ title: '请输入训练时间', icon: 'none' });
-				return;
-			}
-			
-			try {
-				uni.showLoading({ title: '创建中...' });
-				const userId = getUserIdFromToken();
-				await apiCreateGroup({
-					memberIds: [userId],
-					fixedTime: this.createForm.fixedTime.trim(),
-					name: this.createForm.name.trim()
-				});
-				uni.hideLoading();
-				uni.showToast({ title: '创建成功', icon: 'success' });
-				this.showCreate = false;
-				this.createForm = { name: '', fixedTime: '' };
-				this.loadData();
-			} catch (e) {
-				uni.hideLoading();
-				console.error('创建搭子组失败:', e);
-				uni.showToast({
-					title: e?.message || '创建失败，请重试',
-					icon: 'none'
-				});
-			}
-		},
-		
-		goDetail(id) {
-			uni.navigateTo({ url: `/pages/group/detail?id=${id}` });
-		},
-		
-		// 显示删除确认弹窗
-		showDeleteConfirm(groupId, groupName) {
-			this.groupToDelete = groupId;
-			this.deleteGroupName = groupName;
-			this.showDeleteConfirmPopup = true;
-		},
-		
-		// 隐藏删除确认弹窗
-		hideDeleteConfirm() {
-			this.showDeleteConfirmPopup = false;
-			this.groupToDelete = null;
-			this.deleteGroupName = '';
-		},
-		
-		// 确认删除搭子组
-		async confirmDeleteGroup() {
-			if (!this.groupToDelete) return;
-			
-			try {
-				uni.showLoading({ title: '删除中...' });
-				const res = await apiDeleteGroup(this.groupToDelete);
-				
-				// 检查响应状态
-				if (res && res.statusCode === 200) {
-					uni.hideLoading();
-					uni.showToast({
-						title: '删除成功',
-						icon: 'success'
-					});
-					this.hideDeleteConfirm();
-					this.loadData(); // 重新加载数据
-				} else {
-					uni.hideLoading();
-					// 尝试解析错误信息
-					let errorMessage = '删除失败';
-					if (res && res.data && typeof res.data === 'object') {
-						errorMessage = res.data.message || res.data.msg || errorMessage;
-					} else if (res && res.errMsg) {
-						errorMessage = res.errMsg;
-					} else if (res && res.statusCode) {
-						errorMessage = `删除失败 (${res.statusCode})`;
-					}
-					uni.showToast({
-						title: errorMessage,
-						icon: 'none'
-					});
-				}
-			} catch (e) {
-				uni.hideLoading();
-				console.error('删除搭子组失败:', e);
-				uni.showToast({
-					title: e.errMsg || e.message || '删除失败，请重试',
-					icon: 'none'
-				});
-			}
-		}
-	}
+        if (!userId) {
+          this.loaded = true;
+          uni.hideLoading();
+          return;
+        }
+
+        const res = await apiMyGroups(userId);
+        this.groups = res?.data || res || [];
+        this.loaded = true;
+        uni.hideLoading();
+
+        await this.loadAllGroupMembers();
+      } catch (error) {
+        console.error('加载搭子组失败:', error);
+        this.loaded = true;
+        uni.hideLoading();
+        uni.showToast({
+          title: '加载失败，请稍后重试',
+          icon: 'none'
+        });
+      }
+    },
+    async loadAllGroupMembers() {
+      for (const group of this.groups) {
+        try {
+          const detail = await apiGroupDetailWithMembers(group.id);
+          this.groupMembers[group.id] = detail.members || [];
+        } catch (error) {
+          console.error(`加载组 ${group.id} 成员失败:`, error);
+          this.groupMembers[group.id] = [];
+        }
+      }
+    },
+    isAdminInGroup(groupId) {
+      const members = this.groupMembers[groupId] || [];
+      const userId = getUserIdFromToken();
+      const userMember = members.find((member) => member.userId == userId);
+      return userMember && userMember.role === 'ADMIN';
+    },
+    async onCreateGroup() {
+      if (!this.createForm.name) {
+        uni.showToast({ title: '请输入组名', icon: 'none' });
+        return;
+      }
+
+      if (this.createForm.name.trim().length < 2) {
+        uni.showToast({ title: '组名至少需要 2 个字符', icon: 'none' });
+        return;
+      }
+
+      if (!this.createForm.fixedTime) {
+        uni.showToast({ title: '请输入训练时间', icon: 'none' });
+        return;
+      }
+
+      try {
+        uni.showLoading({ title: '创建中...' });
+        const userId = getUserIdFromToken();
+
+        await apiCreateGroup({
+          memberIds: [userId],
+          fixedTime: this.createForm.fixedTime.trim(),
+          name: this.createForm.name.trim()
+        });
+
+        uni.hideLoading();
+        uni.showToast({ title: '创建成功', icon: 'success' });
+        this.showCreate = false;
+        this.createForm = { name: '', fixedTime: '' };
+        this.loadData();
+      } catch (error) {
+        uni.hideLoading();
+        console.error('创建搭子组失败:', error);
+        uni.showToast({
+          title: error?.message || '创建失败，请稍后重试',
+          icon: 'none'
+        });
+      }
+    },
+    goDetail(id) {
+      uni.navigateTo({ url: `/pages/group/detail?id=${id}` });
+    },
+    showDeleteConfirm(groupId, groupName) {
+      this.groupToDelete = groupId;
+      this.deleteGroupName = groupName;
+      this.showDeleteConfirmPopup = true;
+    },
+    hideDeleteConfirm() {
+      this.showDeleteConfirmPopup = false;
+      this.groupToDelete = null;
+      this.deleteGroupName = '';
+    },
+    async confirmDeleteGroup() {
+      if (!this.groupToDelete) return;
+
+      try {
+        uni.showLoading({ title: '删除中...' });
+        const res = await apiDeleteGroup(this.groupToDelete);
+
+        if (res && res.statusCode === 200) {
+          uni.hideLoading();
+          uni.showToast({
+            title: '删除成功',
+            icon: 'success'
+          });
+          this.hideDeleteConfirm();
+          this.loadData();
+          return;
+        }
+
+        uni.hideLoading();
+        let errorMessage = '删除失败';
+        if (res && res.data && typeof res.data === 'object') {
+          errorMessage = res.data.message || res.data.msg || errorMessage;
+        } else if (res && res.errMsg) {
+          errorMessage = res.errMsg;
+        } else if (res && res.statusCode) {
+          errorMessage = `删除失败 (${res.statusCode})`;
+        }
+
+        uni.showToast({
+          title: errorMessage,
+          icon: 'none'
+        });
+      } catch (error) {
+        uni.hideLoading();
+        console.error('删除搭子组失败:', error);
+        uni.showToast({
+          title: error.errMsg || error.message || '删除失败，请稍后重试',
+          icon: 'none'
+        });
+      }
+    }
+  }
 };
 </script>
 
 <style scoped>
-/* 基础容器样式优化 */
-.container {
-	padding: 0;
-	background: #f8f9fa;
-	min-height: 100vh;
+.group-page {
+  min-height: 100vh;
+  padding: 24rpx;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at top right, rgba(111, 146, 255, 0.16), transparent 24%),
+    linear-gradient(180deg, #edf2ff 0%, #f5f7fc 42%, #f4f6fb 100%);
 }
 
-/* 加载状态优化 */
-.loading-container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	height: 100vh;
-	background: #f8f9fa;
+.hero-card,
+.section-card,
+.empty-card,
+.modal-card {
+  border-radius: 32rpx;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-.loading-spinner {
-	width: 60rpx;
-	height: 60rpx;
-	border: 4rpx solid #e0e0e0;
-	border-top: 4rpx solid #667eea;
-	border-radius: 50%;
-	animation: spin 1s linear infinite;
-	margin-bottom: 20rpx;
-	box-shadow: 0 0 16rpx rgba(102, 126, 234, 0.1);
+.hero-card {
+  padding: 34rpx 30rpx;
+  margin-bottom: 24rpx;
+  background: linear-gradient(150deg, #1638b8 0%, #4c67f4 46%, #7790ff 100%);
+  box-shadow: 0 20rpx 50rpx rgba(23, 56, 182, 0.22);
 }
 
-@keyframes spin {
-	0% { transform: rotate(0deg); }
-	100% { transform: rotate(360deg); }
+.hero-badge {
+  display: inline-flex;
+  height: 42rpx;
+  padding: 0 16rpx;
+  margin-bottom: 18rpx;
+  border-radius: 999rpx;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 20rpx;
+  letter-spacing: 1rpx;
 }
 
-.loading-text {
-	font-size: 28rpx;
-	color: #718096;
-	letter-spacing: 1rpx;
+.hero-title {
+  display: block;
+  margin-bottom: 12rpx;
+  font-size: 40rpx;
+  line-height: 1.28;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-/* 页面头部美化 - 更柔和的渐变和细节 */
-.page-header {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	padding: 60rpx 30rpx 80rpx;
-	text-align: center;
-	border-radius: 0 0 32rpx 32rpx;
-	box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.2);
-	margin-bottom: 20rpx;
+.hero-desc {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
 }
 
-.fitness-title {
-	font-size: 42rpx;
-	font-weight: 700;
-	color: #fff;
-	display: block;
-	margin-bottom: 12rpx;
-	letter-spacing: 2rpx;
+.action-bar {
+  margin-bottom: 22rpx;
 }
 
-.header-subtitle {
-	font-size: 26rpx;
-	color: rgba(255, 255, 255, 0.9);
-	letter-spacing: 1rpx;
+.create-btn,
+.empty-action {
+  height: 88rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(150deg, #3253ef 0%, #6980ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 14rpx 24rpx rgba(50, 83, 239, 0.2);
 }
 
-/* 创建按钮区域 */
-.create-section {
-	padding: 30rpx;
-	background: #f8f9fa;
+.create-btn-text,
+.empty-action-text {
+  font-size: 27rpx;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-/* 组列表区域 */
-.groups-section {
-	padding: 0 20rpx 40rpx;
+.section-card,
+.empty-card {
+  padding: 30rpx 24rpx;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18rpx 38rpx rgba(21, 35, 95, 0.08);
 }
 
-.section-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 24rpx;
-	padding-bottom: 16rpx;
-	border-bottom: 1rpx solid #f0f0f0;
+.section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
 }
 
-.fitness-subtitle {
-	font-size: 32rpx;
-	font-weight: 600;
-	color: #2d3748;
+.section-title {
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #172233;
+}
+
+.section-subtitle {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.55;
+  color: #74829a;
 }
 
 .section-count {
-	font-size: 24rpx;
-	color: #718096;
+  padding: 10rpx 16rpx;
+  border-radius: 999rpx;
+  background: #eef3ff;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #4564f2;
 }
 
-.groups-list {
-	display: flex;
-	flex-direction: column;
-	gap: 20rpx;
+.group-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
 }
 
-/* 组卡片美化 - 更精致的阴影和交互 */
 .group-card {
-	background-color: #fff;
-	border-radius: 20rpx;
-	padding: 30rpx;
-	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
-	transition: all 0.2s ease;
-	position: relative;
+  padding: 24rpx 22rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
 }
 
-.group-card:active {
-	transform: translateY(2rpx);
-	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
+.card-main {
+  display: flex;
+  gap: 18rpx;
 }
 
-.group-header {
-	display: flex;
-	align-items: center;
-	gap: 20rpx;
-	margin-bottom: 18rpx;
-}
-
-/* 组图标美化 */
 .group-icon {
-	width: 88rpx;
-	height: 88rpx;
-	border-radius: 20rpx;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-shrink: 0;
-	box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.15);
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(150deg, #3253ef 0%, #6a7dff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #ffffff;
+  box-shadow: 0 14rpx 26rpx rgba(50, 83, 239, 0.2);
 }
 
-.icon-text {
-	color: white;
-	font-size: 38rpx;
+.group-content {
+  flex: 1;
+  min-width: 0;
 }
 
-.group-info {
-	flex: 1;
+.group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-bottom: 10rpx;
 }
 
 .group-name {
-	font-size: 32rpx;
-	font-weight: 600;
-	color: #2d3748;
-	display: block;
-	margin-bottom: 10rpx;
-	letter-spacing: 0.5rpx;
+  flex: 1;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #172233;
 }
 
-.group-stats {
-	display: flex;
-	gap: 24rpx;
-	flex-wrap: wrap;
+.group-arrow {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #4564f2;
 }
 
-.stat-item {
-	font-size: 24rpx;
-	color: #718096;
-	display: flex;
-	align-items: center;
-	gap: 8rpx;
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
 }
 
-.arrow {
-	font-size: 38rpx;
-	color: #cbd5e0;
-	flex-shrink: 0;
-	transition: color 0.2s ease;
-}
-
-.group-header:active .arrow {
-	color: #667eea;
-}
-
-/* 组描述区域 */
-.group-meta {
-	margin-top: 18rpx;
-	padding-top: 18rpx;
-	border-top: 1rpx solid #f0f0f0;
+.meta-chip {
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: #eef3ff;
+  font-size: 21rpx;
+  color: #5f6d83;
 }
 
 .group-desc {
-	font-size: 26rpx;
-	color: #718096;
-	line-height: 1.6;
+  display: block;
+  font-size: 23rpx;
+  line-height: 1.58;
+  color: #5f6d83;
 }
 
-/* 管理员操作按钮区域 */
-.admin-actions {
-	margin-top: 20rpx;
-	padding-top: 18rpx;
-	border-top: 1rpx solid #f0f0f0;
-	display: flex;
-	justify-content: flex-end;
+.group-desc.muted {
+  color: #8692a8;
 }
 
-/* 删除按钮样式 */
-.btn-delete {
-	background: transparent;
-	border: 1rpx solid #ff4757;
-	border-radius: 12rpx;
-	padding: 12rpx 24rpx;
-	margin: 0;
-	line-height: 1;
+.admin-bar {
+  margin-top: 18rpx;
+  padding-top: 18rpx;
+  border-top: 1rpx solid #dfe6f4;
+  display: flex;
+  justify-content: flex-end;
 }
 
-.btn-delete-text {
-	font-size: 26rpx;
-	color: #ff4757;
+.delete-btn {
+  height: 62rpx;
+  padding: 0 24rpx;
+  border-radius: 999rpx;
+  border: 1rpx solid #ef5350;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #ef5350;
 }
 
-/* 空状态美化 */
-.empty-state {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	padding: 120rpx 40rpx;
-	text-align: center;
+.empty-card {
+  text-align: center;
 }
 
 .empty-icon {
-	font-size: 120rpx;
-	margin-bottom: 30rpx;
-	opacity: 0.8;
+  width: 96rpx;
+  height: 96rpx;
+  margin: 0 auto 20rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(150deg, #3354ef 0%, #6c81ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.empty-text {
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #2d3748;
-	margin-bottom: 12rpx;
+.empty-title {
+  display: block;
+  margin-bottom: 10rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #172233;
 }
 
-.empty-subtext {
-	font-size: 26rpx;
-	color: #718096;
-	margin-bottom: 40rpx;
-	line-height: 1.5;
-	max-width: 600rpx;
+.empty-desc {
+  display: block;
+  margin-bottom: 24rpx;
+  font-size: 24rpx;
+  line-height: 1.65;
+  color: #74829a;
 }
 
-/* 弹窗样式优化 - 统一风格 */
-.popup-mask {
-	position: fixed;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	background-color: rgba(0, 0, 0, 0.5);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	z-index: 9999;
-	backdrop-filter: blur(4rpx);
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  padding: 36rpx;
+  background: rgba(10, 16, 44, 0.52);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
 }
 
-.popup {
-	width: 80%;
-	background-color: #fff;
-	border-radius: 24rpx;
-	padding: 40rpx 30rpx;
-	animation: popupSlideIn 0.3s ease-out;
-	z-index: 10000;
-	box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.15);
+.modal-card {
+  width: 100%;
+  padding: 34rpx 28rpx 28rpx;
+  background: #ffffff;
+  box-shadow: 0 24rpx 54rpx rgba(16, 23, 56, 0.18);
 }
 
-@keyframes popupSlideIn {
-	from {
-		transform: translateY(100%);
-		opacity: 0;
-	}
-	to {
-		transform: translateY(0);
-		opacity: 1;
-	}
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22rpx;
 }
 
-.popup-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 30rpx;
-	padding-bottom: 16rpx;
-	border-bottom: 1rpx solid #f0f0f0;
+.modal-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #172233;
 }
 
-.popup-title {
-	font-size: 34rpx;
-	font-weight: 600;
-	color: #2d3748;
+.modal-close {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: #f2f5fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34rpx;
+  color: #6f7b8f;
 }
 
-.popup-close {
-	font-size: 38rpx;
-	color: #718096;
-	padding: 10rpx;
-	transition: color 0.2s ease;
+.field-block + .field-block {
+  margin-top: 18rpx;
 }
 
-.popup-close:active {
-	color: #4a5568;
+.field-label {
+  display: block;
+  margin-bottom: 12rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #172233;
 }
 
-.popup-actions {
-	display: flex;
-	gap: 20rpx;
-	margin-top: 30rpx;
+.field-input {
+  width: 100%;
+  min-height: 92rpx;
+  padding: 22rpx 20rpx;
+  box-sizing: border-box;
+  border-radius: 24rpx;
+  background: #f5f7fc;
+  font-size: 26rpx;
+  color: #172233;
 }
 
-.confirm-text {
-	font-size: 28rpx;
-	color: #2d3748;
-	line-height: 1.6;
-	margin-bottom: 20rpx;
+.modal-actions {
+  display: flex;
+  gap: 14rpx;
+  margin-top: 26rpx;
 }
 
-/* 输入框样式统一 */
-.input-fitness {
-	width: 100%;
-	padding: 24rpx 20rpx;
-	border-radius: 16rpx;
-	border: 2rpx solid #e9ecef;
-	margin-bottom: 20rpx;
-	font-size: 28rpx;
-	box-sizing: border-box;
-	transition: border-color 0.2s ease;
-	z-index: 10005;
-	position: relative;
-	background: #fff;
+.modal-btn {
+  flex: 1;
+  height: 84rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  font-weight: 700;
 }
 
-.input-area {
-	position: relative;
-	z-index: 10006;
+.modal-btn.primary {
+  background: linear-gradient(150deg, #3253ef 0%, #6980ff 100%);
+  color: #ffffff;
 }
 
-.input-fitness:focus {
-	border-color: #667eea;
-	outline: none;
+.modal-btn.secondary {
+  background: #f2f5fb;
+  color: #4c5b72;
 }
 
-.input-fitness::placeholder {
-	color: #cbd5e0;
+.modal-btn.danger {
+  background: linear-gradient(150deg, #ef5350 0%, #ff7370 100%);
+  color: #ffffff;
 }
 
-/* 按钮样式统一优化 */
-.btn-fitness-primary,
-.btn-fitness-secondary,
-.btn-fitness-danger {
-	border-radius: 16rpx;
-	padding: 20rpx;
-	font-weight: 600;
-	transition: all 0.2s ease;
-	flex: 1;
+.confirm-copy {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #5f6d83;
 }
 
-.btn-fitness-primary {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	color: #fff;
-	border: none;
+.loading-panel {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
-.btn-fitness-primary:active {
-	opacity: 0.9;
-	transform: translateY(2rpx);
+.loading-spinner {
+  width: 72rpx;
+  height: 72rpx;
+  margin-bottom: 20rpx;
+  border: 6rpx solid rgba(61, 97, 242, 0.12);
+  border-top-color: #4864f2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-.btn-fitness-secondary {
-	background: #f8f9fa;
-	color: #4a5568;
-	border: 1rpx solid #e9ecef;
+.loading-title {
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1b2537;
 }
 
-.btn-fitness-secondary:active {
-	background: #f0f0f0;
+.loading-copy {
+  display: block;
+  font-size: 24rpx;
+  color: #738198;
 }
 
-/* 危险按钮美化 */
-.btn-fitness-danger {
-	background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
-	color: white;
-	border: none;
-	box-shadow: 0 4rpx 12rpx rgba(255, 71, 87, 0.2);
-}
-
-.btn-fitness-danger:active {
-	opacity: 0.9;
-	transform: translateY(2rpx);
-	box-shadow: 0 2rpx 8rpx rgba(255, 71, 87, 0.25);
-}
-
-.btn-text {
-	font-size: 28rpx;
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

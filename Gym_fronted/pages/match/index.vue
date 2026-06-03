@@ -1,76 +1,115 @@
 <template>
-	<view class="container" v-if="loaded">
-		<view class="match-header">
-			<text class="fitness-title">智能匹配</text>
-			<text class="header-subtitle">为您推荐最佳健身搭子</text>
-		</view>
+  <view class="match-page">
+    <view class="hero-section">
+      <view class="hero-badge">Smart Match</view>
+      <text class="hero-title">为你推荐更适合长期坚持的健身搭子</text>
+      <text class="hero-desc">
+        推荐会综合训练目标、偏好时段、训练场景和监督需求，让第一次发起邀请更有把握。
+      </text>
+      <view class="hero-meta">
+        <view class="hero-chip">
+          <text class="chip-label">推荐数量</text>
+          <text class="chip-value">{{ matchResult.length }}</text>
+        </view>
+        <view class="hero-chip">
+          <text class="chip-label">当前状态</text>
+          <text class="chip-value">{{ loaded ? '已生成' : '匹配中' }}</text>
+        </view>
+      </view>
+    </view>
 
-		<!-- 匹配结果区域 -->
-		<view class="workout-card" v-if="matchResult && matchResult.length > 0">
-			<view class="section-header">
-				<text class="fitness-subtitle">为您推荐</text>
-				<text class="section-count">{{ matchResult ? matchResult.length : 0 }}位搭子</text>
-			</view>
-			<view class="match-list">
-				<view class="match-item" v-for="(item, index) in matchResult" :key="index">
-					<view class="match-avatar">
-						<image 
-							v-if="item.avatar && item.avatar.trim() !== ''" 
-							:src="item.avatar" 
-							class="avatar-image"
-							mode="aspectFill"
-							@error="onAvatarLoadError"
-						/>
-						<text v-else class="avatar-text">{{ item.nickname ? item.nickname.charAt(0) : '#' }}</text>
-					</view>
-					<view class="match-info">
-						<view class="match-basic">
-							<text class="match-name">{{ item.nickname || ('搭子 ' + (index + 1)) }}</text>
-							<view class="match-score">
-								<text class="score-text">{{ item.score || 0 }}%</text>
-								<view class="score-bar">
-									<view class="score-fill" :style="{ width: (item.score || 0) + '%' }"></view>
-								</view>
-							</view>
-						</view>
-						<view class="match-details">
-							<text class="match-mode" v-if="item.mode">{{ item.mode }}</text>
-							<view class="match-tags">
-								<text class="tag-item" v-if="item.goal">🎯 {{ item.goal }}</text>
-								<text class="tag-item" v-if="item.preferTime">⏰ {{ item.preferTime }}</text>
-								<text class="tag-item" v-if="item.scene">📍 {{ item.scene }}</text>
-							</view>
-						</view>
-					</view>
-				</view>
-			</view>
-		</view>
+    <view v-if="!loaded" class="loading-panel">
+      <view class="loading-spinner"></view>
+      <text class="loading-title">正在生成匹配推荐</text>
+      <text class="loading-copy">结合你的档案信息筛选更合适的训练伙伴</text>
+    </view>
 
-		<!-- 暂无匹配结果 -->
-		<view class="workout-card" v-else>
-			<view class="empty-state">
-				<view class="empty-icon">🔍</view>
-				<text class="empty-text">暂无匹配结果</text>
-				<text class="empty-subtext">先完善个人档案，提高匹配精准度</text>
-				<button class="btn-fitness-primary" @tap="goProfile">
-					<text class="btn-text">去完善档案</text>
-				</button>
-			</view>
-		</view>
+    <template v-else>
+      <view v-if="hasMatchResult" class="section-card">
+        <view class="section-head">
+          <view>
+            <text class="section-title">推荐结果</text>
+            <text class="section-subtitle">优先展示更适合立即开始训练配对的用户</text>
+          </view>
+          <text class="section-count">{{ matchResult.length }} 位搭子</text>
+        </view>
 
-		<!-- 底部操作 -->
-		<view class="bottom-actions">
-			<button class="btn-fitness-strength" @tap="loadData">
-				<text class="btn-text">刷新匹配</text>
-			</button>
-		</view>
-	</view>
+        <view class="match-list">
+          <view
+            v-for="(item, index) in matchResult"
+            :key="item.id || item.userId || index"
+            class="match-card"
+          >
+            <view class="card-top">
+              <view class="match-avatar">
+                <image
+                  v-if="item.avatar && item.avatar.trim()"
+                  :src="item.avatar"
+                  class="avatar-image"
+                  mode="aspectFill"
+                  @error="onAvatarLoadError"
+                />
+                <text v-else class="avatar-text">{{ getAvatarText(item, index) }}</text>
+              </view>
 
-	<!-- 加载状态 -->
-	<view v-else class="loading-container">
-		<view class="loading-spinner"></view>
-		<text class="loading-text">正在匹配中...</text>
-	</view>
+              <view class="match-main">
+                <view class="name-row">
+                  <text class="match-name">{{ item.nickname || `搭子 ${index + 1}` }}</text>
+                  <view class="score-pill">
+                    <text class="score-pill-text">{{ formatScore(item.score) }}%</text>
+                  </view>
+                </view>
+
+                <text class="match-reason">{{ getMatchReason(item) }}</text>
+
+                <view class="score-track">
+                  <view class="score-fill" :style="{ width: `${formatScore(item.score)}%` }"></view>
+                </view>
+              </view>
+            </view>
+
+            <view class="tag-group">
+              <text v-if="item.goal" class="tag-item goal">{{ item.goal }}</text>
+              <text v-if="item.preferTime" class="tag-item time">{{ item.preferTime }}</text>
+              <text v-if="item.scene" class="tag-item scene">{{ item.scene }}</text>
+              <text v-if="item.mode" class="tag-item mode">{{ item.mode }}</text>
+            </view>
+
+            <view class="card-actions">
+              <view class="action-btn secondary" @tap="goProfile">
+                <text class="action-btn-text secondary-text">完善档案</text>
+              </view>
+              <view class="action-btn primary" @tap="goToGroups">
+                <text class="action-btn-text">去发起组队</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view v-else class="empty-card">
+        <view class="empty-icon">配</view>
+        <text class="empty-title">暂时还没有合适的匹配结果</text>
+        <text class="empty-desc">
+          可以先补充你的目标、训练时间和训练场景，系统会给出更准确的推荐。
+        </text>
+        <view class="empty-actions">
+          <view class="action-btn primary" @tap="goProfile">
+            <text class="action-btn-text">去完善档案</text>
+          </view>
+          <view class="action-btn secondary" @tap="loadData">
+            <text class="action-btn-text secondary-text">重新匹配</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="refresh-bar">
+        <view class="refresh-btn" @tap="loadData">
+          <text class="refresh-text">刷新推荐</text>
+        </view>
+      </view>
+    </template>
+  </view>
 </template>
 
 <script>
@@ -78,263 +117,460 @@ import { apiGetTopMatch } from '@/common/api.js';
 import { requireLogin, getUserIdFromToken } from '@/common/auth.js';
 
 export default {
-	data() {
-		return {
-			loaded: false,
-			matchResult: null
-		};
-	},
-	onShow() {
-		if (!requireLogin()) return;
-		this.loadData();
-	},
-	methods: {
-		async loadData() {
-			try {
-				uni.showLoading({ title: '匹配中...' });
-				const userId = getUserIdFromToken();
-				if (!userId) {
-					console.error('无法获取用户ID');
-					this.loaded = true;
-					uni.hideLoading();
-					uni.showToast({
-						title: '登录信息异常',
-						icon: 'none'
-					});
-					return;
-				}
-				
-				const res = await apiGetTopMatch(8);  // 获取8个匹配搭子
-				// 根据实际返回结构适配，这里假设 data 是数组
-				this.matchResult = res?.data || res || [];
-				this.loaded = true;
-				uni.hideLoading();
-			} catch (e) {
-				uni.hideLoading();
-				this.loaded = true;
-				uni.showToast({
-					title: '匹配失败，请重试',
-					icon: 'none'
-				});
-			}
-		},
-		goProfile() {
-			uni.navigateTo({ url: '/pages/user/profile' });
-		},
-		onAvatarLoadError(e) {
-			console.log('头像加载失败:', e);
-		}
-	}
+  data() {
+    return {
+      loaded: false,
+      matchResult: []
+    };
+  },
+  computed: {
+    hasMatchResult() {
+      return Array.isArray(this.matchResult) && this.matchResult.length > 0;
+    }
+  },
+  onShow() {
+    if (!requireLogin()) return;
+    this.loadData();
+  },
+  methods: {
+    async loadData() {
+      this.loaded = false;
+
+      try {
+        uni.showLoading({ title: '匹配中...' });
+        const userId = getUserIdFromToken();
+
+        if (!userId) {
+          this.loaded = true;
+          uni.hideLoading();
+          uni.showToast({
+            title: '登录信息异常',
+            icon: 'none'
+          });
+          return;
+        }
+
+        const res = await apiGetTopMatch(8);
+        this.matchResult = res?.data || res || [];
+        this.loaded = true;
+        uni.hideLoading();
+      } catch (error) {
+        console.error('加载匹配结果失败:', error);
+        this.matchResult = [];
+        this.loaded = true;
+        uni.hideLoading();
+        uni.showToast({
+          title: '匹配失败，请稍后重试',
+          icon: 'none'
+        });
+      }
+    },
+    formatScore(score) {
+      const num = Number(score || 0);
+      return Math.max(0, Math.min(100, Math.round(num)));
+    },
+    getAvatarText(item, index) {
+      if (item.nickname && item.nickname.length > 0) {
+        return item.nickname.charAt(0);
+      }
+      return `${index + 1}`;
+    },
+    getMatchReason(item) {
+      const reasons = [];
+      if (item.goal) reasons.push(`目标偏向 ${item.goal}`);
+      if (item.preferTime) reasons.push(`时间更适合 ${item.preferTime}`);
+      if (item.scene) reasons.push(`训练场景偏好 ${item.scene}`);
+      return reasons.length > 0 ? reasons.join(' · ') : '与你的训练目标和节奏更接近';
+    },
+    goProfile() {
+      uni.navigateTo({ url: '/pages/user/profile' });
+    },
+    goToGroups() {
+      uni.navigateTo({ url: '/pages/group/index' });
+    },
+    onAvatarLoadError(error) {
+      console.log('头像加载失败:', error);
+    }
+  }
 };
 </script>
 
 <style scoped>
-.container {
-	padding: 20rpx;
-	background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
-	min-height: 100vh;
+.match-page {
+  min-height: 100vh;
+  padding: 24rpx;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at top right, rgba(111, 146, 255, 0.18), transparent 24%),
+    linear-gradient(180deg, #edf2ff 0%, #f5f7fc 42%, #f4f6fb 100%);
 }
 
-.loading-container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	height: 100vh;
-	background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+.hero-section,
+.section-card,
+.empty-card {
+  border-radius: 32rpx;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.hero-section {
+  padding: 34rpx 30rpx;
+  margin-bottom: 24rpx;
+  background: linear-gradient(150deg, #1638b8 0%, #4c67f4 46%, #7790ff 100%);
+  box-shadow: 0 20rpx 50rpx rgba(23, 56, 182, 0.22);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 42rpx;
+  padding: 0 16rpx;
+  margin-bottom: 18rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 20rpx;
+  letter-spacing: 1rpx;
+}
+
+.hero-title {
+  display: block;
+  margin-bottom: 12rpx;
+  font-size: 40rpx;
+  line-height: 1.28;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.hero-desc {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.hero-meta {
+  display: flex;
+  gap: 14rpx;
+  margin-top: 24rpx;
+}
+
+.hero-chip {
+  flex: 1;
+  padding: 18rpx 20rpx;
+  border-radius: 22rpx;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.chip-label {
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.chip-value {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.loading-panel {
+  margin-top: 60rpx;
+  text-align: center;
 }
 
 .loading-spinner {
-	width: 60rpx;
-	height: 60rpx;
-	border: 4rpx solid #e0e0e0;
-	border-top: 4rpx solid #667eea;
-	border-radius: 50%;
-	animation: spin 1s linear infinite;
-	margin-bottom: 20rpx;
+  width: 72rpx;
+  height: 72rpx;
+  margin: 0 auto 20rpx;
+  border: 6rpx solid rgba(61, 97, 242, 0.12);
+  border-top-color: #4864f2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-	0% { transform: rotate(0deg); }
-	100% { transform: rotate(360deg); }
+.loading-title {
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1b2537;
 }
 
-.loading-text {
-	font-size: 28rpx;
-	color: #666;
+.loading-copy {
+  display: block;
+  font-size: 24rpx;
+  color: #738198;
 }
 
-.match-header {
-	text-align: center;
-	margin-bottom: 30rpx;
-	padding: 0 20rpx;
+.section-card,
+.empty-card {
+  padding: 30rpx 24rpx;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18rpx 38rpx rgba(21, 35, 95, 0.08);
 }
 
-.header-subtitle {
-	font-size: 28rpx;
-	color: #666;
+.section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-bottom: 22rpx;
 }
 
-.section-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 20rpx;
+.section-title {
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #172233;
+}
+
+.section-subtitle {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.55;
+  color: #74829a;
 }
 
 .section-count {
-	font-size: 24rpx;
-	color: #999;
-	background-color: #f0f0f0;
-	padding: 4rpx 12rpx;
-	border-radius: 20rpx;
+  padding: 10rpx 16rpx;
+  border-radius: 999rpx;
+  background: #eef3ff;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #4564f2;
 }
 
 .match-list {
-	display: flex;
-	flex-direction: column;
-	gap: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
 }
 
-.match-item {
-	display: flex;
-	align-items: center;
-	padding: 20rpx;
-	background-color: #fafafa;
-	border-radius: 16rpx;
-	gap: 20rpx;
+.match-card {
+  padding: 24rpx 22rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
+}
+
+.card-top {
+  display: flex;
+  gap: 18rpx;
+  align-items: flex-start;
 }
 
 .match-avatar {
-	width: 80rpx;
-	height: 80rpx;
-	border-radius: 50%;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-shrink: 0;
-	position: relative;
-	overflow: hidden;
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 28rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: linear-gradient(150deg, #3253ef 0%, #6a7dff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 14rpx 26rpx rgba(50, 83, 239, 0.2);
 }
 
 .avatar-image {
-	width: 100%;
-	height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .avatar-text {
-	color: white;
-	font-weight: 600;
-	font-size: 32rpx;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.match-info {
-	flex: 1;
+.match-main {
+  flex: 1;
+  min-width: 0;
 }
 
-.match-basic {
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-start;
-	margin-bottom: 10rpx;
+.name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-bottom: 8rpx;
 }
 
 .match-name {
-	font-size: 32rpx;
-	font-weight: 600;
-	color: #333;
-	flex: 1;
+  flex: 1;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #172233;
 }
 
-.match-score {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
+.score-pill {
+  flex-shrink: 0;
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: #e9efff;
 }
 
-.score-text {
-	font-size: 28rpx;
-	font-weight: 600;
-	color: #667eea;
-	margin-bottom: 6rpx;
+.score-pill-text {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #3557ef;
 }
 
-.score-bar {
-	width: 120rpx;
-	height: 8rpx;
-	background-color: #e0e0e0;
-	border-radius: 4rpx;
-	overflow: hidden;
+.match-reason {
+  display: block;
+  margin-bottom: 14rpx;
+  font-size: 23rpx;
+  line-height: 1.55;
+  color: #75829a;
+}
+
+.score-track {
+  width: 100%;
+  height: 10rpx;
+  border-radius: 999rpx;
+  background: #dde4f2;
+  overflow: hidden;
 }
 
 .score-fill {
-	height: 100%;
-	background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-	border-radius: 4rpx;
-	transition: width 0.3s ease;
+  height: 100%;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #3658ef 0%, #6d82ff 100%);
 }
 
-.match-details {
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-start;
-}
-
-.match-mode {
-	font-size: 20rpx;
-	color: #ff6b6b;
-	background-color: #ffe0e0;
-	padding: 4rpx 10rpx;
-	border-radius: 10rpx;
-	flex-shrink: 0;
-	margin-right: 10rpx;
-}
-
-.match-tags {
-	flex: 1;
-	display: flex;
-	flex-wrap: wrap;
-	gap: 10rpx;
+.tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 18rpx;
 }
 
 .tag-item {
-	font-size: 20rpx;
-	color: #666;
-	background-color: #f0f0f0;
-	padding: 4rpx 10rpx;
-	border-radius: 10rpx;
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 21rpx;
+  line-height: 1;
 }
 
-.empty-state {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	padding: 60rpx 40rpx;
-	text-align: center;
+.tag-item.goal {
+  background: #eef4ff;
+  color: #3151ea;
+}
+
+.tag-item.time {
+  background: #fff4e7;
+  color: #d97a12;
+}
+
+.tag-item.scene {
+  background: #eefaf7;
+  color: #198a63;
+}
+
+.tag-item.mode {
+  background: #f7efff;
+  color: #7a42d9;
+}
+
+.card-actions,
+.empty-actions {
+  display: flex;
+  gap: 14rpx;
+  margin-top: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 84rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn.primary {
+  background: linear-gradient(150deg, #3253ef 0%, #6980ff 100%);
+  box-shadow: 0 14rpx 24rpx rgba(50, 83, 239, 0.2);
+}
+
+.action-btn.secondary {
+  border: 1rpx solid #cfd8ec;
+  background: #ffffff;
+}
+
+.action-btn-text {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.secondary-text {
+  color: #3657ee;
+}
+
+.empty-card {
+  text-align: center;
 }
 
 .empty-icon {
-	font-size: 80rpx;
-	margin-bottom: 30rpx;
+  width: 96rpx;
+  height: 96rpx;
+  margin: 0 auto 22rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(150deg, #3354ef 0%, #6c81ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.empty-text {
-	font-size: 32rpx;
-	font-weight: 600;
-	color: #333;
-	margin-bottom: 10rpx;
+.empty-title {
+  display: block;
+  margin-bottom: 10rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #172233;
 }
 
-.empty-subtext {
-	font-size: 26rpx;
-	color: #999;
-	margin-bottom: 40rpx;
+.empty-desc {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.65;
+  color: #74829a;
 }
 
-.bottom-actions {
-	padding: 0 20rpx;
-	margin-top: 20rpx;
+.refresh-bar {
+  padding: 26rpx 10rpx 12rpx;
+}
+
+.refresh-btn {
+  height: 84rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.84);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10rpx 24rpx rgba(21, 35, 95, 0.08);
+}
+
+.refresh-text {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #3657ee;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

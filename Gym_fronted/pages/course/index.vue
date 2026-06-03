@@ -1,640 +1,637 @@
 <template>
-	<view class="container">
-		<!-- 页面头部 -->
-		<view class="header-section">
-			<view class="header-content">
-				<text class="header-title">🎓 精品课程</text>
-				<text class="header-subtitle">专业健身指导，科学训练计划</text>
-			</view>
-		</view>
-		
-		<!-- 搜索和筛选区域 -->
-		<view class="filter-section">
-			<view class="search-box">
-				<input 
-					class="search-input" 
-					type="text" 
-					placeholder="搜索课程名称或描述" 
-					v-model="searchKeyword"
-					@confirm="onSearch"
-				/>
-				<view class="search-icon" @tap="onSearch">🔍</view>
-			</view>
-			
-			<view class="filter-tabs">
-				<view 
-					class="filter-tab" 
-					:class="{ active: activeType === '' }"
-					@tap="filterByType('')"
-				>
-					全部
-				</view>
-				<view 
-					class="filter-tab" 
-					:class="{ active: activeType === '有氧' }"
-					@tap="filterByType('有氧')"
-				>
-					有氧
-				</view>
-				<view 
-					class="filter-tab" 
-					:class="{ active: activeType === '力量' }"
-					@tap="filterByType('力量')"
-				>
-					力量
-				</view>
-				<view 
-					class="filter-tab" 
-					:class="{ active: activeType === '柔韧' }"
-					@tap="filterByType('柔韧')"
-				>
-					柔韧
-				</view>
-			</view>
-			
-			<view class="difficulty-filter">
-				<view 
-					class="difficulty-item" 
-					:class="{ active: activeDifficulty === '' }"
-					@tap="filterByDifficulty('')"
-				>
-					全部难度
-				</view>
-				<view 
-					class="difficulty-item" 
-					:class="{ active: activeDifficulty === '入门' }"
-					@tap="filterByDifficulty('入门')"
-				>
-					入门
-				</view>
-				<view 
-					class="difficulty-item" 
-					:class="{ active: activeDifficulty === '初级' }"
-					@tap="filterByDifficulty('初级')"
-				>
-					初级
-				</view>
-				<view 
-					class="difficulty-item" 
-					:class="{ active: activeDifficulty === '中级' }"
-					@tap="filterByDifficulty('中级')"
-				>
-					中级
-				</view>
-			</view>
-		</view>
-		
-		<!-- 推荐课程区域 -->
-		<view class="recommend-section" v-if="recommendCourses.length > 0 && !searchKeyword">
-			<view class="section-header">
-				<text class="section-title">🔥 热门推荐</text>
-			</view>
-			<scroll-view class="recommend-scroll" scroll-x="true">
-				<view class="recommend-list">
-					<view 
-						class="course-card recommend-card" 
-						v-for="course in recommendCourses" 
-						:key="course.id"
-						@tap="goToCourseDetail(course.id)"
-					>
-						<!-- 课程封面：有图显示图片，无图显示渐变背景 -->
-						<image 
-							v-if="course.coverImage"
-							class="course-cover" 
-							:src="course.coverImage" 
-							mode="aspectFill"
-						/>
-						<view v-else class="course-cover course-cover-placeholder">
-							<text class="placeholder-icon">📚</text>
-						</view>
-						<view class="course-info">
-							<text class="course-name">{{ course.courseName }}</text>
-							<text class="course-desc">{{ course.description }}</text>
-							<view class="course-meta">
-								<text class="meta-item">⏱️ {{ course.duration }}分钟</text>
-								<text class="meta-item">🔥 {{ course.calories }}卡路里</text>
-							</view>
-						</view>
-					</view>
-				</view>
-			</scroll-view>
-		</view>
-		
-		<!-- 课程列表区域 -->
-		<view class="courses-section">
-			<view class="section-header">
-				<text class="section-title">{{ searchKeyword ? '搜索结果' : '全部课程' }}</text>
-				<text class="section-count">{{ courseList.length }}个课程</text>
-			</view>
-			
-			<view class="courses-list">
-				<view 
-					class="course-item" 
-					v-for="course in courseList" 
-					:key="course.id"
-					@tap="goToCourseDetail(course.id)"
-				>
-					<!-- 课程封面：有图显示图片，无图显示渐变背景 -->
-					<image 
-						v-if="course.coverImage"
-						class="item-cover" 
-						:src="course.coverImage" 
-						mode="aspectFill"
-					/>
-					<view v-else class="item-cover item-cover-placeholder">
-						<text class="placeholder-icon">📚</text>
-					</view>
-					<view class="item-content">
-						<view class="item-header">
-							<text class="item-name">{{ course.courseName }}</text>
-							<view class="item-tags">
-								<text class="tag type-tag">{{ course.courseType }}</text>
-								<text class="tag difficulty-tag" :class="getDifficultyClass(course.difficulty)">
-									{{ course.difficulty }}
-								</text>
-							</view>
-						</view>
-						<text class="item-desc">{{ course.description }}</text>
-						<view class="item-meta">
-							<text class="meta-item">⏱️ {{ course.duration }}分钟</text>
-							<text class="meta-item">🔥 {{ course.calories || 0 }}卡路里</text>
-							<text class="meta-item" v-if="course.videoUrl">🎥 有视频</text>
-						</view>
-					</view>
-				</view>
-			</view>
-			
-			<!-- 加载更多 -->
-			<view class="load-more" v-if="hasMore" @tap="loadMore">
-				<text>点击加载更多</text>
-			</view>
-			
-			<!-- 空状态 -->
-			<view class="empty-state" v-if="courseList.length === 0 && !loading">
-				<text class="empty-icon">📚</text>
-				<text class="empty-text">暂无相关课程</text>
-				<text class="empty-subtext">试试其他筛选条件吧</text>
-			</view>
-		</view>
-	</view>
+  <view class="course-page">
+    <view class="hero-card">
+      <view class="hero-badge">Course Library</view>
+      <text class="hero-title">把课程内容做成可筛选、可浏览、可快速进入的训练内容库</text>
+      <text class="hero-desc">
+        你可以先按训练类型和难度缩小范围，再进入课程详情页决定今天练什么。
+      </text>
+    </view>
+
+    <view class="filter-card">
+      <view class="search-box">
+        <input
+          class="search-input"
+          type="text"
+          placeholder="搜索课程名称或课程描述"
+          v-model="searchKeyword"
+          @confirm="onSearch"
+        />
+        <view class="search-trigger" @tap="onSearch">搜索</view>
+      </view>
+
+      <view class="filter-group">
+        <text class="filter-label">训练类型</text>
+        <scroll-view class="chip-scroll" scroll-x="true">
+          <view class="chip-row">
+            <view class="filter-chip" :class="{ active: activeType === '' }" @tap="filterByType('')">全部</view>
+            <view class="filter-chip" :class="{ active: activeType === '有氧' }" @tap="filterByType('有氧')">有氧</view>
+            <view class="filter-chip" :class="{ active: activeType === '力量' }" @tap="filterByType('力量')">力量</view>
+            <view class="filter-chip" :class="{ active: activeType === '柔韧' }" @tap="filterByType('柔韧')">柔韧</view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <view class="filter-group">
+        <text class="filter-label">难度等级</text>
+        <view class="difficulty-row">
+          <view class="difficulty-chip" :class="{ active: activeDifficulty === '' }" @tap="filterByDifficulty('')">全部</view>
+          <view class="difficulty-chip" :class="{ active: activeDifficulty === '入门' }" @tap="filterByDifficulty('入门')">入门</view>
+          <view class="difficulty-chip" :class="{ active: activeDifficulty === '初级' }" @tap="filterByDifficulty('初级')">初级</view>
+          <view class="difficulty-chip" :class="{ active: activeDifficulty === '中级' }" @tap="filterByDifficulty('中级')">中级</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="recommend-section" v-if="recommendCourses.length > 0 && !searchKeyword">
+      <view class="section-head">
+        <view>
+          <text class="section-title">热门推荐</text>
+          <text class="section-subtitle">更适合作为第一次尝试或快速开始的课程</text>
+        </view>
+      </view>
+
+      <scroll-view class="recommend-scroll" scroll-x="true">
+        <view class="recommend-list">
+          <view
+            v-for="course in recommendCourses"
+            :key="course.id"
+            class="recommend-card"
+            @tap="goToCourseDetail(course.id)"
+          >
+            <image v-if="course.coverImage" class="recommend-cover" :src="course.coverImage" mode="aspectFill" />
+            <view v-else class="recommend-cover placeholder-cover">
+              <text class="placeholder-text">课程</text>
+            </view>
+
+            <view class="recommend-body">
+              <text class="course-name">{{ course.courseName }}</text>
+              <text class="course-desc">{{ course.description }}</text>
+              <view class="meta-row">
+                <text class="meta-item">{{ course.duration }} 分钟</text>
+                <text class="meta-item">{{ course.calories || 0 }} 卡路里</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="list-section">
+      <view class="section-head">
+        <view>
+          <text class="section-title">{{ searchKeyword ? '搜索结果' : '全部课程' }}</text>
+          <text class="section-subtitle">按目标和强度选择更适合今天训练安排的课程</text>
+        </view>
+        <text class="section-count">{{ courseList.length }} 门</text>
+      </view>
+
+      <view v-if="courseList.length > 0" class="course-list">
+        <view
+          v-for="course in courseList"
+          :key="course.id"
+          class="course-card"
+          @tap="goToCourseDetail(course.id)"
+        >
+          <image v-if="course.coverImage" class="course-cover" :src="course.coverImage" mode="aspectFill" />
+          <view v-else class="course-cover placeholder-cover">
+            <text class="placeholder-text">训练</text>
+          </view>
+
+          <view class="course-body">
+            <view class="course-head">
+              <text class="course-title">{{ course.courseName }}</text>
+              <view class="tag-group">
+                <text class="tag type-tag">{{ course.courseType }}</text>
+                <text class="tag difficulty-tag" :class="getDifficultyClass(course.difficulty)">
+                  {{ course.difficulty }}
+                </text>
+              </view>
+            </view>
+
+            <text class="course-copy">{{ course.description }}</text>
+
+            <view class="meta-row compact">
+              <text class="meta-item">{{ course.duration }} 分钟</text>
+              <text class="meta-item">{{ course.calories || 0 }} 卡路里</text>
+              <text class="meta-item" v-if="course.videoUrl">含视频</text>
+            </view>
+          </view>
+        </view>
+
+        <view v-if="hasMore" class="load-more" @tap="loadMore">
+          <text class="load-more-text">{{ loading ? '加载中...' : '点击加载更多' }}</text>
+        </view>
+      </view>
+
+      <view v-else-if="!loading" class="empty-card">
+        <view class="empty-icon">课</view>
+        <text class="empty-title">没有找到相关课程</text>
+        <text class="empty-desc">可以切换筛选条件，或者换一个更宽泛的关键词继续搜索。</text>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
 import { apiGetCourseList, apiGetRecommendCourses, apiSearchCourses } from '@/common/api.js';
 
 export default {
-	data() {
-		return {
-			searchKeyword: '',
-			activeType: '',
-			activeDifficulty: '',
-			page: 1,
-			size: 10,
-			courseList: [],
-			recommendCourses: [],
-			loading: false,
-			hasMore: true,
-			total: 0
-		};
-	},
-	
-	onLoad() {
-		this.loadRecommendCourses();
-		this.loadCourseList();
-	},
-	
-	methods: {
-		// 获取难度class名称（将中文映射为英文）
-		getDifficultyClass(difficulty) {
-			const difficultyMap = {
-				'入门': 'diff-beginner',
-				'初级': 'diff-elementary',
-				'中级': 'diff-intermediate',
-				'高级': 'diff-advanced'
-			};
-			return difficultyMap[difficulty] || 'diff-beginner';
-		},
-		// 加载推荐课程
-		async loadRecommendCourses() {
-			try {
-				const res = await apiGetRecommendCourses(6);
-				// res已经是data字段的内容，应该是Course数组
-				this.recommendCourses = res || [];
-			} catch (error) {
-				console.error('加载推荐课程失败:', error);
-			}
-		},
-		
-		// 加载课程列表
-		async loadCourseList(reset = false) {
-			if (this.loading) return;
-			
-			this.loading = true;
-			if (reset) {
-				this.page = 1;
-				this.courseList = [];
-				this.hasMore = true;
-			}
-			
-			try {
-				const res = await apiGetCourseList(this.page, this.size, this.activeType, this.activeDifficulty);
-				// res已经是data字段的内容，对于分页数据应该是IPage对象
-				const newList = res.records || res || [];
-				
-				if (reset) {
-					this.courseList = newList;
-				} else {
-					this.courseList = [...this.courseList, ...newList];
-				}
-				
-				this.total = res.total || 0;
-				this.hasMore = this.courseList.length < this.total;
-				this.page++;
-				
-			} catch (error) {
-				console.error('加载课程列表失败:', error);
-				uni.showToast({
-					title: '加载失败',
-					icon: 'none'
-				});
-			} finally {
-				this.loading = false;
-			}
-		},
-		
-		// 搜索课程
-		async onSearch() {
-			if (!this.searchKeyword.trim()) {
-				this.loadCourseList(true);
-				return;
-			}
-			
-			this.loading = true;
-			this.courseList = [];
-			
-			try {
-				const res = await apiSearchCourses(this.searchKeyword, 1, 20);
-				// res已经是data字段的内容，对于分页数据应该是IPage对象
-				this.courseList = res.records || res || [];
-				this.total = res.total || 0;
-				this.hasMore = false;
-			} catch (error) {
-				console.error('搜索课程失败:', error);
-				uni.showToast({
-					title: '搜索失败',
-					icon: 'none'
-				});
-			} finally {
-				this.loading = false;
-			}
-		},
-		
-		// 按类型筛选
-		filterByType(type) {
-			this.activeType = type;
-			this.loadCourseList(true);
-		},
-		
-		// 按难度筛选
-		filterByDifficulty(difficulty) {
-			this.activeDifficulty = difficulty;
-			this.loadCourseList(true);
-		},
-		
-		// 加载更多
-		loadMore() {
-			if (this.hasMore && !this.loading) {
-				this.loadCourseList();
-			}
-		},
-		
-		// 跳转到课程详情
-		goToCourseDetail(courseId) {
-			uni.navigateTo({
-				url: `/pages/course/detail?id=${courseId}`
-			});
-		}
-	}
+  data() {
+    return {
+      searchKeyword: '',
+      activeType: '',
+      activeDifficulty: '',
+      page: 1,
+      size: 10,
+      courseList: [],
+      recommendCourses: [],
+      loading: false,
+      hasMore: true,
+      total: 0
+    };
+  },
+  onLoad() {
+    this.loadRecommendCourses();
+    this.loadCourseList();
+  },
+  methods: {
+    getDifficultyClass(difficulty) {
+      const difficultyMap = {
+        入门: 'diff-beginner',
+        初级: 'diff-elementary',
+        中级: 'diff-intermediate',
+        高级: 'diff-advanced'
+      };
+      return difficultyMap[difficulty] || 'diff-beginner';
+    },
+    async loadRecommendCourses() {
+      try {
+        const res = await apiGetRecommendCourses(6);
+        this.recommendCourses = res || [];
+      } catch (error) {
+        console.error('加载推荐课程失败:', error);
+      }
+    },
+    async loadCourseList(reset = false) {
+      if (this.loading) return;
+
+      this.loading = true;
+      if (reset) {
+        this.page = 1;
+        this.courseList = [];
+        this.hasMore = true;
+      }
+
+      try {
+        const res = await apiGetCourseList(this.page, this.size, this.activeType, this.activeDifficulty);
+        const newList = res.records || res || [];
+
+        if (reset) {
+          this.courseList = newList;
+        } else {
+          this.courseList = [...this.courseList, ...newList];
+        }
+
+        this.total = res.total || 0;
+        this.hasMore = this.courseList.length < this.total;
+        this.page += 1;
+      } catch (error) {
+        console.error('加载课程列表失败:', error);
+        uni.showToast({
+          title: '加载失败',
+          icon: 'none'
+        });
+      } finally {
+        this.loading = false;
+      }
+    },
+    async onSearch() {
+      if (!this.searchKeyword.trim()) {
+        this.loadCourseList(true);
+        return;
+      }
+
+      this.loading = true;
+      this.courseList = [];
+
+      try {
+        const res = await apiSearchCourses(this.searchKeyword, 1, 20);
+        this.courseList = res.records || res || [];
+        this.total = res.total || 0;
+        this.hasMore = false;
+      } catch (error) {
+        console.error('搜索课程失败:', error);
+        uni.showToast({
+          title: '搜索失败',
+          icon: 'none'
+        });
+      } finally {
+        this.loading = false;
+      }
+    },
+    filterByType(type) {
+      this.activeType = type;
+      this.loadCourseList(true);
+    },
+    filterByDifficulty(difficulty) {
+      this.activeDifficulty = difficulty;
+      this.loadCourseList(true);
+    },
+    loadMore() {
+      if (this.hasMore && !this.loading) {
+        this.loadCourseList();
+      }
+    },
+    goToCourseDetail(courseId) {
+      uni.navigateTo({
+        url: `/pages/course/detail?id=${courseId}`
+      });
+    }
+  }
 };
 </script>
 
 <style scoped>
-.container {
-	padding: 20rpx;
-	background-color: #f5f5f5;
-	min-height: 100vh;
+.course-page {
+  min-height: 100vh;
+  padding: 24rpx;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at top right, rgba(111, 146, 255, 0.16), transparent 24%),
+    linear-gradient(180deg, #edf2ff 0%, #f5f7fc 42%, #f4f6fb 100%);
 }
 
-/* 头部区域 */
-.header-section {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	border-radius: 20rpx;
-	padding: 40rpx 30rpx;
-	margin-bottom: 30rpx;
-	color: white;
+.hero-card,
+.filter-card,
+.list-section,
+.empty-card {
+  border-radius: 32rpx;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-.header-title {
-	font-size: 36rpx;
-	font-weight: bold;
-	display: block;
-	margin-bottom: 10rpx;
+.hero-card {
+  padding: 34rpx 30rpx;
+  margin-bottom: 24rpx;
+  background: linear-gradient(150deg, #1638b8 0%, #4c67f4 46%, #7790ff 100%);
+  box-shadow: 0 20rpx 50rpx rgba(23, 56, 182, 0.22);
 }
 
-.header-subtitle {
-	font-size: 28rpx;
-	opacity: 0.9;
+.hero-badge {
+  display: inline-flex;
+  height: 42rpx;
+  padding: 0 16rpx;
+  margin-bottom: 18rpx;
+  border-radius: 999rpx;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 20rpx;
+  letter-spacing: 1rpx;
 }
 
-/* 筛选区域 */
-.filter-section {
-	background: white;
-	border-radius: 20rpx;
-	padding: 30rpx;
-	margin-bottom: 30rpx;
+.hero-title {
+  display: block;
+  margin-bottom: 12rpx;
+  font-size: 40rpx;
+  line-height: 1.28;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.hero-desc {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.filter-card,
+.list-section {
+  padding: 28rpx 24rpx;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18rpx 38rpx rgba(21, 35, 95, 0.08);
+}
+
+.filter-card {
+  margin-bottom: 22rpx;
 }
 
 .search-box {
-	display: flex;
-	align-items: center;
-	background: #f0f0f0;
-	border-radius: 50rpx;
-	padding: 0 30rpx;
-	margin-bottom: 30rpx;
+  display: flex;
+  align-items: center;
+  height: 84rpx;
+  padding: 0 10rpx 0 24rpx;
+  border-radius: 999rpx;
+  background: #f4f7ff;
+  margin-bottom: 24rpx;
 }
 
 .search-input {
-	flex: 1;
-	height: 70rpx;
-	font-size: 28rpx;
+  flex: 1;
+  font-size: 26rpx;
 }
 
-.search-icon {
-	font-size: 32rpx;
-	margin-left: 20rpx;
+.search-trigger {
+  min-width: 120rpx;
+  height: 64rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(150deg, #3253ef 0%, #6980ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 24rpx;
+  font-weight: 700;
 }
 
-.filter-tabs {
-	display: flex;
-	gap: 20rpx;
-	margin-bottom: 20rpx;
+.filter-group + .filter-group {
+  margin-top: 18rpx;
 }
 
-.filter-tab {
-	padding: 15rpx 30rpx;
-	background: #f0f0f0;
-	border-radius: 50rpx;
-	font-size: 26rpx;
-	transition: all 0.3s;
+.filter-label {
+  display: block;
+  margin-bottom: 12rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #172233;
 }
 
-.filter-tab.active {
-	background: #667eea;
-	color: white;
+.chip-scroll {
+  white-space: nowrap;
 }
 
-.difficulty-filter {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 15rpx;
+.chip-row {
+  display: flex;
+  gap: 12rpx;
 }
 
-.difficulty-item {
-	padding: 10rpx 25rpx;
-	background: #f8f8f8;
-	border-radius: 40rpx;
-	font-size: 24rpx;
-	border: 1rpx solid #e0e0e0;
+.filter-chip,
+.difficulty-chip {
+  padding: 12rpx 22rpx;
+  border-radius: 999rpx;
+  background: #f3f5fa;
+  color: #5f6d83;
+  font-size: 24rpx;
 }
 
-.difficulty-item.active {
-	background: #667eea;
-	color: white;
-	border-color: #667eea;
+.filter-chip.active,
+.difficulty-chip.active {
+  background: linear-gradient(150deg, #3253ef 0%, #6980ff 100%);
+  color: #ffffff;
 }
 
-/* 推荐区域 */
+.difficulty-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
 .recommend-section {
-	margin-bottom: 30rpx;
+  margin-bottom: 22rpx;
 }
 
-.section-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 20rpx;
+.section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-bottom: 18rpx;
 }
 
 .section-title {
-	font-size: 32rpx;
-	font-weight: bold;
-	color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #172233;
 }
 
-.recommend-scroll {
-	white-space: nowrap;
-}
-
-.recommend-list {
-	display: flex;
-	gap: 20rpx;
-	padding: 10rpx 0;
-}
-
-.recommend-card {
-	width: 400rpx;
-	background: white;
-	border-radius: 20rpx;
-	overflow: hidden;
-	flex-shrink: 0;
-	box-shadow: 0 10rpx 30rpx rgba(0,0,0,0.1);
-}
-
-.course-cover {
-	width: 100%;
-	height: 200rpx;
-}
-
-.course-info {
-	padding: 20rpx;
-}
-
-.course-name {
-	font-size: 28rpx;
-	font-weight: bold;
-	display: block;
-	margin-bottom: 10rpx;
-	color: #333;
-}
-
-.course-desc {
-	font-size: 24rpx;
-	color: #666;
-	display: block;
-	margin-bottom: 15rpx;
-	lines: 2;
-	text-overflow: ellipsis;
-}
-
-.course-meta {
-	display: flex;
-	justify-content: space-between;
-	font-size: 22rpx;
-	color: #888;
-}
-
-/* 课程列表 */
-.courses-section {
-	background: white;
-	border-radius: 20rpx;
-	padding: 30rpx;
+.section-subtitle {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.55;
+  color: #74829a;
 }
 
 .section-count {
-	font-size: 26rpx;
-	color: #888;
+  padding: 10rpx 16rpx;
+  border-radius: 999rpx;
+  background: #eef3ff;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #4564f2;
 }
 
-.courses-list {
-	display: flex;
-	flex-direction: column;
-	gap: 30rpx;
+.recommend-scroll {
+  white-space: nowrap;
 }
 
-.course-item {
-	display: flex;
-	gap: 20rpx;
-	background: #fafafa;
-	border-radius: 15rpx;
-	padding: 20rpx;
-	transition: all 0.3s;
+.recommend-list {
+  display: flex;
+  gap: 16rpx;
 }
 
-.course-item:active {
-	transform: scale(0.98);
-	background: #f0f0f0;
+.recommend-card {
+  width: 420rpx;
+  border-radius: 28rpx;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 14rpx 28rpx rgba(21, 35, 95, 0.08);
+  flex-shrink: 0;
 }
 
-.item-cover {
-	width: 180rpx;
-	height: 180rpx;
-	border-radius: 10rpx;
-	flex-shrink: 0;
+.recommend-cover,
+.course-cover {
+  background: linear-gradient(150deg, #dce5ff 0%, #c9d7ff 100%);
 }
 
-.item-content {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
+.recommend-cover {
+  width: 100%;
+  height: 210rpx;
 }
 
-.item-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-start;
-	margin-bottom: 15rpx;
+.placeholder-cover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.item-name {
-	font-size: 30rpx;
-	font-weight: bold;
-	color: #333;
-	flex: 1;
-	margin-right: 20rpx;
+.placeholder-text {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #4363f3;
 }
 
-.item-tags {
-	display: flex;
-	gap: 10rpx;
+.recommend-body {
+  padding: 22rpx 20rpx;
 }
 
-.tag {
-	padding: 5rpx 15rpx;
-	border-radius: 20rpx;
-	font-size: 22rpx;
+.course-name,
+.course-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #172233;
 }
 
-.type-tag {
-	background: #e3f2fd;
-	color: #1976d2;
+.course-name {
+  margin-bottom: 10rpx;
 }
 
-.difficulty-tag {
-	background: #fce4ec;
-	color: #c2185b;
+.course-desc,
+.course-copy {
+  display: block;
+  font-size: 23rpx;
+  line-height: 1.58;
+  color: #74829a;
 }
 
-.difficulty-tag.diff-beginner {
-	background: #e8f5e8;
-	color: #388e3c;
+.course-desc {
+  margin-bottom: 14rpx;
 }
 
-.difficulty-tag.diff-elementary {
-	background: #fff3e0;
-	color: #f57c00;
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
 }
 
-.difficulty-tag.diff-intermediate {
-	background: #ffebee;
-	color: #d32f2f;
-}
-
-.difficulty-tag.diff-advanced {
-	background: #f3e5f5;
-	color: #7b1fa2;
-}
-
-.item-desc {
-	font-size: 26rpx;
-	color: #666;
-	margin-bottom: 15rpx;
-	lines: 2;
-	text-overflow: ellipsis;
-}
-
-.item-meta {
-	display: flex;
-	gap: 20rpx;
-	font-size: 22rpx;
-	color: #888;
+.meta-row.compact {
+  margin-top: 14rpx;
 }
 
 .meta-item {
-	display: flex;
-	align-items: center;
-	gap: 5rpx;
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: #f3f6fb;
+  font-size: 21rpx;
+  color: #627188;
 }
 
-/* 加载更多 */
+.course-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.course-card {
+  display: flex;
+  gap: 18rpx;
+  padding: 20rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
+}
+
+.course-cover {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.course-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.course-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12rpx;
+  margin-bottom: 10rpx;
+}
+
+.tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.tag {
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 21rpx;
+}
+
+.type-tag {
+  background: #edf3ff;
+  color: #3151ea;
+}
+
+.difficulty-tag {
+  background: #f4f6fb;
+  color: #5f6d83;
+}
+
+.difficulty-tag.diff-beginner {
+  background: #eef8f2;
+  color: #2f8a5c;
+}
+
+.difficulty-tag.diff-elementary {
+  background: #fff5ea;
+  color: #d67a18;
+}
+
+.difficulty-tag.diff-intermediate {
+  background: #fff0ef;
+  color: #d05b4f;
+}
+
+.difficulty-tag.diff-advanced {
+  background: #f6efff;
+  color: #7f4ed8;
+}
+
 .load-more {
-	text-align: center;
-	padding: 30rpx;
-	color: #667eea;
-	font-size: 28rpx;
+  margin-top: 22rpx;
+  text-align: center;
 }
 
-/* 空状态 */
-.empty-state {
-	text-align: center;
-	padding: 100rpx 0;
+.load-more-text {
+  font-size: 24rpx;
+  color: #4564f2;
+}
+
+.empty-card {
+  padding: 50rpx 24rpx;
+  margin-top: 12rpx;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18rpx 38rpx rgba(21, 35, 95, 0.08);
+  text-align: center;
 }
 
 .empty-icon {
-	font-size: 80rpx;
-	display: block;
-	margin-bottom: 20rpx;
+  width: 96rpx;
+  height: 96rpx;
+  margin: 0 auto 20rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(150deg, #3354ef 0%, #6c81ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.empty-text {
-	font-size: 32rpx;
-	color: #666;
-	display: block;
-	margin-bottom: 10rpx;
+.empty-title {
+  display: block;
+  margin-bottom: 10rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #172233;
 }
 
-.empty-subtext {
-	font-size: 26rpx;
-	color: #999;
+.empty-desc {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.65;
+  color: #74829a;
 }
 </style>

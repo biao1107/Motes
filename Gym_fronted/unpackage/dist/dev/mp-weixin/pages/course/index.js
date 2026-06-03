@@ -21,26 +21,23 @@ const _sfc_main = {
     this.loadCourseList();
   },
   methods: {
-    // 获取难度class名称（将中文映射为英文）
     getDifficultyClass(difficulty) {
       const difficultyMap = {
-        "入门": "diff-beginner",
-        "初级": "diff-elementary",
-        "中级": "diff-intermediate",
-        "高级": "diff-advanced"
+        入门: "diff-beginner",
+        初级: "diff-elementary",
+        中级: "diff-intermediate",
+        高级: "diff-advanced"
       };
       return difficultyMap[difficulty] || "diff-beginner";
     },
-    // 加载推荐课程
     async loadRecommendCourses() {
       try {
         const res = await common_api.apiGetRecommendCourses(6);
         this.recommendCourses = res || [];
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/course/index.vue:224", "加载推荐课程失败:", error);
+        common_vendor.index.__f__("error", "at pages/course/index.vue:173", "加载推荐课程失败:", error);
       }
     },
-    // 加载课程列表
     async loadCourseList(reset = false) {
       if (this.loading)
         return;
@@ -60,9 +57,9 @@ const _sfc_main = {
         }
         this.total = res.total || 0;
         this.hasMore = this.courseList.length < this.total;
-        this.page++;
+        this.page += 1;
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/course/index.vue:255", "加载课程列表失败:", error);
+        common_vendor.index.__f__("error", "at pages/course/index.vue:200", "加载课程列表失败:", error);
         common_vendor.index.showToast({
           title: "加载失败",
           icon: "none"
@@ -71,7 +68,6 @@ const _sfc_main = {
         this.loading = false;
       }
     },
-    // 搜索课程
     async onSearch() {
       if (!this.searchKeyword.trim()) {
         this.loadCourseList(true);
@@ -85,7 +81,7 @@ const _sfc_main = {
         this.total = res.total || 0;
         this.hasMore = false;
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/course/index.vue:282", "搜索课程失败:", error);
+        common_vendor.index.__f__("error", "at pages/course/index.vue:224", "搜索课程失败:", error);
         common_vendor.index.showToast({
           title: "搜索失败",
           icon: "none"
@@ -94,23 +90,19 @@ const _sfc_main = {
         this.loading = false;
       }
     },
-    // 按类型筛选
     filterByType(type) {
       this.activeType = type;
       this.loadCourseList(true);
     },
-    // 按难度筛选
     filterByDifficulty(difficulty) {
       this.activeDifficulty = difficulty;
       this.loadCourseList(true);
     },
-    // 加载更多
     loadMore() {
       if (this.hasMore && !this.loading) {
         this.loadCourseList();
       }
     },
-    // 跳转到课程详情
     goToCourseDetail(courseId) {
       common_vendor.index.navigateTo({
         url: `/pages/course/detail?id=${courseId}`
@@ -151,7 +143,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         c: common_vendor.t(course.courseName),
         d: common_vendor.t(course.description),
         e: common_vendor.t(course.duration),
-        f: common_vendor.t(course.calories),
+        f: common_vendor.t(course.calories || 0),
         g: course.id,
         h: common_vendor.o(($event) => $options.goToCourseDetail(course.id), course.id)
       });
@@ -159,7 +151,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   } : {}, {
     x: common_vendor.t($data.searchKeyword ? "搜索结果" : "全部课程"),
     y: common_vendor.t($data.courseList.length),
-    z: common_vendor.f($data.courseList, (course, k0, i0) => {
+    z: $data.courseList.length > 0
+  }, $data.courseList.length > 0 ? common_vendor.e({
+    A: common_vendor.f($data.courseList, (course, k0, i0) => {
       return common_vendor.e({
         a: course.coverImage
       }, course.coverImage ? {
@@ -178,12 +172,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         l: common_vendor.o(($event) => $options.goToCourseDetail(course.id), course.id)
       });
     }),
-    A: $data.hasMore
+    B: $data.hasMore
   }, $data.hasMore ? {
-    B: common_vendor.o((...args) => $options.loadMore && $options.loadMore(...args))
-  } : {}, {
-    C: $data.courseList.length === 0 && !$data.loading
-  }, $data.courseList.length === 0 && !$data.loading ? {} : {});
+    C: common_vendor.t($data.loading ? "加载中..." : "点击加载更多"),
+    D: common_vendor.o((...args) => $options.loadMore && $options.loadMore(...args))
+  } : {}) : !$data.loading ? {} : {}, {
+    E: !$data.loading
+  });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-b94ccfa4"]]);
 wx.createPage(MiniProgramPage);

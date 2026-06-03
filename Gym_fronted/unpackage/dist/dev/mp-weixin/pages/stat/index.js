@@ -24,9 +24,9 @@ const _sfc_main = {
         await this.loadGroupStats();
         await this.loadChallengeStats();
         common_vendor.index.hideLoading();
-      } catch (e) {
+      } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/stat/index.vue:122", "加载统计数据失败:", e);
+        common_vendor.index.__f__("error", "at pages/stat/index.vue:155", "加载统计数据失败:", error);
         common_vendor.index.showToast({
           title: "加载失败",
           icon: "none"
@@ -34,34 +34,34 @@ const _sfc_main = {
       }
     },
     async loadGroupStats() {
+      var _a;
       try {
         const myGroupsRes = await common_api.apiMyGroups();
         const groups = (myGroupsRes == null ? void 0 : myGroupsRes.data) || myGroupsRes || [];
-        if (groups && groups.length > 0) {
-          const firstGroup = groups[0];
-          if (firstGroup && firstGroup.id) {
-            const groupRes = await common_api.apiStatGroup({ groupId: firstGroup.id });
-            this.group = (groupRes == null ? void 0 : groupRes.data) || groupRes || null;
-          }
+        if (groups.length > 0 && ((_a = groups[0]) == null ? void 0 : _a.id)) {
+          const groupRes = await common_api.apiStatGroup({ groupId: groups[0].id });
+          this.group = (groupRes == null ? void 0 : groupRes.data) || groupRes || null;
+        } else {
+          this.group = null;
         }
-      } catch (e) {
-        common_vendor.index.__f__("log", "at pages/stat/index.vue:143", "获取组统计失败", e);
+      } catch (error) {
+        common_vendor.index.__f__("log", "at pages/stat/index.vue:174", "获取组统计失败:", error);
         this.group = null;
       }
     },
     async loadChallengeStats() {
+      var _a;
       try {
-        const challengesRes = await common_api.apiChallengeList();
-        const challenges = (challengesRes == null ? void 0 : challengesRes.data) || challengesRes || [];
-        if (challenges && challenges.length > 0) {
-          const firstChallenge = challenges[0];
-          if (firstChallenge && firstChallenge.id) {
-            const challengeRes = await common_api.apiStatChallenge({ challengeId: firstChallenge.id });
-            this.challenge = (challengeRes == null ? void 0 : challengeRes.data) || challengeRes || null;
-          }
+        const challengeRes = await common_api.apiChallengeList();
+        const challenges = (challengeRes == null ? void 0 : challengeRes.data) || challengeRes || [];
+        if (challenges.length > 0 && ((_a = challenges[0]) == null ? void 0 : _a.id)) {
+          const statsRes = await common_api.apiStatChallenge({ challengeId: challenges[0].id });
+          this.challenge = (statsRes == null ? void 0 : statsRes.data) || statsRes || null;
+        } else {
+          this.challenge = null;
         }
-      } catch (e) {
-        common_vendor.index.__f__("log", "at pages/stat/index.vue:161", "获取挑战统计失败", e);
+      } catch (error) {
+        common_vendor.index.__f__("log", "at pages/stat/index.vue:190", "获取挑战统计失败:", error);
         this.challenge = null;
       }
     },
@@ -73,8 +73,7 @@ const _sfc_main = {
       if (entries.length === 0) {
         return "-";
       }
-      const topEntries = entries.slice(0, 3);
-      return topEntries.map(([userId, count]) => `用户${userId}:${count}`).join(", ");
+      return entries.slice(0, 3).map(([userId, count], index) => `TOP${index + 1} 用户${userId} · ${count}次`).join(" / ");
     }
   }
 };

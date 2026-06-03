@@ -1,75 +1,88 @@
 <template>
-  <view class="container">
-    <!-- 页面头部 -->
-    <view class="page-header">
-      <text class="page-subtitle">与搭子们的聊天</text>
+  <view class="message-page">
+    <view class="hero-card">
+      <view class="hero-badge">Message Center</view>
+      <text class="hero-title">把邀请、未读会话和最近沟通集中到同一个消息中心</text>
+      <text class="hero-desc">
+        你可以先处理新的组队邀请，再进入具体聊天页查看组内消息和训练协同进度。
+      </text>
     </view>
 
-    <!-- 邀请消息列表 -->
-    <view class="invite-section" v-if="invitations.length > 0">
-      <view class="section-title">
-        <text class="title-text">收到的邀请</text>
-      </view>
-      <view
-        class="invite-item"
-        v-for="invite in invitations"
-        :key="invite.fromUserId + '_' + invite.groupId"
-        @click="handleInvite(invite)"
-      >
-        <view class="invite-avatar">
-          <text class="avatar-icon">👋</text>
-        </view>
-        <view class="invite-info">
-          <text class="invite-name">{{ invite.fromUserName }}</text>
-          <text class="invite-desc">邀请你加入 {{ invite.groupName || '健身搭子组' }}</text>
-        </view>
-        <view class="invite-actions">
-          <button class="btn-accept" @click.stop="acceptInvite(invite.fromUserId, invite.groupId)">接受</button>
-          <button class="btn-reject" @click.stop="rejectInvite(invite.fromUserId, invite.groupId)">拒绝</button>
+    <view v-if="invitations.length > 0" class="section-card invite-card">
+      <view class="section-head">
+        <view>
+          <text class="section-title">收到的邀请</text>
+          <text class="section-subtitle">先处理新的邀请，避免错过最近的组队机会</text>
         </view>
       </view>
-    </view>
 
-    <!-- 消息列表 -->
-    <view class="message-list" v-if="groups.length > 0">
-      <view
-        class="message-item"
-        v-for="group in groups"
-        :key="group.id"
-        @click="enterChat(group.id)"
-      >
-        <view class="group-avatar">
-          <text class="avatar-icon">💪</text>
-        </view>
-        <view class="group-info">
-          <view class="group-header">
-            <text class="group-name">{{ group.groupName || '搭子组' }}</text>
-            <text class="last-time" v-if="group.lastMessageTime">{{ formatTime(group.lastMessageTime) }}</text>
-          </view>
-          <view class="group-preview">
-            <text class="last-message" v-if="group.lastMessage">
-              {{ group.lastMessage }}
+      <view class="invite-list">
+        <view
+          v-for="invite in invitations"
+          :key="invite.fromUserId + '_' + invite.groupId"
+          class="invite-item"
+        >
+          <view class="invite-avatar">邀</view>
+          <view class="invite-content">
+            <text class="invite-name">{{ invite.fromUserName }}</text>
+            <text class="invite-desc">
+              邀请你加入 {{ invite.groupName || '健身搭子组' }}
             </text>
-            <text class="last-message empty" v-else>暂无消息</text>
-            <view class="unread-badge" v-if="group.unreadCount > 0">
-              <text class="unread-text">{{ group.unreadCount > 99 ? '99+' : group.unreadCount }}</text>
+          </view>
+          <view class="invite-actions">
+            <view class="invite-btn accept" @tap.stop="acceptInvite(invite.fromUserId, invite.groupId)">接受</view>
+            <view class="invite-btn reject" @tap.stop="rejectInvite(invite.fromUserId, invite.groupId)">拒绝</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view v-if="groups.length > 0" class="section-card">
+      <view class="section-head">
+        <view>
+          <text class="section-title">会话列表</text>
+          <text class="section-subtitle">最近消息和未读状态会优先展示在这里</text>
+        </view>
+      </view>
+
+      <view class="message-list">
+        <view v-for="group in groups" :key="group.id" class="message-card" @tap="enterChat(group.id)">
+          <view class="group-avatar">组</view>
+          <view class="message-content">
+            <view class="message-head">
+              <text class="group-name">{{ group.groupName || '搭子组' }}</text>
+              <text class="message-time" v-if="group.lastMessageTime">{{ formatTime(group.lastMessageTime) }}</text>
+            </view>
+
+            <view class="message-preview">
+              <text class="message-text" v-if="group.lastMessage">{{ group.lastMessage }}</text>
+              <text class="message-text empty" v-else>还没有聊天记录，进去发第一条消息吧。</text>
+              <view class="unread-badge" v-if="group.unreadCount > 0">
+                <text class="unread-text">{{ group.unreadCount > 99 ? '99+' : group.unreadCount }}</text>
+              </view>
             </view>
           </view>
         </view>
       </view>
     </view>
 
-    <!-- 空状态 -->
-    <view class="empty-state" v-else>
-      <view class="empty-icon">💬</view>
-      <text class="empty-text">还没有任何群组消息</text>
-      <text class="empty-subtext">加入搭子组后即可开始聊天</text>
+    <view v-else-if="invitations.length === 0" class="empty-card">
+      <view class="empty-icon">信</view>
+      <text class="empty-title">你还没有任何消息会话</text>
+      <text class="empty-desc">加入搭子组后，这里会展示邀请消息、未读会话和最近聊天记录。</text>
     </view>
   </view>
 </template>
 
 <script>
-import { apiMyGroups, apiGetUnreadDetail, apiGetInvitations, apiAcceptInvite, apiRejectInvite, apiMarkGroupRead } from '@/common/api.js';
+import {
+  apiMyGroups,
+  apiGetUnreadDetail,
+  apiGetInvitations,
+  apiAcceptInvite,
+  apiRejectInvite,
+  apiMarkGroupRead
+} from '@/common/api.js';
 import { requireLogin, getUserIdFromToken } from '@/common/auth.js';
 
 export default {
@@ -80,40 +93,32 @@ export default {
       userId: null
     };
   },
-
   onShow() {
     if (!requireLogin()) return;
     this.userId = getUserIdFromToken();
     this.loadInvitations();
     this.loadGroups();
   },
-  
-  // 页面激活时刷新数据（例如从聊天页面返回时）
   activated() {
     if (!requireLogin()) return;
     this.userId = getUserIdFromToken();
     this.loadInvitations();
     this.loadGroups();
   },
-
   methods: {
     async loadInvitations() {
       try {
         const res = await apiGetInvitations();
         this.invitations = res?.data || res || [];
-      } catch (e) {
-        console.error('加载邀请列表失败:', e);
+      } catch (error) {
+        console.error('加载邀请列表失败:', error);
       }
     },
-    
-    // 刷新邀请列表的方法，供其他页面调用
     refreshInvitations() {
-      console.log('收到刷新邀请列表的请求');
       this.loadInvitations();
       this.loadGroups();
     },
-
-    async acceptInvite(fromUserId, groupId) {
+    async acceptInvite(fromUserId) {
       try {
         uni.showLoading({ title: '接受中...' });
         await apiAcceptInvite({ invitationId: fromUserId });
@@ -121,50 +126,42 @@ export default {
         uni.showToast({ title: '已加入搭子组', icon: 'success' });
         this.loadInvitations();
         this.loadGroups();
-      } catch (e) {
+      } catch (error) {
         uni.hideLoading();
+        console.error('接受邀请失败:', error);
         uni.showToast({ title: '接受失败', icon: 'none' });
       }
     },
-
     async rejectInvite(fromUserId, groupId) {
       try {
         uni.showLoading({ title: '拒绝中...' });
-        // 调用后端API真正拒绝邀请
-        await apiRejectInvite({ 
+        await apiRejectInvite({
           userId: this.userId,
-          invitationId: fromUserId 
+          invitationId: fromUserId
         });
         uni.hideLoading();
-        
-        // 从本地列表中移除邀请
-        this.invitations = this.invitations.filter(i => !(i.fromUserId === fromUserId && i.groupId === groupId));
+
+        this.invitations = this.invitations.filter(
+          (invite) => !(invite.fromUserId === fromUserId && invite.groupId === groupId)
+        );
         uni.showToast({ title: '已拒绝', icon: 'none' });
-        
-        // 刷新邀请列表以确保数据同步
         this.loadInvitations();
-      } catch (e) {
+      } catch (error) {
         uni.hideLoading();
+        console.error('拒绝邀请失败:', error);
         uni.showToast({ title: '拒绝失败', icon: 'none' });
-        console.error('拒绝邀请失败:', e);
       }
     },
-
-    handleInvite(invite) {
-      // 点击邀请项显示详情
-    },
-
     async loadGroups() {
       try {
         uni.showLoading({ title: '加载中...' });
-        
-        // 先获取用户的所有组
+
         let myGroups = [];
         try {
           const myGroupsRes = await apiMyGroups();
           myGroups = myGroupsRes?.data || myGroupsRes || [];
         } catch (groupsError) {
-          console.error('获取我的群组失败:', groupsError);
+          console.error('获取群组列表失败:', groupsError);
           uni.hideLoading();
           uni.showToast({
             title: '获取群组列表失败',
@@ -172,23 +169,19 @@ export default {
           });
           return;
         }
-        
-        // 再获取未读消息详情（有聊天消息的组）
+
         let unreadData = [];
         try {
           const res = await apiGetUnreadDetail(this.userId);
           unreadData = res?.data || res || [];
         } catch (unreadError) {
-          console.error('获取未读消息详情失败:', unreadError);
-          // 即使未读消息获取失败，也要显示群组列表
+          console.error('获取未读详情失败:', unreadError);
         }
-        
-        // 合并数据：所有组 + 未读信息，过滤掉无效的群组
-        const allGroups = myGroups
-          .filter(group => group && group.id) // 过滤掉无效的群组
-          .map(group => {
-            // 查找对应的未读消息信息，如果找不到则使用默认值
-            const unreadInfo = unreadData.find(u => u.groupId === group.id);
+
+        this.groups = myGroups
+          .filter((group) => group && group.id)
+          .map((group) => {
+            const unreadInfo = unreadData.find((item) => item.groupId === group.id);
             return {
               id: group.id,
               groupName: group.groupName || '搭子组',
@@ -197,16 +190,10 @@ export default {
               unreadCount: unreadInfo?.unreadCount || 0
             };
           });
-        
-        this.groups = allGroups;
-        
-        // 添加日志输出，便于调试
-        console.log('加载群组完成，群组数量:', this.groups.length);
-        console.log('各群组的未读消息数:', this.groups.map(g => ({id: g.id, name: g.groupName, unread: g.unreadCount})));
-        
+
         uni.hideLoading();
-      } catch (e) {
-        console.error('加载群组列表失败:', e);
+      } catch (error) {
+        console.error('加载消息会话失败:', error);
         uni.hideLoading();
         uni.showToast({
           title: '加载失败',
@@ -214,82 +201,55 @@ export default {
         });
       }
     },
-
-    goToChat(groupId) {
-      uni.navigateTo({
-        url: '/pages/group/chat?id=' + groupId
-      });
-    },
-
-    handleItemClick(groupId) {
-      this.goToChat(groupId);
-    },
-
     enterChat(groupId) {
-      // 进入聊天页面前先标记该群组消息为已读
       this.markGroupMessagesAsRead(groupId);
       uni.navigateTo({
         url: '/pages/group/chat?id=' + groupId
       });
     },
-    
-    // 标记指定群组的消息为已读
     markGroupMessagesAsRead(groupId) {
       if (!groupId || !this.userId) {
-        console.warn('群组ID或用户ID缺失，无法标记消息为已读');
         return;
       }
-      
-      console.log('准备标记群组消息为已读:', groupId, '用户ID:', this.userId);
-      
+
       apiMarkGroupRead(Number(groupId), Number(this.userId))
-        .then(response => {
-          console.log('标记群组消息为已读成功:', groupId, '响应:', response);
-          
-          // 更新本地UI显示
-          const groupIndex = this.groups.findIndex(g => g.id === Number(groupId));
+        .then(() => {
+          const groupIndex = this.groups.findIndex((group) => group.id === Number(groupId));
           if (groupIndex !== -1) {
             this.groups[groupIndex].unreadCount = 0;
           }
         })
-        .catch(error => {
-          console.error('标记群组消息为已读失败:', groupId, '错误:', error);
-          // 提示用户标记失败，可以稍后重试
+        .catch((error) => {
+          console.error('标记已读失败:', error);
           uni.showToast({
-            title: '同步阅读状态失败，请稍后重试',
+            title: '同步已读状态失败，请稍后重试',
             icon: 'none',
             duration: 2000
           });
         });
     },
-
     formatTime(dateStr) {
       if (!dateStr) return '';
       const date = new Date(dateStr);
       const now = new Date();
       const diff = now - date;
-      
-      // 小于1分钟
+
       if (diff < 60000) {
         return '刚刚';
       }
-      
-      // 小于1小时
+
       if (diff < 3600000) {
         return Math.floor(diff / 60000) + '分钟前';
       }
-      
-      // 小于24小时
+
       if (diff < 86400000) {
         return Math.floor(diff / 3600000) + '小时前';
       }
-      
-      // 小于7天
+
       if (diff < 604800000) {
         return Math.floor(diff / 86400000) + '天前';
       }
-      
-      // 显示日期
+
       return `${date.getMonth() + 1}-${date.getDate()}`;
     }
   }
@@ -297,220 +257,260 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.message-page {
   min-height: 100vh;
-  background: #f5f5f5;
+  padding: 24rpx;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at top right, rgba(111, 146, 255, 0.16), transparent 24%),
+    linear-gradient(180deg, #edf2ff 0%, #f5f7fc 42%, #f4f6fb 100%);
 }
 
-.page-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 60rpx 30rpx 40rpx;
-  text-align: center;
+.hero-card,
+.section-card,
+.empty-card {
+  border-radius: 32rpx;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-.page-title {
+.hero-card {
+  padding: 34rpx 30rpx;
+  margin-bottom: 24rpx;
+  background: linear-gradient(150deg, #1638b8 0%, #4c67f4 46%, #7790ff 100%);
+  box-shadow: 0 20rpx 50rpx rgba(23, 56, 182, 0.22);
+}
+
+.hero-badge {
+  display: inline-flex;
+  height: 42rpx;
+  padding: 0 16rpx;
+  margin-bottom: 18rpx;
+  border-radius: 999rpx;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 20rpx;
+  letter-spacing: 1rpx;
+}
+
+.hero-title {
+  display: block;
+  margin-bottom: 12rpx;
   font-size: 40rpx;
+  line-height: 1.28;
   font-weight: 700;
-  color: #fff;
-  display: block;
+  color: #ffffff;
 }
 
-.page-subtitle {
-  font-size: 26rpx;
-  color: rgba(255, 255, 255, 0.9);
+.hero-desc {
   display: block;
-  margin-top: 8rpx;
+  font-size: 24rpx;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
 }
 
-.invite-section {
-  padding: 20rpx;
-  background: #fff5f5;
-  margin-bottom: 10rpx;
+.section-card,
+.empty-card {
+  padding: 30rpx 24rpx;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18rpx 38rpx rgba(21, 35, 95, 0.08);
+}
+
+.invite-card {
+  margin-bottom: 22rpx;
+}
+
+.section-head {
+  margin-bottom: 18rpx;
 }
 
 .section-title {
-  margin-bottom: 16rpx;
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #172233;
 }
 
-.title-text {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #ff6b6b;
+.section-subtitle {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.55;
+  color: #74829a;
 }
 
-.invite-item {
+.invite-list,
+.message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.invite-item,
+.message-card {
+  display: flex;
+  gap: 16rpx;
+  padding: 22rpx 20rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
+}
+
+.invite-avatar,
+.group-avatar {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 26rpx;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  background: #fff;
-  border-radius: 16rpx;
-  padding: 20rpx;
-  margin-bottom: 12rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #ffffff;
 }
 
 .invite-avatar {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 16rpx;
-}
-
-.invite-info {
-  flex: 1;
-}
-
-.invite-name {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #333;
-  display: block;
-  margin-bottom: 4rpx;
-}
-
-.invite-desc {
-  font-size: 24rpx;
-  color: #999;
-}
-
-.invite-actions {
-  display: flex;
-  gap: 12rpx;
-}
-
-.btn-accept {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  font-size: 24rpx;
-  padding: 12rpx 24rpx;
-  border-radius: 30rpx;
-  border: none;
-}
-
-.btn-reject {
-  background: #f5f5f5;
-  color: #666;
-  font-size: 24rpx;
-  padding: 12rpx 24rpx;
-  border-radius: 30rpx;
-  border: none;
-}
-
-.message-list {
-  padding: 20rpx;
-}
-
-.message-item {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  border-radius: 20rpx;
-  padding: 24rpx;
-  margin-bottom: 16rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  background: linear-gradient(150deg, #ff8a72 0%, #ffb28c 100%);
 }
 
 .group-avatar {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 20rpx;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 20rpx;
-  flex-shrink: 0;
+  background: linear-gradient(150deg, #3253ef 0%, #6a7dff 100%);
 }
 
-.avatar-icon {
-  font-size: 40rpx;
-}
-
-.group-info {
+.invite-content,
+.message-content {
   flex: 1;
   min-width: 0;
 }
 
-.group-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.invite-name,
+.group-name {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #172233;
+}
+
+.invite-name {
   margin-bottom: 8rpx;
 }
 
-.group-name {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #1a1a1a;
+.invite-desc,
+.message-text {
+  display: block;
+  font-size: 23rpx;
+  line-height: 1.58;
+  color: #74829a;
 }
 
-.last-time {
-  font-size: 22rpx;
-  color: #999;
-}
-
-.group-preview {
+.invite-actions {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 10rpx;
 }
 
-.last-message {
-  font-size: 26rpx;
-  color: #666;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 400rpx;
-}
-
-.last-message.empty {
-  color: #ccc;
-}
-
-.unread-badge {
-  min-width: 36rpx;
-  height: 36rpx;
-  border-radius: 18rpx;
-  background: #ff4d4f;
+.invite-btn {
+  min-width: 104rpx;
+  height: 58rpx;
+  padding: 0 18rpx;
+  border-radius: 999rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.invite-btn.accept {
+  background: linear-gradient(150deg, #3253ef 0%, #6980ff 100%);
+  color: #ffffff;
+}
+
+.invite-btn.reject {
+  background: #f2f5fb;
+  color: #5f6d83;
+}
+
+.message-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-bottom: 8rpx;
+}
+
+.message-time {
+  flex-shrink: 0;
+  font-size: 21rpx;
+  color: #8b96aa;
+}
+
+.message-preview {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+
+.message-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.message-text.empty {
+  color: #9ba6bb;
+}
+
+.unread-badge {
+  min-width: 38rpx;
+  height: 38rpx;
   padding: 0 10rpx;
-  margin-left: 16rpx;
+  border-radius: 999rpx;
+  background: #ef4b4b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
 .unread-text {
   font-size: 20rpx;
-  color: #fff;
-  font-weight: 500;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 120rpx 40rpx;
+.empty-card {
+  margin-top: 12rpx;
+  text-align: center;
 }
 
 .empty-icon {
-  font-size: 120rpx;
-  margin-bottom: 30rpx;
+  width: 96rpx;
+  height: 96rpx;
+  margin: 0 auto 20rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(150deg, #3354ef 0%, #6c81ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.empty-text {
+.empty-title {
+  display: block;
+  margin-bottom: 10rpx;
   font-size: 32rpx;
-  color: #333;
-  margin-bottom: 12rpx;
+  font-weight: 700;
+  color: #172233;
 }
 
-.empty-subtext {
-  font-size: 26rpx;
-  color: #999;
+.empty-desc {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.65;
+  color: #74829a;
 }
 </style>

@@ -16,7 +16,6 @@ const _sfc_main = {
         fixedTime: ""
       },
       groupMembers: {}
-      // 缓存组成员信息
     };
   },
   onShow() {
@@ -25,53 +24,45 @@ const _sfc_main = {
     this.loadData();
   },
   methods: {
-    onInputFocus() {
-      common_vendor.index.__f__("log", "at pages/group/index.vue:151", "输入框聚焦");
-    },
     async loadData() {
       try {
         common_vendor.index.showLoading({ title: "加载中..." });
-        common_vendor.index.__f__("log", "at pages/group/index.vue:157", "Calling apiMyGroups");
         const userId = common_auth.getUserIdFromToken();
         if (!userId) {
-          common_vendor.index.__f__("error", "at pages/group/index.vue:160", "无法获取用户ID");
           this.loaded = true;
           common_vendor.index.hideLoading();
           return;
         }
         const res = await common_api.apiMyGroups(userId);
-        common_vendor.index.__f__("log", "at pages/group/index.vue:166", "apiMyGroups response:", res);
         this.groups = (res == null ? void 0 : res.data) || res || [];
         this.loaded = true;
         common_vendor.index.hideLoading();
         await this.loadAllGroupMembers();
-      } catch (e) {
-        common_vendor.index.__f__("error", "at pages/group/index.vue:174", "Error loading groups:", e);
-        common_vendor.index.hideLoading();
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/group/index.vue:172", "加载搭子组失败:", error);
         this.loaded = true;
+        common_vendor.index.hideLoading();
         common_vendor.index.showToast({
-          title: "加载失败，请重试",
+          title: "加载失败，请稍后重试",
           icon: "none"
         });
       }
     },
-    // 加载所有组的成员信息
     async loadAllGroupMembers() {
       for (const group of this.groups) {
         try {
           const detail = await common_api.apiGroupDetailWithMembers(group.id);
           this.groupMembers[group.id] = detail.members || [];
-        } catch (e) {
-          common_vendor.index.__f__("error", "at pages/group/index.vue:191", `加载组 ${group.id} 成员信息失败:`, e);
+        } catch (error) {
+          common_vendor.index.__f__("error", "at pages/group/index.vue:187", `加载组 ${group.id} 成员失败:`, error);
           this.groupMembers[group.id] = [];
         }
       }
     },
-    // 检查用户是否是组的管理员
     isAdminInGroup(groupId) {
       const members = this.groupMembers[groupId] || [];
       const userId = common_auth.getUserIdFromToken();
-      const userMember = members.find((m) => m.userId == userId);
+      const userMember = members.find((member) => member.userId == userId);
       return userMember && userMember.role === "ADMIN";
     },
     async onCreateGroup() {
@@ -80,7 +71,7 @@ const _sfc_main = {
         return;
       }
       if (this.createForm.name.trim().length < 2) {
-        common_vendor.index.showToast({ title: "组名至少需要2个字符", icon: "none" });
+        common_vendor.index.showToast({ title: "组名至少需要 2 个字符", icon: "none" });
         return;
       }
       if (!this.createForm.fixedTime) {
@@ -100,11 +91,11 @@ const _sfc_main = {
         this.showCreate = false;
         this.createForm = { name: "", fixedTime: "" };
         this.loadData();
-      } catch (e) {
+      } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/group/index.vue:236", "创建搭子组失败:", e);
+        common_vendor.index.__f__("error", "at pages/group/index.vue:231", "创建搭子组失败:", error);
         common_vendor.index.showToast({
-          title: (e == null ? void 0 : e.message) || "创建失败，请重试",
+          title: (error == null ? void 0 : error.message) || "创建失败，请稍后重试",
           icon: "none"
         });
       }
@@ -112,19 +103,16 @@ const _sfc_main = {
     goDetail(id) {
       common_vendor.index.navigateTo({ url: `/pages/group/detail?id=${id}` });
     },
-    // 显示删除确认弹窗
     showDeleteConfirm(groupId, groupName) {
       this.groupToDelete = groupId;
       this.deleteGroupName = groupName;
       this.showDeleteConfirmPopup = true;
     },
-    // 隐藏删除确认弹窗
     hideDeleteConfirm() {
       this.showDeleteConfirmPopup = false;
       this.groupToDelete = null;
       this.deleteGroupName = "";
     },
-    // 确认删除搭子组
     async confirmDeleteGroup() {
       if (!this.groupToDelete)
         return;
@@ -139,26 +127,26 @@ const _sfc_main = {
           });
           this.hideDeleteConfirm();
           this.loadData();
-        } else {
-          common_vendor.index.hideLoading();
-          let errorMessage = "删除失败";
-          if (res && res.data && typeof res.data === "object") {
-            errorMessage = res.data.message || res.data.msg || errorMessage;
-          } else if (res && res.errMsg) {
-            errorMessage = res.errMsg;
-          } else if (res && res.statusCode) {
-            errorMessage = `删除失败 (${res.statusCode})`;
-          }
-          common_vendor.index.showToast({
-            title: errorMessage,
-            icon: "none"
-          });
+          return;
         }
-      } catch (e) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/group/index.vue:297", "删除搭子组失败:", e);
+        let errorMessage = "删除失败";
+        if (res && res.data && typeof res.data === "object") {
+          errorMessage = res.data.message || res.data.msg || errorMessage;
+        } else if (res && res.errMsg) {
+          errorMessage = res.errMsg;
+        } else if (res && res.statusCode) {
+          errorMessage = `删除失败 (${res.statusCode})`;
+        }
         common_vendor.index.showToast({
-          title: e.errMsg || e.message || "删除失败，请重试",
+          title: errorMessage,
+          icon: "none"
+        });
+      } catch (error) {
+        common_vendor.index.hideLoading();
+        common_vendor.index.__f__("error", "at pages/group/index.vue:285", "删除搭子组失败:", error);
+        common_vendor.index.showToast({
+          title: error.errMsg || error.message || "删除失败，请稍后重试",
           icon: "none"
         });
       }
@@ -176,17 +164,18 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     e: common_vendor.f($data.groups, (item, k0, i0) => {
       return common_vendor.e({
         a: common_vendor.t(item.groupName || "未命名搭子组"),
-        b: common_vendor.t(item.fixedTime || "-"),
-        c: common_vendor.o(($event) => $options.goDetail(item.id), item.id),
+        b: common_vendor.t(item.fixedTime || "未设置固定时间"),
+        c: common_vendor.t($options.isAdminInGroup(item.id) ? "你是管理员" : "普通成员"),
         d: item.desc
       }, item.desc ? {
         e: common_vendor.t(item.desc)
       } : {}, {
-        f: $options.isAdminInGroup(item.id)
+        f: common_vendor.o(($event) => $options.goDetail(item.id), item.id),
+        g: $options.isAdminInGroup(item.id)
       }, $options.isAdminInGroup(item.id) ? {
-        g: common_vendor.o(($event) => $options.showDeleteConfirm(item.id, item.groupName), item.id)
+        h: common_vendor.o(($event) => $options.showDeleteConfirm(item.id, item.groupName), item.id)
       } : {}, {
-        h: item.id
+        i: item.id
       });
     })
   } : {
