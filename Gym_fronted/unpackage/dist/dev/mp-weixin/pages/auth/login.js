@@ -27,15 +27,9 @@ const _sfc_main = {
     common_vendor.onUnmounted(() => {
       codeTimer.value && clearInterval(codeTimer.value);
     });
-    const isValidPhone = common_vendor.computed(() => {
-      return /^1[3-9]\d{9}$/.test(formData.value.phone);
-    });
-    const isCodeBtnDisabled = common_vendor.computed(() => {
-      return !formData.value.phone || codeCountdown.value > 0 || !isValidPhone.value;
-    });
-    const codeBtnText = common_vendor.computed(() => {
-      return codeCountdown.value > 0 ? `${codeCountdown.value}s后重试` : "获取验证码";
-    });
+    const isValidPhone = common_vendor.computed(() => /^1[3-9]\d{9}$/.test(formData.value.phone));
+    const isCodeBtnDisabled = common_vendor.computed(() => !formData.value.phone || codeCountdown.value > 0 || !isValidPhone.value);
+    const codeBtnText = common_vendor.computed(() => codeCountdown.value > 0 ? `${codeCountdown.value}s 后重试` : "获取验证码");
     const getUserIdFromToken = (token) => {
       if (!token)
         return null;
@@ -45,7 +39,7 @@ const _sfc_main = {
           return null;
         const payload = JSON.parse(decodeURIComponent(escape(atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")))));
         return payload.sub ? Number(payload.sub) : null;
-      } catch (e) {
+      } catch (error) {
         return null;
       }
     };
@@ -96,12 +90,12 @@ const _sfc_main = {
             codeTimer.value = null;
             codeCountdown.value = 0;
           } else {
-            codeCountdown.value--;
+            codeCountdown.value -= 1;
           }
         }, 1e3);
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/auth/login.vue:259", "发送验证码失败:", error);
+        common_vendor.index.__f__("error", "at pages/auth/login.vue:247", "发送验证码失败:", error);
         const errMsg = (error == null ? void 0 : error.msg) || (error == null ? void 0 : error.message) || "发送失败，请重试";
         common_vendor.index.showToast({ title: errMsg, icon: "none", duration: 2e3, mask: true });
       }
@@ -125,36 +119,30 @@ const _sfc_main = {
         }
         if (token) {
           common_auth.setToken(token);
-          let userInfo = null;
-          let userStats = null;
           try {
-            const [userResponse, statsResponse] = await Promise.all([
-              common_api.apiGetUserInfo(),
-              common_api.apiStatPersonal()
-            ]);
-            userInfo = userResponse.data || {
+            const [userResponse, statsResponse] = await Promise.all([common_api.apiGetUserInfo(), common_api.apiStatPersonal()]);
+            const userInfo = userResponse.data || {
               id: getUserIdFromToken(token),
               nickname: "用户" + getUserIdFromToken(token)
             };
-            userStats = statsResponse.data || { trainDays: 0, partnersCount: 0, activeChallenges: 0 };
+            const userStats = statsResponse.data || { trainDays: 0, partnersCount: 0, activeChallenges: 0 };
             common_auth.setUserInfo(userInfo);
             common_vendor.index.setStorageSync("temp_user_data", {
               profile: userResponse.data || userInfo,
               stats: userStats
             });
-          } catch (e) {
-            userInfo = {
+          } catch (error) {
+            const fallbackUser = {
               id: getUserIdFromToken(token),
               nickname: "用户" + getUserIdFromToken(token)
             };
-            userStats = { trainDays: 0, partnersCount: 0, activeChallenges: 0 };
-            common_auth.setUserInfo(userInfo);
-            common_vendor.index.__f__("error", "at pages/auth/login.vue:321", "获取用户信息失败:", e);
+            common_auth.setUserInfo(fallbackUser);
+            common_vendor.index.__f__("error", "at pages/auth/login.vue:293", "获取用户信息失败:", error);
           }
           try {
             await common_ws.initWebSocket();
-          } catch (e) {
-            common_vendor.index.__f__("error", "at pages/auth/login.vue:328", "WebSocket初始化失败:", e);
+          } catch (error) {
+            common_vendor.index.__f__("error", "at pages/auth/login.vue:299", "WebSocket 初始化失败:", error);
           }
           common_vendor.index.hideLoading();
           common_vendor.index.showToast({ title: "登录成功", icon: "success", duration: 1500, mask: true });
@@ -167,7 +155,7 @@ const _sfc_main = {
         }
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/auth/login.vue:345", "登录失败:", error);
+        common_vendor.index.__f__("error", "at pages/auth/login.vue:313", "登录失败:", error);
         const errMsg = (error == null ? void 0 : error.msg) || (error == null ? void 0 : error.message) || "登录失败，请重试";
         common_vendor.index.showToast({ title: errMsg, icon: "none", duration: 2e3, mask: true });
       }
@@ -178,7 +166,7 @@ const _sfc_main = {
     const viewTerms = () => {
       common_vendor.index.showModal({
         title: "用户协议",
-        content: "【健身搭子】用户协议：\n1. 您承诺使用本服务时遵守相关法律法规；\n2. 您授权我们收集必要的健身数据用于匹配搭子；\n3. 您需对自己的账号安全负责；\n4. 平台有权根据运营需要调整服务规则。",
+        content: "使用本服务即表示你同意遵守平台规则，并授权我们在合法范围内使用必要数据来完成匹配、训练和消息功能。",
         showCancel: false,
         confirmText: "我已阅读并同意",
         confirmColor: "#6378f6"
@@ -187,7 +175,7 @@ const _sfc_main = {
     const viewPrivacy = () => {
       common_vendor.index.showModal({
         title: "隐私政策",
-        content: "【健身搭子】隐私政策：\n1. 我们仅收集必要的个人信息用于服务提供；\n2. 您的健身数据仅用于匹配搭子，不会泄露给第三方；\n3. 您可随时删除自己的个人数据；\n4. 我们采用加密方式保护您的信息安全。",
+        content: "我们仅收集完成服务所需的必要信息，并通过加密存储等方式保障你的个人数据安全，不会擅自向第三方泄露。",
         showCancel: false,
         confirmText: "我已阅读并同意",
         confirmColor: "#6378f6"

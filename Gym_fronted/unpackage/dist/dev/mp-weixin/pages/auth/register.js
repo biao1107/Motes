@@ -32,7 +32,7 @@ const _sfc_main = {
         return false;
       }
       if (!/^1[3-9]\d{9}$/.test(form.value.phone)) {
-        common_vendor.index.showToast({ title: "请输入正确的11位手机号", icon: "none", duration: 2e3, mask: true });
+        common_vendor.index.showToast({ title: "请输入正确的 11 位手机号", icon: "none", duration: 2e3, mask: true });
         return false;
       }
       if (!form.value.nickname) {
@@ -42,7 +42,7 @@ const _sfc_main = {
       const nickname = form.value.nickname.trim();
       const regNick = /^[\u4e00-\u9fa5a-zA-Z0-9_]{2,12}$/;
       if (!regNick.test(nickname)) {
-        common_vendor.index.showToast({ title: "昵称仅支持2-12位中英文/数字/下划线", icon: "none", duration: 2500, mask: true });
+        common_vendor.index.showToast({ title: "昵称仅支持 2-12 位中英文/数字/下划线", icon: "none", duration: 2500, mask: true });
         return false;
       }
       if (!form.value.password) {
@@ -54,7 +54,7 @@ const _sfc_main = {
         return false;
       }
       if (form.value.password.length < 6 || form.value.password.length > 16) {
-        common_vendor.index.showToast({ title: "密码需为6-16位字符", icon: "none", duration: 2e3, mask: true });
+        common_vendor.index.showToast({ title: "密码需为 6-16 位字符", icon: "none", duration: 2e3, mask: true });
         return false;
       }
       if (form.value.password !== form.value.confirmPassword) {
@@ -79,10 +79,10 @@ const _sfc_main = {
         setTimeout(() => {
           common_vendor.index.redirectTo({ url: "/pages/auth/login" });
         }, 800);
-      } catch (e) {
+      } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/auth/register.vue:219", "注册失败：", e);
-        const errMsg = (e == null ? void 0 : e.msg) || (e == null ? void 0 : e.message) || ((_a = e == null ? void 0 : e.data) == null ? void 0 : _a.msg) || "注册失败，请稍后重试";
+        common_vendor.index.__f__("error", "at pages/auth/register.vue:215", "注册失败：", error);
+        const errMsg = (error == null ? void 0 : error.msg) || (error == null ? void 0 : error.message) || ((_a = error == null ? void 0 : error.data) == null ? void 0 : _a.msg) || "注册失败，请稍后重试";
         common_vendor.index.showToast({ title: errMsg, icon: "none", duration: 2500, mask: true });
       }
     };
@@ -92,12 +92,7 @@ const _sfc_main = {
     const viewTerms = () => {
       common_vendor.index.showModal({
         title: "用户注册协议",
-        content: `【健身搭子】用户注册协议
-1. 您承诺年满16周岁，填写的信息真实、有效、完整；
-2. 您授权平台使用您的健身相关信息用于搭子匹配，不泄露给第三方；
-3. 您需遵守社区规范，不得发布违法、违规、低俗等不良内容；
-4. 您对自己的账号安全负责，请勿转借、出租、出售账号；
-5. 平台有权根据法律法规及运营需要调整协议，您可选择继续使用或注销账号。`,
+        content: "注册并使用本平台，即表示你同意遵守平台规则，并授权我们在合法范围内使用必要信息完成健身搭子匹配与训练协作服务。",
         showCancel: false,
         confirmText: "我已阅读并同意",
         confirmColor: "#6378f6"
@@ -106,12 +101,7 @@ const _sfc_main = {
     const viewPrivacy = () => {
       common_vendor.index.showModal({
         title: "隐私政策",
-        content: `【健身搭子】隐私政策
-1. 收集范围：仅收集手机号、昵称等必要注册信息，及健身数据用于搭子匹配；
-2. 数据存储：采用加密存储方式，保护您的个人信息安全；
-3. 数据使用：仅用于平台服务，不会向第三方出售、泄露您的信息；
-4. 数据管理：您可在个人中心修改、删除个人信息，或申请账号注销；
-5. 儿童保护：不向16周岁以下未成年人提供服务，不收集儿童信息。`,
+        content: "我们仅收集完成服务所需的必要信息，并通过加密存储等方式保障你的个人数据安全，不会擅自向第三方泄露。",
         showCancel: false,
         confirmText: "我已阅读并同意",
         confirmColor: "#6378f6"

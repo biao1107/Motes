@@ -11,7 +11,6 @@ const _sfc_main = {
       phone: ""
     });
     const currentProfileData = common_vendor.ref(null);
-    const isMini = common_vendor.ref(false);
     const getInitial = (nickname) => {
       if (!nickname || !nickname.trim())
         return "?";
@@ -27,8 +26,8 @@ const _sfc_main = {
           phone: data.phone || ""
         };
         currentProfileData.value = data;
-      } catch (e) {
-        common_vendor.index.__f__("error", "at pages/user/setting.vue:117", "加载设置失败:", e);
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/user/setting.vue:102", "加载设置失败:", error);
         common_vendor.index.showToast({ title: "加载失败", icon: "none" });
       } finally {
         common_vendor.index.hideLoading();
@@ -46,7 +45,6 @@ const _sfc_main = {
         const profileData = {
           nickname,
           avatar: form.value.avatar,
-          // 使用当前表单中的档案信息，如果不存在则使用空字符串
           fitnessGoal: ((_a = currentProfileData.value) == null ? void 0 : _a.fitnessGoal) || "",
           trainTime: ((_b = currentProfileData.value) == null ? void 0 : _b.trainTime) || "",
           trainScene: ((_c = currentProfileData.value) == null ? void 0 : _c.trainScene) || "",
@@ -56,8 +54,8 @@ const _sfc_main = {
         await common_api.apiUpdateProfile(profileData);
         common_vendor.index.showToast({ title: "保存成功", icon: "success", duration: 1500 });
         setTimeout(() => common_vendor.index.navigateBack(), 1500);
-      } catch (e) {
-        common_vendor.index.__f__("error", "at pages/user/setting.vue:149", "保存设置失败:", e);
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/user/setting.vue:131", "保存设置失败:", error);
         common_vendor.index.showToast({ title: "保存失败，请重试", icon: "none" });
       } finally {
         common_vendor.index.hideLoading();
@@ -78,17 +76,11 @@ const _sfc_main = {
         }
       });
     };
-    const goToDebug = () => {
-      common_vendor.index.navigateTo({
-        url: "/pages/user/debug"
-      });
-    };
     const selectAvatar = () => {
       common_vendor.index.chooseImage({
         count: 1,
         sourceType: ["album", "camera"],
         sizeType: ["original", "compressed"],
-        // 支持压缩，提升上传速度
         success: async (res) => {
           try {
             common_vendor.index.showLoading({ title: "上传中...", mask: true });
@@ -103,11 +95,11 @@ const _sfc_main = {
               form.value.avatar = avatarUrl;
               common_vendor.index.showToast({ title: "头像更新成功", icon: "success" });
             } else {
-              throw new Error("上传响应中未包含有效的URL");
+              throw new Error("上传响应中未包含有效的 URL");
             }
-          } catch (e) {
-            common_vendor.index.__f__("error", "at pages/user/setting.vue:205", "头像上传失败:", e);
-            common_vendor.index.showToast({ title: e.errMsg || "上传失败", icon: "none" });
+          } catch (error) {
+            common_vendor.index.__f__("error", "at pages/user/setting.vue:182", "头像上传失败:", error);
+            common_vendor.index.showToast({ title: error.errMsg || "上传失败", icon: "none" });
           } finally {
             common_vendor.index.hideLoading();
           }
@@ -132,23 +124,18 @@ const _sfc_main = {
     });
     return (_ctx, _cache) => {
       return common_vendor.e({
-        a: !isMini.value
-      }, !isMini.value ? {} : {}, {
-        b: form.value.avatar
+        a: form.value.avatar
       }, form.value.avatar ? {
-        c: form.value.avatar
+        b: form.value.avatar
       } : {
-        d: common_vendor.t(getInitial(form.value.nickname))
+        c: common_vendor.t(getInitial(form.value.nickname))
       }, {
-        e: common_vendor.o(selectAvatar),
-        f: form.value.nickname,
-        g: common_vendor.o(($event) => form.value.nickname = $event.detail.value),
-        h: common_vendor.t(form.value.phone || "未绑定"),
-        i: !form.value.phone
-      }, !form.value.phone ? {} : {}, {
-        j: common_vendor.o(onLogout),
-        k: common_vendor.o(goToDebug),
-        l: common_vendor.o(onSave)
+        d: common_vendor.o(selectAvatar),
+        e: form.value.nickname,
+        f: common_vendor.o(($event) => form.value.nickname = $event.detail.value),
+        g: common_vendor.t(form.value.phone || "未绑定"),
+        h: common_vendor.o(onSave),
+        i: common_vendor.o(onLogout)
       });
     };
   }
