@@ -11,13 +11,12 @@ const _sfc_main = {
     };
   },
   computed: {
-    // 将中文难度映射为英文class名称
     difficultyClass() {
       const difficultyMap = {
-        "入门": "diff-beginner",
-        "初级": "diff-elementary",
-        "中级": "diff-intermediate",
-        "高级": "diff-advanced"
+        入门: "diff-beginner",
+        初级: "diff-elementary",
+        中级: "diff-intermediate",
+        高级: "diff-advanced"
       };
       return difficultyMap[this.course.difficulty] || "diff-beginner";
     }
@@ -27,7 +26,6 @@ const _sfc_main = {
     this.loadCourseDetail();
   },
   methods: {
-    // 加载课程详情
     async loadCourseDetail() {
       if (!this.courseId)
         return;
@@ -37,8 +35,8 @@ const _sfc_main = {
         if (this.course.content) {
           try {
             this.courseContent = JSON.parse(this.course.content);
-          } catch (e) {
-            common_vendor.index.__f__("error", "at pages/course/detail.vue:149", "解析课程内容失败:", e);
+          } catch (error) {
+            common_vendor.index.__f__("error", "at pages/course/detail.vue:141", "解析课程内容失败:", error);
             this.courseContent = [];
           }
         }
@@ -46,7 +44,7 @@ const _sfc_main = {
           title: this.course.courseName || "课程详情"
         });
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/course/detail.vue:160", "加载课程详情失败:", error);
+        common_vendor.index.__f__("error", "at pages/course/detail.vue:150", "加载课程详情失败:", error);
         common_vendor.index.showToast({
           title: "加载失败",
           icon: "none"
@@ -56,19 +54,16 @@ const _sfc_main = {
         }, 1500);
       }
     },
-    // 添加收藏
     addToFavorites() {
       common_vendor.index.showToast({
         title: "已收藏",
         icon: "success"
       });
     },
-    // 视频加载错误处理
-    onVideoError(e) {
-      common_vendor.index.__f__("error", "at pages/course/detail.vue:184", "视频加载失败:", e);
+    onVideoError(error) {
+      common_vendor.index.__f__("error", "at pages/course/detail.vue:167", "视频加载失败:", error);
       this.videoError = true;
     },
-    // 重新加载视频
     retryVideoLoad() {
       this.videoError = false;
       this.loadCourseDetail();
@@ -81,14 +76,16 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, $data.course.coverImage ? {
     b: $data.course.coverImage
   } : {}, {
-    c: common_vendor.t($data.course.courseName),
-    d: common_vendor.t($data.course.description),
-    e: common_vendor.t($data.course.duration),
+    c: common_vendor.t($data.course.courseName || "课程详情"),
+    d: common_vendor.t($data.course.description || "查看课程结构、训练时长和视频内容。"),
+    e: common_vendor.t($data.course.duration || 0),
     f: common_vendor.t($data.course.calories || 0),
-    g: common_vendor.t($data.course.courseType),
-    h: common_vendor.t($data.course.difficulty),
+    g: common_vendor.t($data.course.courseType || "未分类"),
+    h: common_vendor.t($data.course.difficulty || "入门"),
     i: common_vendor.n($options.difficultyClass),
-    j: common_vendor.f($data.courseContent, (item, index, i0) => {
+    j: $data.courseContent.length > 0
+  }, $data.courseContent.length > 0 ? {
+    k: common_vendor.f($data.courseContent, (item, index, i0) => {
       return common_vendor.e({
         a: common_vendor.t(index + 1),
         b: common_vendor.t(item.action),
@@ -110,18 +107,19 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       } : {}, {
         k: index
       });
-    }),
-    k: $data.course.videoUrl
-  }, $data.course.videoUrl ? {
-    l: $data.course.videoUrl,
-    m: $data.course.coverImage,
-    n: common_vendor.o((...args) => $options.onVideoError && $options.onVideoError(...args))
+    })
   } : {}, {
-    o: $data.videoError
+    l: $data.course.videoUrl && !$data.videoError
+  }, $data.course.videoUrl && !$data.videoError ? {
+    m: $data.course.videoUrl,
+    n: $data.course.coverImage,
+    o: common_vendor.o((...args) => $options.onVideoError && $options.onVideoError(...args))
+  } : {}, {
+    p: $data.videoError
   }, $data.videoError ? {
-    p: common_vendor.o((...args) => $options.retryVideoLoad && $options.retryVideoLoad(...args))
+    q: common_vendor.o((...args) => $options.retryVideoLoad && $options.retryVideoLoad(...args))
   } : {}, {
-    q: common_vendor.o((...args) => $options.addToFavorites && $options.addToFavorites(...args))
+    r: common_vendor.o((...args) => $options.addToFavorites && $options.addToFavorites(...args))
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-3d21314d"]]);

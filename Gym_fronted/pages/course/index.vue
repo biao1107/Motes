@@ -426,12 +426,15 @@ export default {
 }
 
 .recommend-scroll {
+  width: 100%;
   white-space: nowrap;
 }
 
 .recommend-list {
-  display: flex;
+  display: inline-flex;
+  width: max-content;
   gap: 16rpx;
+  padding: 4rpx 0 6rpx;
 }
 
 .recommend-card {
@@ -441,6 +444,8 @@ export default {
   background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 14rpx 28rpx rgba(21, 35, 95, 0.08);
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .recommend-cover,
@@ -451,6 +456,7 @@ export default {
 .recommend-cover {
   width: 100%;
   height: 210rpx;
+  display: block;
 }
 
 .placeholder-cover {
@@ -467,6 +473,9 @@ export default {
 
 .recommend-body {
   padding: 22rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
 }
 
 .course-name,
@@ -474,11 +483,16 @@ export default {
   display: block;
   font-size: 28rpx;
   font-weight: 700;
+  line-height: 1.4;
   color: #172233;
+  min-width: 0;
 }
 
 .course-name {
-  margin-bottom: 10rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .course-desc,
@@ -487,10 +501,17 @@ export default {
   font-size: 23rpx;
   line-height: 1.58;
   color: #74829a;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .course-desc {
-  margin-bottom: 14rpx;
+  -webkit-line-clamp: 2;
+}
+
+.course-copy {
+  -webkit-line-clamp: 3;
 }
 
 .meta-row {
@@ -509,6 +530,7 @@ export default {
   background: #f3f6fb;
   font-size: 21rpx;
   color: #627188;
+  white-space: nowrap;
 }
 
 .course-list {
@@ -519,29 +541,34 @@ export default {
 
 .course-card {
   display: flex;
+  align-items: stretch;
   gap: 18rpx;
   padding: 20rpx;
   border-radius: 28rpx;
   background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
+  min-height: 208rpx;
 }
 
 .course-cover {
-  width: 180rpx;
-  height: 180rpx;
-  border-radius: 24rpx;
+  width: 168rpx;
+  height: 168rpx;
+  border-radius: 22rpx;
   overflow: hidden;
   flex-shrink: 0;
+  display: block;
 }
 
 .course-body {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .course-head {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 12rpx;
   margin-bottom: 10rpx;
 }
@@ -549,7 +576,7 @@ export default {
 .tag-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 10rpx;
+  gap: 8rpx;
 }
 
 .tag {
@@ -633,5 +660,25 @@ export default {
   font-size: 24rpx;
   line-height: 1.65;
   color: #74829a;
+}
+
+@media (max-width: 750rpx) {
+  .recommend-card {
+    width: 360rpx;
+  }
+
+  .course-card {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .course-cover {
+    width: 100%;
+    height: 220rpx;
+  }
+
+  .meta-row.compact {
+    margin-top: 12rpx;
+  }
 }
 </style>

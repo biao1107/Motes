@@ -77,7 +77,7 @@
               :adjust-position="true"
               :show-confirm-bar="false"
               auto-height
-            />
+            ></textarea>
           </view>
 
           <view class="field-block">
@@ -89,7 +89,7 @@
               :adjust-position="true"
               :show-confirm-bar="false"
               auto-height
-            />
+            ></textarea>
           </view>
 
           <view class="modal-actions">

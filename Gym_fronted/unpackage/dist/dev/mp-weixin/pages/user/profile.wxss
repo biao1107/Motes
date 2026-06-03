@@ -1,18 +1,51 @@
 
-/* 页面全局样式 */
 .profile-edit-page.data-v-036958a5 {
   width: 100%;
-  height: 100vh;
-  background-color: #f7f8fa;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(111, 146, 255, 0.16), transparent 24%),
+    linear-gradient(180deg, #edf2ff 0%, #f5f7fc 42%, #f4f6fb 100%);
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei',
+    sans-serif;
   position: relative;
   overflow: hidden;
 }
-/* 滚动容器：预留顶部视觉空间，适配底部操作 */
+.page-top-bg.data-v-036958a5 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 220rpx;
+  background: linear-gradient(150deg, #1638b8 0%, #4c67f4 46%, #7790ff 100%);
+  border-radius: 0 0 48rpx 48rpx;
+  z-index: 1;
+  box-shadow: 0 18rpx 46rpx rgba(23, 56, 182, 0.22);
+}
+.top-orb.data-v-036958a5 {
+  position: fixed;
+  z-index: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(8rpx);
+}
+.orb-left.data-v-036958a5 {
+  top: 54rpx;
+  left: -34rpx;
+  width: 140rpx;
+  height: 140rpx;
+  background: rgba(255, 255, 255, 0.12);
+}
+.orb-right.data-v-036958a5 {
+  top: 118rpx;
+  right: -26rpx;
+  width: 180rpx;
+  height: 180rpx;
+  background: rgba(187, 215, 255, 0.2);
+}
 .main-scroll.data-v-036958a5 {
   width: 100%;
   height: 100vh;
-  box-sizing: border-box;
   padding-bottom: 40rpx;
 }
 .content-wrapper.data-v-036958a5 {
@@ -22,89 +55,66 @@
   position: relative;
   z-index: 2;
 }
-/* 按钮点击反馈（小程序专属，全局统一） */
-.btn-hover.data-v-036958a5 {
-  transform: scale(0.98) !important;
-  opacity: 0.95 !important;
-}
-
-/* 顶部渐变背景：和首页视觉统一，打造品牌感 */
-.page-top-bg.data-v-036958a5 {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 200rpx;
-  background: linear-gradient(135deg, #6378f6 0%, #8F5FE8 100%);
-  border-radius: 0 0 40rpx 40rpx;
-  z-index: 1;
-  box-shadow: 0 8rpx 30rpx rgba(99, 120, 246, 0.2);
-}
-
-/* 页面标题区：突出主题，引导用户 */
 .page-header.data-v-036958a5 {
-  margin-bottom: 30rpx;
-  position: relative;
-  z-index: 2;
+  margin-bottom: 28rpx;
+}
+.hero-badge.data-v-036958a5 {
+  display: inline-flex;
+  height: 42rpx;
+  padding: 0 16rpx;
+  margin-bottom: 18rpx;
+  border-radius: 999rpx;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 20rpx;
+  letter-spacing: 1rpx;
 }
 .page-title.data-v-036958a5 {
-  font-size: 36rpx;
+  font-size: 38rpx;
   font-weight: 800;
-  color: #fff;
-  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  color: #ffffff;
   display: block;
   margin-bottom: 8rpx;
 }
 .page-desc.data-v-036958a5 {
   font-size: 24rpx;
+  line-height: 1.55;
   color: rgba(255, 255, 255, 0.9);
-  display: block;
-  line-height: 1.5;
 }
-
-/* 编辑卡片：轻玻璃拟态+微阴影，和首页卡片风格统一 */
 .edit-card.data-v-036958a5 {
   width: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 24rpx;
   padding: 36rpx 30rpx;
   box-sizing: border-box;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
-  -webkit-backdrop-filter: blur(10rpx);
-          backdrop-filter: blur(10rpx);
-  border: 1rpx solid rgba(255, 255, 255, 0.8);
-  position: relative;
-  z-index: 2;
-  margin-bottom: 40rpx;
+  border-radius: 32rpx;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18rpx 38rpx rgba(21, 35, 95, 0.08);
+  margin-bottom: 28rpx;
 }
-
-/* 用户信息区域 */
 .user-info-section.data-v-036958a5 {
   display: flex;
   align-items: center;
   gap: 24rpx;
-  margin-bottom: 40rpx;
-  padding-bottom: 30rpx;
-  border-bottom: 1rpx solid #F2F3F5;
-}
-.user-avatar.data-v-036958a5 {
-  flex-shrink: 0;
+  margin-bottom: 34rpx;
+  padding-bottom: 28rpx;
+  border-bottom: 1rpx solid #eef1f6;
 }
 .avatar-placeholder.data-v-036958a5 {
-  width: 160rpx;
-  height: 160rpx;
+  width: 150rpx;
+  height: 150rpx;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6378f6 0%, #8F5FE8 100%);
+  background: linear-gradient(150deg, #3253ef 0%, #6980ff 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 6rpx solid #fff;
-  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.1);
+  border: 6rpx solid #ffffff;
+  box-shadow: 0 14rpx 34rpx rgba(21, 35, 95, 0.12);
 }
 .avatar-initial.data-v-036958a5 {
-  font-size: 60rpx;
-  color: white;
-  font-weight: 600;
+  font-size: 54rpx;
+  color: #ffffff;
+  font-weight: 700;
 }
 .user-details.data-v-036958a5 {
   flex: 1;
@@ -115,99 +125,61 @@
 .user-name.data-v-036958a5 {
   font-size: 32rpx;
   font-weight: 700;
-  color: #1D2129;
+  color: #172233;
 }
 .user-phone.data-v-036958a5 {
   font-size: 26rpx;
-  color: #86909C;
+  color: #8692a8;
 }
-
-/* 表单域：统一间距，提升输入体验 */
 .form-fields.data-v-036958a5 {
   display: flex;
   flex-direction: column;
-  gap: 30rpx;
+  gap: 26rpx;
 }
-/* 输入组：标签+输入框组合，优化对齐 */
 .input-group.data-v-036958a5 {
   display: flex;
   flex-direction: column;
 }
-/* 标签包装器：处理必填标红，视觉更协调 */
 .label-wrapper.data-v-036958a5 {
   display: flex;
   align-items: center;
   gap: 8rpx;
+  margin-bottom: 10rpx;
 }
 .input-label.data-v-036958a5 {
-  font-size: 28rpx;
-  color: #1D2129;
+  font-size: 26rpx;
   font-weight: 600;
-  margin-bottom: 12rpx;
+  color: #172233;
 }
-/* 必填标签：醒目红，市场通用设计 */
 .required-tag.data-v-036958a5 {
-  font-size: 24rpx;
-  color: #F53F3F;
+  font-size: 22rpx;
   font-weight: 700;
+  color: #ef5350;
 }
-/* 输入框：圆角+微边框+内边距优化，适配小程序输入体验 */
 .input-field.data-v-036958a5 {
   width: 100%;
-  height: 90rpx;
-  background: #F7F8FA;
-  border: 1rpx solid #F2F3F5;
-  border-radius: 16rpx;
-  padding: 0 24rpx;
+  min-height: 82rpx;
+  padding: 0 20rpx;
   box-sizing: border-box;
-  font-size: 28rpx;
-  color: #1D2129;
-  transition: all 0.2s ease;
-}
-/* 输入框聚焦态：主色边框，提升交互感知 */
-.input-field.data-v-036958a5:focus {
-  border-color: #6378f6;
-  background: #fff;
-  box-shadow: 0 0 0 4rpx rgba(99, 120, 246, 0.1);
-}
-/* 占位符：低饱和灰色，提升可读性 */
-.input-placeholder.data-v-036958a5 {
-  color: #86909C;
+  border-radius: 24rpx;
+  background: #f5f7fc;
   font-size: 26rpx;
+  color: #172233;
 }
-
-/* 按钮容器：居中+宽度限制，视觉更聚焦 */
-.btn-wrapper.data-v-036958a5 {
-  position: relative;
-  z-index: 2;
-  padding: 0 10rpx;
+.action-bar.data-v-036958a5 {
+  padding-bottom: 12rpx;
 }
-/* 保存主按钮：渐变主色+呼吸动效+大尺寸，符合市场级操作按钮设计 */
 .save-primary-btn.data-v-036958a5 {
-  width: 100%;
-  height: 100rpx;
-  background: linear-gradient(135deg, #6378f6 0%, #8F5FE8 100%);
-  border: none;
-  border-radius: 50rpx;
+  height: 88rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(150deg, #3253ef 0%, #6980ff 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 25rpx rgba(99, 120, 246, 0.3);
-  transition: all 0.3s ease;
-  animation: breath-036958a5 3s infinite ease-in-out;
+  box-shadow: 0 14rpx 24rpx rgba(50, 83, 239, 0.2);
 }
-/* 呼吸动效：和首页主按钮统一，提升视觉焦点 */
-@keyframes breath-036958a5 {
-0%, 100% {
-    box-shadow: 0 8rpx 25rpx rgba(99, 120, 246, 0.3);
-}
-50% {
-    box-shadow: 0 12rpx 35rpx rgba(99, 120, 246, 0.4);
-}
-}
-/* 按钮文字：白色+粗体，保证辨识度 */
 .save-btn-text.data-v-036958a5 {
-  font-size: 32rpx;
+  font-size: 27rpx;
   font-weight: 700;
-  color: #fff;
+  color: #ffffff;
 }

@@ -1,79 +1,82 @@
 <template>
-	<view class="container">
-		<!-- 页面标题 -->
-		<view class="page-header">
-			<text class="header-title">📅 今日训练记录</text>
-			<text class="header-date">{{ todayDate }}</text>
-		</view>
+  <view class="training-today-page">
+    <view class="hero-card">
+      <view class="hero-badge">Today Record</view>
+      <text class="hero-title">把今天的训练记录汇总成一张可复盘的小看板</text>
+      <text class="hero-desc">
+        你可以快速看到今天做了几次训练、总共完成多少组或次数，以及哪些训练已经完成。
+      </text>
+      <view class="hero-date">{{ todayDate }}</view>
+    </view>
 
-		<!-- 加载状态 -->
-		<view v-if="loading" class="loading-container">
-			<text>加载中...</text>
-		</view>
+    <view v-if="loading" class="loading-panel">
+      <view class="loading-spinner"></view>
+      <text class="loading-title">正在加载今日训练记录</text>
+      <text class="loading-copy">准备同步今天的训练结果和完成情况</text>
+    </view>
 
-		<!-- 无记录状态 -->
-		<view v-else-if="trainRecords.length === 0" class="empty-container">
-			<text class="empty-icon">🏋️</text>
-			<text class="empty-text">今日暂无训练记录</text>
-			<text class="empty-subtext">开始训练来记录你的进度吧</text>
-		</view>
+    <view v-else-if="trainRecords.length === 0" class="empty-card">
+      <view class="empty-icon">今</view>
+      <text class="empty-title">今天还没有训练记录</text>
+      <text class="empty-desc">先去开始一次训练，回来这里就能看到今天的训练结果。</text>
+    </view>
 
-		<!-- 训练记录列表 -->
-		<view v-else class="records-container">
-			<view 
-				class="record-card" 
-				v-for="record in trainRecords" 
-				:key="record.id"
-			>
-				<view class="record-header">
-					<view class="group-info">
-						<text class="group-name">{{ getGroupName(record.groupId) }}</text>
-						<view class="status-badge" :class="'status-' + record.status">
-							<text class="status-text">{{ getStatusText(record.status) }}</text>
-						</view>
-					</view>
-				</view>
-				
-				<view class="record-body">
-					<view class="record-item">
-						<text class="item-label">训练日期</text>
-						<text class="item-value">{{ formatDate(record.trainDate) }}</text>
-					</view>
-					<view class="record-item">
-						<text class="item-label">完成次数</text>
-						<text class="item-value highlight">{{ record.completeCount || 0 }}</text>
-					</view>
-					<view class="record-item" v-if="record.score">
-						<text class="item-label">获得积分</text>
-						<text class="item-value score">{{ record.score }}</text>
-					</view>
-				</view>
-				
-				<view class="record-footer">
-					<text class="create-time">创建于: {{ formatDateTime(record.createTime) }}</text>
-				</view>
-			</view>
-		</view>
+    <template v-else>
+      <view class="summary-card">
+        <view class="summary-grid">
+          <view class="summary-item">
+            <text class="summary-label">训练次数</text>
+            <text class="summary-value">{{ trainRecords.length }}</text>
+          </view>
+          <view class="summary-item">
+            <text class="summary-label">总完成量</text>
+            <text class="summary-value">{{ totalCompleted }}</text>
+          </view>
+          <view class="summary-item">
+            <text class="summary-label">已完成</text>
+            <text class="summary-value">{{ completedCount }}</text>
+          </view>
+        </view>
+      </view>
 
-		<!-- 统计信息 -->
-		<view class="stats-card" v-if="trainRecords.length > 0">
-			<view class="stats-title">📊 今日统计</view>
-			<view class="stats-content">
-				<view class="stat-item">
-					<text class="stat-value">{{ trainRecords.length }}</text>
-					<text class="stat-label">训练次数</text>
-				</view>
-				<view class="stat-item">
-					<text class="stat-value">{{ totalCompleted }}</text>
-					<text class="stat-label">总完成</text>
-				</view>
-				<view class="stat-item">
-					<text class="stat-value">{{ completedCount }}</text>
-					<text class="stat-label">已完成</text>
-				</view>
-			</view>
-		</view>
-	</view>
+      <view class="section-card">
+        <view class="section-head">
+          <view>
+            <text class="section-title">今日训练明细</text>
+            <text class="section-subtitle">每条记录都会展示所属组、完成量和创建时间</text>
+          </view>
+        </view>
+
+        <view class="record-list">
+          <view class="record-card" v-for="record in trainRecords" :key="record.id">
+            <view class="record-head">
+              <text class="record-group">{{ getGroupName(record.groupId) }}</text>
+              <view class="status-badge" :class="'status-' + record.status">
+                <text class="status-text">{{ getStatusText(record.status) }}</text>
+              </view>
+            </view>
+
+            <view class="record-grid">
+              <view class="record-item">
+                <text class="record-label">训练日期</text>
+                <text class="record-value">{{ formatDate(record.trainDate) }}</text>
+              </view>
+              <view class="record-item">
+                <text class="record-label">完成次数</text>
+                <text class="record-value highlight">{{ record.completeCount || 0 }}</text>
+              </view>
+              <view class="record-item" v-if="record.score">
+                <text class="record-label">获得积分</text>
+                <text class="record-value score">{{ record.score }}</text>
+              </view>
+            </view>
+
+            <text class="record-time">创建于 {{ formatDateTime(record.createTime) }}</text>
+          </view>
+        </view>
+      </view>
+    </template>
+  </view>
 </template>
 
 <script>
@@ -81,282 +84,377 @@ import { apiGetTodayTraining, apiMyGroups } from '@/common/api.js';
 import { requireLogin } from '@/common/auth.js';
 
 export default {
-	data() {
-		return {
-			loading: false,
-			trainRecords: [],
-			groups: [],
-			todayDate: ''
-		};
-	},
-
-	computed: {
-		totalCompleted() {
-			return this.trainRecords.reduce((sum, record) => {
-				return sum + (record.completeCount || 0);
-			}, 0);
-		},
-		completedCount() {
-			return this.trainRecords.filter(record => record.status === 1).length;
-		}
-	},
-
-	onLoad() {
-		this.setTodayDate();
-	},
-
-	onShow() {
-		if (!requireLogin()) return;
-		this.loadTodayTraining();
-		this.loadGroups();
-	},
-
-	methods: {
-		setTodayDate() {
-			const now = new Date();
-			this.todayDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-		},
-
-		async loadTodayTraining() {
-			this.loading = true;
-			try {
-				const res = await apiGetTodayTraining();
-				this.trainRecords = res.data || res || [];
-			} catch (error) {
-				console.error('加载训练记录失败:', error);
-				uni.showToast({
-					title: '加载失败',
-					icon: 'none'
-				});
-			} finally {
-				this.loading = false;
-			}
-		},
-
-		async loadGroups() {
-			try {
-				const res = await apiMyGroups();
-				this.groups = res.data || res || [];
-			} catch (error) {
-				console.error('加载群组失败:', error);
-			}
-		},
-
-		getGroupName(groupId) {
-			const group = this.groups.find(g => g.id === groupId);
-			return group ? group.groupName : `群组 ${groupId}`;
-		},
-
-		getStatusText(status) {
-			const statusMap = {
-				0: '未完成',
-				1: '已完成',
-				2: '已放弃'
-			};
-			return statusMap[status] || '未知';
-		},
-
-		formatDate(dateStr) {
-			if (!dateStr) return '-';
-			try {
-				const date = new Date(dateStr);
-				return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-			} catch (e) {
-				return dateStr;
-			}
-		},
-
-		formatDateTime(dateTimeStr) {
-			if (!dateTimeStr) return '-';
-			try {
-				const date = new Date(dateTimeStr);
-				return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-			} catch (e) {
-				return dateTimeStr;
-			}
-		}
-	}
+  data() {
+    return {
+      loading: false,
+      trainRecords: [],
+      groups: [],
+      todayDate: ''
+    };
+  },
+  computed: {
+    totalCompleted() {
+      return this.trainRecords.reduce((sum, record) => sum + (record.completeCount || 0), 0);
+    },
+    completedCount() {
+      return this.trainRecords.filter((record) => record.status === 1).length;
+    }
+  },
+  onLoad() {
+    this.setTodayDate();
+  },
+  onShow() {
+    if (!requireLogin()) return;
+    this.loadTodayTraining();
+    this.loadGroups();
+  },
+  methods: {
+    setTodayDate() {
+      const now = new Date();
+      this.todayDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+        now.getDate()
+      ).padStart(2, '0')}`;
+    },
+    async loadTodayTraining() {
+      this.loading = true;
+      try {
+        const res = await apiGetTodayTraining();
+        this.trainRecords = res.data || res || [];
+      } catch (error) {
+        console.error('加载训练记录失败:', error);
+        uni.showToast({
+          title: '加载失败',
+          icon: 'none'
+        });
+      } finally {
+        this.loading = false;
+      }
+    },
+    async loadGroups() {
+      try {
+        const res = await apiMyGroups();
+        this.groups = res.data || res || [];
+      } catch (error) {
+        console.error('加载群组失败:', error);
+      }
+    },
+    getGroupName(groupId) {
+      const group = this.groups.find((item) => item.id === groupId);
+      return group ? group.groupName : `群组 ${groupId}`;
+    },
+    getStatusText(status) {
+      const statusMap = {
+        0: '未完成',
+        1: '已完成',
+        2: '已放弃'
+      };
+      return statusMap[status] || '未知';
+    },
+    formatDate(dateStr) {
+      if (!dateStr) return '-';
+      try {
+        const date = new Date(dateStr);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(
+          2,
+          '0'
+        )}`;
+      } catch (error) {
+        return dateStr;
+      }
+    },
+    formatDateTime(dateTimeStr) {
+      if (!dateTimeStr) return '-';
+      try {
+        const date = new Date(dateTimeStr);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(
+          2,
+          '0'
+        )} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+      } catch (error) {
+        return dateTimeStr;
+      }
+    }
+  }
 };
 </script>
 
 <style scoped>
-.container {
-	padding: 30rpx;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	min-height: 100vh;
+.training-today-page {
+  min-height: 100vh;
+  padding: 24rpx;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at top right, rgba(111, 146, 255, 0.16), transparent 24%),
+    linear-gradient(180deg, #edf2ff 0%, #f5f7fc 42%, #f4f6fb 100%);
 }
 
-.page-header {
-	margin-bottom: 30rpx;
-	text-align: center;
+.hero-card,
+.summary-card,
+.section-card,
+.empty-card {
+  border-radius: 32rpx;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-.header-title {
-	font-size: 40rpx;
-	font-weight: bold;
-	color: #fff;
-	display: block;
+.hero-card {
+  padding: 34rpx 30rpx;
+  margin-bottom: 22rpx;
+  background: linear-gradient(150deg, #1638b8 0%, #4c67f4 46%, #7790ff 100%);
+  box-shadow: 0 20rpx 50rpx rgba(23, 56, 182, 0.22);
 }
 
-.header-date {
-	font-size: 28rpx;
-	color: rgba(255, 255, 255, 0.8);
-	margin-top: 10rpx;
-	display: block;
+.hero-badge {
+  display: inline-flex;
+  height: 42rpx;
+  padding: 0 16rpx;
+  margin-bottom: 18rpx;
+  border-radius: 999rpx;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 20rpx;
+  letter-spacing: 1rpx;
 }
 
-.loading-container,
-.empty-container {
-	text-align: center;
-	padding: 100rpx 0;
-	color: #fff;
+.hero-title {
+  display: block;
+  margin-bottom: 12rpx;
+  font-size: 40rpx;
+  line-height: 1.28;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.hero-desc {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.hero-date {
+  margin-top: 22rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.loading-panel,
+.empty-card {
+  min-height: 48vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 72rpx;
+  height: 72rpx;
+  margin-bottom: 20rpx;
+  border: 6rpx solid rgba(61, 97, 242, 0.12);
+  border-top-color: #4864f2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-title,
+.empty-title {
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1b2537;
+}
+
+.loading-copy,
+.empty-desc {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: #738198;
+}
+
+.empty-card,
+.summary-card,
+.section-card {
+  padding: 30rpx 24rpx;
+  margin-bottom: 20rpx;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18rpx 38rpx rgba(21, 35, 95, 0.08);
 }
 
 .empty-icon {
-	font-size: 100rpx;
-	display: block;
-	margin-bottom: 20rpx;
+  width: 96rpx;
+  height: 96rpx;
+  margin-bottom: 20rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(150deg, #3354ef 0%, #6c81ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.empty-text {
-	font-size: 32rpx;
-	display: block;
-	margin-bottom: 10rpx;
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14rpx;
 }
 
-.empty-subtext {
-	font-size: 26rpx;
-	opacity: 0.8;
+.summary-item {
+  padding: 20rpx 14rpx;
+  border-radius: 24rpx;
+  text-align: center;
+  background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
 }
 
-.records-container {
-	display: flex;
-	flex-direction: column;
-	gap: 20rpx;
+.summary-label {
+  display: block;
+  margin-bottom: 10rpx;
+  font-size: 22rpx;
+  color: #738198;
+}
+
+.summary-value {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #172233;
+}
+
+.section-head {
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #172233;
+}
+
+.section-subtitle {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.55;
+  color: #74829a;
+}
+
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
 }
 
 .record-card {
-	background: rgba(255, 255, 255, 0.95);
-	border-radius: 20rpx;
-	padding: 30rpx;
-	box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
+  padding: 20rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
 }
 
-.record-header {
-	margin-bottom: 20rpx;
+.record-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
 }
 
-.group-info {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-
-.group-name {
-	font-size: 32rpx;
-	font-weight: bold;
-	color: #333;
+.record-group {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #172233;
 }
 
 .status-badge {
-	padding: 8rpx 20rpx;
-	border-radius: 30rpx;
-	font-size: 24rpx;
-	font-weight: 500;
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+}
+
+.status-text {
+  font-size: 21rpx;
+  font-weight: 700;
 }
 
 .status-0 {
-	background: #fff3e0;
-	color: #f57c00;
+  background: #fff5ea;
+}
+
+.status-0 .status-text {
+  color: #d67a18;
 }
 
 .status-1 {
-	background: #e8f5e9;
-	color: #4caf50;
+  background: #eef8f2;
+}
+
+.status-1 .status-text {
+  color: #2f8a5c;
 }
 
 .status-2 {
-	background: #ffebee;
-	color: #f44336;
+  background: #fff0ef;
 }
 
-.record-body {
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 20rpx;
+.status-2 .status-text {
+  color: #d05b4f;
+}
+
+.record-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14rpx;
 }
 
 .record-item {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+  padding: 18rpx 12rpx;
+  border-radius: 22rpx;
+  text-align: center;
+  background: #ffffff;
 }
 
-.item-label {
-	font-size: 24rpx;
-	color: #999;
-	margin-bottom: 8rpx;
+.record-label {
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 21rpx;
+  color: #738198;
 }
 
-.item-value {
-	font-size: 36rpx;
-	font-weight: bold;
-	color: #333;
+.record-value {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #172233;
 }
 
-.item-value.highlight {
-	color: #667eea;
+.record-value.highlight {
+  color: #4564f2;
 }
 
-.item-value.score {
-	color: #ffa500;
+.record-value.score {
+  color: #f39a27;
 }
 
-.record-footer {
-	border-top: 1rpx solid #eee;
-	padding-top: 20rpx;
+.record-time {
+  display: block;
+  margin-top: 16rpx;
+  font-size: 21rpx;
+  color: #8b96aa;
 }
 
-.create-time {
-	font-size: 22rpx;
-	color: #999;
-}
-
-.stats-card {
-	background: rgba(255, 255, 255, 0.95);
-	border-radius: 20rpx;
-	padding: 30rpx;
-	margin-top: 30rpx;
-	box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
-}
-
-.stats-title {
-	font-size: 32rpx;
-	font-weight: bold;
-	color: #333;
-	margin-bottom: 20rpx;
-}
-
-.stats-content {
-	display: flex;
-	justify-content: space-around;
-}
-
-.stat-item {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-
-.stat-value {
-	font-size: 48rpx;
-	font-weight: bold;
-	color: #667eea;
-}
-
-.stat-label {
-	font-size: 24rpx;
-	color: #999;
-	margin-top: 10rpx;
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

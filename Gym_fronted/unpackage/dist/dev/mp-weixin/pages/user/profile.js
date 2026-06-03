@@ -27,8 +27,8 @@ const _sfc_main = {
         const data = await common_api.apiGetProfile();
         form.value = Object.assign({}, form.value, data || {});
         loaded.value = true;
-      } catch (e) {
-        common_vendor.index.__f__("error", "at pages/user/profile.vue:155", "加载用户档案失败:", e);
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/user/profile.vue:139", "加载用户档案失败:", error);
         common_vendor.index.showToast({ title: "加载失败", icon: "none" });
         loaded.value = true;
       } finally {
@@ -37,7 +37,7 @@ const _sfc_main = {
     };
     const onSave = async () => {
       if (!form.value.fitnessGoal || !form.value.trainTime || !form.value.trainScene) {
-        common_vendor.index.showToast({ title: "请填写标*的必填项", icon: "none", duration: 2e3 });
+        common_vendor.index.showToast({ title: "请填写带 * 的必填项", icon: "none", duration: 2e3, mask: true });
         return;
       }
       try {
@@ -54,8 +54,8 @@ const _sfc_main = {
         setTimeout(() => {
           getCurrentPages().length > 1 ? common_vendor.index.navigateBack() : loadData();
         }, 1500);
-      } catch (e) {
-        common_vendor.index.__f__("error", "at pages/user/profile.vue:186", "保存用户档案失败:", e);
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/user/profile.vue:168", "保存用户档案失败:", error);
         common_vendor.index.showToast({ title: "保存失败，请重试", icon: "none" });
       } finally {
         common_vendor.index.hideLoading();
