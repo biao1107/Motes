@@ -7,6 +7,7 @@ const _sfc_main = {
     return {
       id: "",
       loaded: false,
+      errorMessage: "",
       detail: {},
       groupChallenges: [],
       showInvite: false,
@@ -24,9 +25,20 @@ const _sfc_main = {
       challengeCoverImageUrl: ""
     };
   },
+  computed: {
+    memberCount() {
+      return Array.isArray(this.detail.members) ? this.detail.members.length : 0;
+    },
+    myRoleLabel() {
+      const currentUserId = common_auth.getUserIdFromToken();
+      const currentMember = (this.detail.members || []).find((member) => member.userId === currentUserId);
+      if (!currentMember)
+        return "未知";
+      return currentMember.role === "ADMIN" ? "管理员" : "成员";
+    }
+  },
   onLoad(query) {
     this.id = query && query.id ? Number(query.id) : null;
-    common_vendor.index.__f__("log", "at pages/group/detail.vue:184", "群组详情页加载，groupId:", this.id);
   },
   onShow() {
     if (!common_auth.requireLogin())
@@ -35,33 +47,28 @@ const _sfc_main = {
   },
   methods: {
     async loadData() {
+      if (!this.id) {
+        this.loaded = true;
+        this.errorMessage = "无效的组 ID";
+        return;
+      }
+      this.loaded = false;
+      this.errorMessage = "";
       try {
         common_vendor.index.showLoading({ title: "加载中..." });
-        const res = await common_api.apiGroupDetailWithMembers(this.id);
-        this.detail = (res == null ? void 0 : res.data) || res || {};
+        const [detailRes, challengeRes] = await Promise.all([
+          common_api.apiGroupDetailWithMembers(this.id),
+          common_api.apiGetGroupChallenges(this.id)
+        ]);
+        this.detail = (detailRes == null ? void 0 : detailRes.data) || detailRes || {};
+        this.groupChallenges = (challengeRes == null ? void 0 : challengeRes.data) || challengeRes || [];
         this.loaded = true;
         common_vendor.index.hideLoading();
-        await this.loadGroupChallenges();
-      } catch (e) {
+      } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/group/detail.vue:203", "Failed to load group detail:", e);
-        common_vendor.index.showToast({
-          title: "加载组信息失败",
-          icon: "none"
-        });
+        common_vendor.index.__f__("error", "at pages/group/detail.vue:329", "加载组详情失败:", error);
+        this.errorMessage = "暂时无法获取组详情，请稍后重试。";
         this.loaded = true;
-      }
-    },
-    async loadGroupChallenges() {
-      try {
-        const res = await common_api.apiGetGroupChallenges(this.id);
-        this.groupChallenges = (res == null ? void 0 : res.data) || res || [];
-      } catch (e) {
-        common_vendor.index.__f__("error", "at pages/group/detail.vue:217", "Failed to load group challenges:", e);
-        common_vendor.index.showToast({
-          title: "加载组内挑战失败",
-          icon: "none"
-        });
       }
     },
     async onInvite() {
@@ -70,7 +77,7 @@ const _sfc_main = {
         return;
       }
       if (this.inviteForm.username.trim().length < 2) {
-        common_vendor.index.showToast({ title: "用户名至少需要2个字符", icon: "none" });
+        common_vendor.index.showToast({ title: "用户名至少需要 2 个字符", icon: "none" });
         return;
       }
       try {
@@ -85,8 +92,9 @@ const _sfc_main = {
         common_vendor.index.showToast({ title: "邀请已发送", icon: "success" });
         this.showInvite = false;
         this.inviteForm.username = "";
-      } catch (e) {
+      } catch (error) {
         common_vendor.index.hideLoading();
+        common_vendor.index.__f__("error", "at pages/group/detail.vue:359", "发送邀请失败:", error);
         common_vendor.index.showToast({ title: "邀请发送失败", icon: "none" });
       }
     },
@@ -96,7 +104,7 @@ const _sfc_main = {
     },
     doInvite() {
       if (!this.inviteForm.username || this.inviteForm.username.trim().length < 2) {
-        common_vendor.index.showToast({ title: "用户名至少2个字符", icon: "none" });
+        common_vendor.index.showToast({ title: "用户名至少 2 个字符", icon: "none" });
         return;
       }
       this.onInvite();
@@ -104,25 +112,19 @@ const _sfc_main = {
     goToChatRoom() {
       common_vendor.index.navigateTo({ url: `/pages/group/chat?id=${this.id}` });
     },
-    // 格式化日期时间
     formatDate(dateString) {
       if (!dateString)
         return "";
-      let date;
-      if (typeof dateString === "string" && dateString.includes("T")) {
-        date = new Date(dateString);
-      } else if (typeof dateString === "number") {
-        date = new Date(dateString);
-      } else {
-        date = new Date(dateString);
-      }
-      if (isNaN(date.getTime())) {
+      const date = new Date(dateString);
+      if (Number.isNaN(date.getTime()))
         return "";
-      }
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
       const day = String(date.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
+    },
+    statusText(status) {
+      return ["未开始", "进行中", "已结束"][status] || status;
     },
     onStartDateChange(e) {
       this.createChallengeForm.startDate = e.detail.value;
@@ -143,7 +145,6 @@ const _sfc_main = {
             common_vendor.index.showLoading({ title: "上传中..." });
             const uploadRes = await common_api.apiUploadAction(res.tempFilePaths[0]);
             common_vendor.index.hideLoading();
-            common_vendor.index.showToast({ title: "上传成功", icon: "success" });
             let objectName = "";
             if (uploadRes && typeof uploadRes === "object") {
               if (uploadRes.data) {
@@ -160,10 +161,11 @@ const _sfc_main = {
             } else {
               this.challengeCoverImageUrl = objectName;
             }
-          } catch (e) {
+            common_vendor.index.showToast({ title: "上传成功", icon: "success" });
+          } catch (error) {
             common_vendor.index.hideLoading();
-            common_vendor.index.__f__("error", "at pages/group/detail.vue:344", "封面图片上传失败:", e);
-            common_vendor.index.showToast({ title: e.errMsg || "上传失败，请重试", icon: "none" });
+            common_vendor.index.__f__("error", "at pages/group/detail.vue:431", "封面上传失败:", error);
+            common_vendor.index.showToast({ title: error.errMsg || "上传失败，请重试", icon: "none" });
           }
         },
         fail: () => {
@@ -195,7 +197,7 @@ const _sfc_main = {
           maxMembers: parseInt(this.createChallengeForm.maxMembers),
           coverImage: this.challengeCoverImageUrl
         };
-        const res = await common_api.apiCreateGroupChallenge(challengeData);
+        await common_api.apiCreateGroupChallenge(challengeData);
         common_vendor.index.hideLoading();
         common_vendor.index.showToast({ title: "挑战创建成功", icon: "success" });
         this.createChallengeForm = {
@@ -207,31 +209,46 @@ const _sfc_main = {
         };
         this.challengeCoverImageUrl = "";
         this.showCreateChallenge = false;
-        await this.loadGroupChallenges();
-      } catch (e) {
+        const challengeRes = await common_api.apiGetGroupChallenges(this.id);
+        this.groupChallenges = (challengeRes == null ? void 0 : challengeRes.data) || challengeRes || [];
+      } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/group/detail.vue:403", "创建组内挑战失败:", e);
+        common_vendor.index.__f__("error", "at pages/group/detail.vue:486", "创建组内挑战失败:", error);
         common_vendor.index.showToast({
-          title: e.errMsg || "创建失败，请重试",
+          title: error.errMsg || "创建失败，请重试",
           icon: "none"
         });
       }
     },
-    async goToChallengeDetail(challengeId) {
+    goToChallengeDetail(challengeId) {
       common_vendor.index.navigateTo({ url: `/pages/challenge/detail?id=${challengeId}` });
     }
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: $data.loaded
-  }, $data.loaded ? common_vendor.e({
-    b: common_vendor.t($data.detail.groupName || "未命名搭子组"),
-    c: common_vendor.t($data.detail.members ? $data.detail.members.length : 0),
-    d: common_vendor.t($data.detail.fixedTime || "-"),
-    e: common_vendor.o(($event) => $data.showInvite = true),
-    f: common_vendor.t($data.detail.members ? $data.detail.members.length : 0),
-    g: common_vendor.f($data.detail.members, (member, index, i0) => {
+    a: !$data.loaded
+  }, !$data.loaded ? {} : common_vendor.e({
+    b: $data.errorMessage
+  }, $data.errorMessage ? {
+    c: common_vendor.t($data.errorMessage),
+    d: common_vendor.o((...args) => $options.loadData && $options.loadData(...args))
+  } : common_vendor.e({
+    e: common_vendor.t($data.detail.groupName || "未命名搭子组"),
+    f: common_vendor.t($data.detail.fixedTime ? `固定训练时间：${$data.detail.fixedTime}` : "还没有配置固定训练时间，建议补充后方便大家协同训练。"),
+    g: common_vendor.o(($event) => $data.showInvite = true),
+    h: common_vendor.t($options.memberCount),
+    i: common_vendor.t($options.myRoleLabel),
+    j: common_vendor.t($options.formatDate($data.detail.createTime) || "未知"),
+    k: common_vendor.o((...args) => $options.goToChatRoom && $options.goToChatRoom(...args)),
+    l: common_vendor.o(($event) => $data.showCreateChallenge = true),
+    m: common_vendor.t($data.detail.status === 1 ? "正常" : "已停用"),
+    n: common_vendor.t($data.detail.fixedTime || "未设置"),
+    o: common_vendor.t($data.groupChallenges.length),
+    p: common_vendor.t($options.memberCount),
+    q: $options.memberCount > 0
+  }, $options.memberCount > 0 ? {
+    r: common_vendor.f($data.detail.members, (member, k0, i0) => {
       return common_vendor.e({
         a: member.avatar
       }, member.avatar ? {
@@ -239,77 +256,72 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       } : {
         c: common_vendor.t(member.nickname ? member.nickname.charAt(0) : "#")
       }, {
-        d: common_vendor.t(member.nickname || "搭子 " + member.userId),
-        e: member.role === "ADMIN"
-      }, member.role === "ADMIN" ? {} : {}, {
-        f: member.createTime
-      }, member.createTime ? {
-        g: common_vendor.t($options.formatDate(member.createTime))
-      } : {}, {
-        h: member.role === "ADMIN"
-      }, member.role === "ADMIN" ? {} : {}, {
-        i: member.id
+        d: common_vendor.t(member.nickname || `搭子 ${member.userId}`),
+        e: common_vendor.t(member.role === "ADMIN" ? "管理员" : "成员"),
+        f: member.role === "ADMIN" ? 1 : "",
+        g: common_vendor.t($options.formatDate(member.createTime) || "未知"),
+        h: member.id || member.userId
       });
-    }),
-    h: common_vendor.o(($event) => $data.showCreateChallenge = true),
-    i: $data.groupChallenges.length === 0
-  }, $data.groupChallenges.length === 0 ? {} : {
-    j: common_vendor.f($data.groupChallenges, (challenge, k0, i0) => {
+    })
+  } : {}, {
+    s: common_vendor.o(($event) => $data.showCreateChallenge = true),
+    t: $data.groupChallenges.length > 0
+  }, $data.groupChallenges.length > 0 ? {
+    v: common_vendor.f($data.groupChallenges, (challenge, k0, i0) => {
       return common_vendor.e({
         a: challenge.coverImage
       }, challenge.coverImage ? {
         b: challenge.coverImage
       } : {}, {
         c: common_vendor.t(challenge.challengeName || challenge.title || challenge.name),
-        d: common_vendor.t(["未开始", "进行中", "已结束"][challenge.status] || challenge.status),
+        d: common_vendor.t($options.statusText(challenge.status)),
         e: common_vendor.n("status-" + challenge.status),
-        f: common_vendor.t(challenge.startDate),
-        g: common_vendor.t(challenge.endDate),
+        f: common_vendor.t($options.formatDate(challenge.startDate) || challenge.startDate),
+        g: common_vendor.t($options.formatDate(challenge.endDate) || challenge.endDate),
         h: challenge.id,
         i: common_vendor.o(($event) => $options.goToChallengeDetail(challenge.id), challenge.id)
       });
     })
-  }, {
-    k: common_vendor.o((...args) => $options.goToChatRoom && $options.goToChatRoom(...args)),
-    l: $data.showInvite
+  } : {}), {
+    w: $data.showInvite
   }, $data.showInvite ? {
-    m: common_vendor.o((...args) => $options.closeInvitePopup && $options.closeInvitePopup(...args)),
-    n: $data.inviteForm.username,
-    o: common_vendor.o(($event) => $data.inviteForm.username = $event.detail.value),
-    p: common_vendor.o((...args) => $options.closeInvitePopup && $options.closeInvitePopup(...args)),
-    q: common_vendor.o((...args) => $options.doInvite && $options.doInvite(...args)),
-    r: common_vendor.o(() => {
+    x: common_vendor.o((...args) => $options.closeInvitePopup && $options.closeInvitePopup(...args)),
+    y: $data.inviteForm.username,
+    z: common_vendor.o(($event) => $data.inviteForm.username = $event.detail.value),
+    A: common_vendor.o((...args) => $options.closeInvitePopup && $options.closeInvitePopup(...args)),
+    B: common_vendor.o((...args) => $options.doInvite && $options.doInvite(...args)),
+    C: common_vendor.o(() => {
     }),
-    s: common_vendor.o((...args) => $options.closeInvitePopup && $options.closeInvitePopup(...args))
+    D: common_vendor.o((...args) => $options.closeInvitePopup && $options.closeInvitePopup(...args))
   } : {}, {
-    t: $data.showCreateChallenge
+    E: $data.showCreateChallenge
   }, $data.showCreateChallenge ? common_vendor.e({
-    v: common_vendor.o(($event) => $data.showCreateChallenge = false),
-    w: $data.createChallengeForm.name,
-    x: common_vendor.o(($event) => $data.createChallengeForm.name = $event.detail.value),
-    y: $data.createChallengeForm.desc,
-    z: common_vendor.o(($event) => $data.createChallengeForm.desc = $event.detail.value),
-    A: common_vendor.t($data.createChallengeForm.startDate || "选择开始日期"),
-    B: $data.createChallengeForm.startDate,
-    C: common_vendor.o((...args) => $options.onStartDateChange && $options.onStartDateChange(...args)),
-    D: common_vendor.t($data.createChallengeForm.endDate || "选择结束日期"),
-    E: $data.createChallengeForm.endDate,
-    F: common_vendor.o((...args) => $options.onEndDateChange && $options.onEndDateChange(...args)),
-    G: $data.createChallengeForm.maxMembers,
-    H: common_vendor.o(common_vendor.m(($event) => $data.createChallengeForm.maxMembers = $event.detail.value, {
+    F: common_vendor.o(($event) => $data.showCreateChallenge = false),
+    G: $data.createChallengeForm.name,
+    H: common_vendor.o(($event) => $data.createChallengeForm.name = $event.detail.value),
+    I: $data.createChallengeForm.desc,
+    J: common_vendor.o(($event) => $data.createChallengeForm.desc = $event.detail.value),
+    K: common_vendor.t($data.createChallengeForm.startDate || "选择开始日期"),
+    L: $data.createChallengeForm.startDate,
+    M: common_vendor.o((...args) => $options.onStartDateChange && $options.onStartDateChange(...args)),
+    N: common_vendor.t($data.createChallengeForm.endDate || "选择结束日期"),
+    O: $data.createChallengeForm.endDate,
+    P: common_vendor.o((...args) => $options.onEndDateChange && $options.onEndDateChange(...args)),
+    Q: $data.createChallengeForm.maxMembers,
+    R: common_vendor.o(common_vendor.m(($event) => $data.createChallengeForm.maxMembers = $event.detail.value, {
       number: true
     })),
-    I: common_vendor.o((...args) => $options.selectChallengeCoverImage && $options.selectChallengeCoverImage(...args)),
-    J: $data.challengeCoverImageUrl
-  }, $data.challengeCoverImageUrl ? {
-    K: $data.challengeCoverImageUrl
-  } : {}, {
-    L: common_vendor.o(($event) => $data.showCreateChallenge = false),
-    M: common_vendor.o((...args) => $options.onCreateGroupChallenge && $options.onCreateGroupChallenge(...args)),
-    N: common_vendor.o(() => {
+    S: !$data.challengeCoverImageUrl
+  }, !$data.challengeCoverImageUrl ? {} : {
+    T: $data.challengeCoverImageUrl
+  }, {
+    U: common_vendor.o((...args) => $options.selectChallengeCoverImage && $options.selectChallengeCoverImage(...args)),
+    V: common_vendor.o(($event) => $data.showCreateChallenge = false),
+    W: common_vendor.o((...args) => $options.onCreateGroupChallenge && $options.onCreateGroupChallenge(...args)),
+    X: common_vendor.o(() => {
     }),
-    O: common_vendor.o(($event) => $data.showCreateChallenge = false)
-  }) : {}) : {});
+    Y: common_vendor.o(($event) => $data.showCreateChallenge = false)
+  }) : {}));
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-858a584d"]]);
 wx.createPage(MiniProgramPage);

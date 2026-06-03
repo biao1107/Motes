@@ -14,11 +14,9 @@ const _sfc_main = {
       total: 0,
       searchKeyword: "",
       statusFilter: null,
-      // null表示全部状态
       statusIndex: 0,
       statusOptions: ["全部状态", "未开始", "进行中", "已结束"],
       hasMore: true,
-      // 创建挑战弹窗相关
       showCreateModalFlag: false,
       submitting: false,
       minDate: "",
@@ -26,7 +24,6 @@ const _sfc_main = {
       groupIndex: -1,
       createForm: {
         challengeType: "public",
-        // 'public' 或 'group'
         challengeName: "",
         startDate: "",
         endDate: "",
@@ -35,16 +32,12 @@ const _sfc_main = {
         coverImage: "",
         groupId: null
       },
-      // 独立选择器相关
       showDatePicker: false,
       datePickerType: "",
-      // 'startDate' 或 'endDate'
       datePickerValue: [0, 0, 0],
-      // [yearIndex, monthIndex, dayIndex]
       years: [],
       months: [],
       days: [],
-      // 索引变化追踪
       indexChangeLog: [],
       showGroupPicker: false,
       selectedGroupIndex: -1
@@ -59,7 +52,6 @@ const _sfc_main = {
     this.refreshData();
   },
   methods: {
-    // 加载挑战数据
     async loadData() {
       if (!common_auth.requireLogin())
         return;
@@ -82,8 +74,8 @@ const _sfc_main = {
         this.total = newChallenges.length;
         this.hasMore = false;
         this.noMoreData = true;
-      } catch (e) {
-        common_vendor.index.__f__("error", "at pages/challenge/index.vue:382", "加载挑战列表失败:", e);
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/challenge/index.vue:377", "加载挑战列表失败:", error);
         common_vendor.index.showToast({
           title: "加载失败",
           icon: "none"
@@ -93,13 +85,11 @@ const _sfc_main = {
         this.loadingMore = false;
       }
     },
-    // 刷新数据
     refreshData() {
       this.page = 1;
       this.noMoreData = false;
       this.loadData();
     },
-    // 加载更多数据
     loadMore() {
       if (this.loadingMore || this.noMoreData)
         return;
@@ -108,13 +98,11 @@ const _sfc_main = {
         icon: "none"
       });
     },
-    // 处理搜索
     handleSearch(e) {
       this.searchKeyword = e.detail.value;
       this.debounceSearch();
     },
-    // 防抖搜索
-    debounceSearch: function() {
+    debounceSearch() {
       clearTimeout(this.searchTimer);
       this.searchTimer = setTimeout(() => {
         this.page = 1;
@@ -122,7 +110,6 @@ const _sfc_main = {
         this.loadData();
       }, 500);
     },
-    // 状态筛选变化
     onStatusChange(e) {
       this.statusIndex = parseInt(e.detail.value);
       this.statusFilter = this.statusIndex > 0 ? this.statusIndex - 1 : null;
@@ -130,7 +117,6 @@ const _sfc_main = {
       this.noMoreData = false;
       this.loadData();
     },
-    // 获取状态文本
     getStatusText(status, challenge) {
       if (challenge && challenge.startDate && challenge.endDate) {
         const calculatedStatus = this.calculateChallengeStatus(challenge);
@@ -143,17 +129,14 @@ const _sfc_main = {
       }
       return status || "未知";
     },
-    // 获取挑战类型文本
     getTypeText(type, challenge) {
       const isGroupChallenge = challenge && challenge.groupId && challenge.groupId > 0;
       return isGroupChallenge ? "组内挑战" : "公开挑战";
     },
-    // 获取挑战类型类名
     getTypeClass(type, challenge) {
       const isGroupChallenge = challenge && challenge.groupId && challenge.groupId > 0;
       return isGroupChallenge ? "type-group" : "type-public";
     },
-    // 获取状态类名
     getStatusClass(status, challenge) {
       if (challenge && challenge.startDate && challenge.endDate) {
         const calculatedStatus = this.calculateChallengeStatus(challenge);
@@ -166,7 +149,6 @@ const _sfc_main = {
       }
       return "";
     },
-    // 计算挑战状态
     calculateChallengeStatus(challenge) {
       const today = /* @__PURE__ */ new Date();
       today.setHours(0, 0, 0, 0);
@@ -176,30 +158,34 @@ const _sfc_main = {
       endDate.setHours(0, 0, 0, 0);
       if (today < startDate) {
         return 0;
-      } else if (today >= startDate && today <= endDate) {
-        return 1;
-      } else {
-        return 2;
       }
+      if (today >= startDate && today <= endDate) {
+        return 1;
+      }
+      return 2;
     },
-    // 格式化日期
     formatDate(dateStr) {
       if (!dateStr)
         return "";
       try {
         const date = new Date(dateStr);
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-      } catch (e) {
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+          date.getDate()
+        ).padStart(2, "0")}`;
+      } catch (error) {
         return dateStr;
       }
     },
-    // 跳转到挑战详情页
+    getBriefText(text) {
+      if (!text)
+        return "";
+      return text.length > 60 ? `${text.substring(0, 60)}...` : text;
+    },
     goToDetail(challengeId) {
       common_vendor.index.navigateTo({
         url: `/pages/challenge/detail?id=${challengeId}`
       });
     },
-    // 选择挑战类型
     async selectChallengeType(type) {
       this.createForm.challengeType = type;
       if (type === "group" && this.groupIndex === -1) {
@@ -209,7 +195,6 @@ const _sfc_main = {
         this.createForm.groupId = null;
       }
     },
-    // 显示创建挑战弹窗
     async showCreateModal() {
       if (!common_auth.requireLogin()) {
         common_vendor.index.showToast({
@@ -219,41 +204,35 @@ const _sfc_main = {
         return;
       }
       const today = /* @__PURE__ */ new Date();
-      this.minDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+      this.minDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(
+        today.getDate()
+      ).padStart(2, "0")}`;
       this.resetForm();
       await this.loadGroups();
       this.showCreateModalFlag = true;
     },
-    // 隐藏创建挑战弹窗
     hideCreateModal() {
       this.showCreateModalFlag = false;
     },
-    // 加载用户群组列表
     async loadGroups() {
       try {
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:571", "开始加载群组列表...");
         const res = await common_api.apiMyGroups();
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:573", "群组列表API响应:", res);
         if (res == null ? void 0 : res.data) {
           this.groups = Array.isArray(res.data) ? res.data : res || [];
         } else {
           this.groups = res || [];
         }
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:581", "加载后的群组数量:", this.groups.length);
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:582", "群组列表:", this.groups);
-      } catch (e) {
-        common_vendor.index.__f__("error", "at pages/challenge/index.vue:584", "加载群组列表失败:", e);
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/challenge/index.vue:535", "加载群组列表失败:", error);
         common_vendor.index.showToast({
           title: "加载群组失败",
           icon: "none"
         });
       }
     },
-    // 重置表单
     resetForm() {
       this.createForm = {
         challengeType: "public",
-        // 默认为公开挑战
         challengeName: "",
         startDate: "",
         endDate: "",
@@ -266,269 +245,65 @@ const _sfc_main = {
       this.selectedGroupIndex = -1;
       this.submitting = false;
     },
-    // 开始日期选择
-    onStartDateChange(e) {
-      this.createForm.startDate = e.detail.value;
-    },
-    // 结束日期选择
-    onEndDateChange(e) {
-      this.createForm.endDate = e.detail.value;
-    },
-    // 打开开始日期选择器
     openStartDatePicker() {
       this.datePickerType = "startDate";
       this.setupDatePicker(this.createForm.startDate);
       this.showDatePicker = true;
     },
-    // 打开结束日期选择器
     openEndDatePicker() {
       this.datePickerType = "endDate";
       this.setupDatePicker(this.createForm.endDate);
       this.showDatePicker = true;
     },
-    // 设置日期选择器数据
     setupDatePicker(selectedDate) {
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:635", "=== 开始设置日期选择器 ===");
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:636", "传入选中日期:", selectedDate);
       const now = /* @__PURE__ */ new Date();
       const currentYear = now.getFullYear();
       const currentMonth = now.getMonth() + 1;
-      const currentDay = now.getDate();
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:643", "当前实际时间:", {
-        year: currentYear,
-        month: currentMonth,
-        day: currentDay,
-        fullDate: now.toString()
-      });
+      now.getDate();
       this.years = [];
-      for (let i = currentYear - 10; i <= currentYear + 5; i++) {
-        this.years.push(i);
+      for (let year = currentYear; year <= currentYear + 5; year += 1) {
+        this.years.push(year);
       }
-      this.months = [];
-      for (let i = 1; i <= 12; i++) {
-        this.months.push(i);
+      this.months = Array.from({ length: 12 }, (_, index) => index + 1);
+      this.days = this.getDaysInMonth(currentYear, currentMonth);
+      let targetDate = selectedDate ? new Date(selectedDate) : /* @__PURE__ */ new Date();
+      if (Number.isNaN(targetDate.getTime())) {
+        targetDate = /* @__PURE__ */ new Date();
       }
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:662", "年份数组:", this.years);
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:663", "月份数组:", this.months);
-      if (selectedDate && selectedDate !== "") {
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:667", "处理已选日期:", selectedDate);
-        const dateParts = selectedDate.split("-");
-        const year = parseInt(dateParts[0]);
-        const month = parseInt(dateParts[1]);
-        const day = parseInt(dateParts[2]);
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:673", "解析结果:", { year, month, day });
-        const yearIndex = this.years.indexOf(year);
-        const monthIndex = month - 1;
-        const dayIndex = day - 1;
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:680", "索引计算:", { yearIndex, monthIndex, dayIndex });
-        if (yearIndex === -1) {
-          common_vendor.index.__f__("error", "at pages/challenge/index.vue:684", "年份不在范围内:", year);
-          this.setDefaultDate(currentYear, currentMonth, currentDay);
-          return;
-        }
-        if (monthIndex < 0 || monthIndex > 11) {
-          common_vendor.index.__f__("error", "at pages/challenge/index.vue:691", "月份无效:", month);
-          this.setDefaultDate(currentYear, currentMonth, currentDay);
-          return;
-        }
-        this.datePickerValue = [yearIndex, monthIndex, 0];
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:698", "设置初始索引:", this.datePickerValue);
-        this.updateDaysForYearMonth(year, month);
-        const validDayIndex = Math.max(0, Math.min(dayIndex, this.days.length - 1));
-        this.datePickerValue[2] = validDayIndex;
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:707", "日期索引处理详情:", {
-          inputDay: day,
-          calculatedDayIndex: dayIndex,
-          daysArrayLength: this.days.length,
-          validDayIndex,
-          selectedDay: this.days[validDayIndex]
-        });
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:715", "最终索引设置:", this.datePickerValue);
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:716", "选中日期:", {
-          year: this.years[this.datePickerValue[0]],
-          month: this.months[this.datePickerValue[1]],
-          day: this.days[this.datePickerValue[2]],
-          expectedDay: day
-        });
-        const actualSelectedDay = this.days[this.datePickerValue[2]];
-        if (actualSelectedDay !== day) {
-          common_vendor.index.__f__("error", "at pages/challenge/index.vue:726", "⚠️ 已选日期不匹配!");
-          common_vendor.index.__f__("error", "at pages/challenge/index.vue:727", "期望:", day, "实际:", actualSelectedDay);
-        }
-      } else {
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:732", "设置默认日期为今天");
-        this.setDefaultDate(currentYear, currentMonth, currentDay);
-      }
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:736", "=== 日期选择器设置完成 ===");
+      const yearIndex = Math.max(0, this.years.indexOf(targetDate.getFullYear()));
+      const monthIndex = Math.max(0, targetDate.getMonth());
+      const dayIndex = Math.max(0, targetDate.getDate() - 1);
+      this.updateDaysByYearMonth(yearIndex, monthIndex, dayIndex);
     },
-    // 设置默认日期（今天）
-    setDefaultDate(year, month, day) {
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:741", "=== 设置默认日期 ===");
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:742", "输入参数:", { year, month, day });
-      const yearIndex = this.years.indexOf(year);
-      const monthIndex = month - 1;
-      const dayIndex = day - 1;
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:748", "索引计算详情:", {
-        yearIndex,
-        monthIndex,
-        dayIndex,
-        yearInArray: this.years[yearIndex],
-        monthInArray: this.months[monthIndex],
-        expectedDay: day
-      });
-      this.datePickerValue = [
-        Math.max(0, Math.min(yearIndex, this.years.length - 1)),
-        Math.max(0, Math.min(monthIndex, this.months.length - 1)),
-        0
-        // 临时设置
-      ];
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:764", "临时索引设置:", this.datePickerValue);
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:765", "临时索引对应的值:", {
-        year: this.years[this.datePickerValue[0]],
-        month: this.months[this.datePickerValue[1]],
-        day: "临时(0)"
-      });
-      this.updateDaysForYearMonth(year, month);
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:774", "更新天数数组后:");
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:775", "- 天数数组长度:", this.days.length);
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:776", "- 天数数组内容:", this.days);
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:777", "- 期望的日期索引:", dayIndex);
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:778", "- 期望的日期值:", day);
+    getDaysInMonth(year, month) {
+      const daysCount = new Date(year, month, 0).getDate();
+      return Array.from({ length: daysCount }, (_, index) => index + 1);
+    },
+    updateDaysByYearMonth(yearIndex, monthIndex, dayIndex = 0) {
+      const selectedYear = this.years[yearIndex];
+      const selectedMonth = this.months[monthIndex];
+      this.days = this.getDaysInMonth(selectedYear, selectedMonth);
       const validDayIndex = Math.max(0, Math.min(dayIndex, this.days.length - 1));
-      this.datePickerValue[2] = validDayIndex;
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:784", "最终日期索引设置:", validDayIndex);
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:785", "最终索引:", this.datePickerValue);
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:786", "最终选中日期:", {
-        year: this.years[this.datePickerValue[0]],
-        month: this.months[this.datePickerValue[1]],
-        day: this.days[this.datePickerValue[2]],
-        expectedDay: day
-      });
-      const actualDay = this.days[this.datePickerValue[2]];
-      if (actualDay !== day) {
-        common_vendor.index.__f__("error", "at pages/challenge/index.vue:796", "⚠️ 日期不匹配!");
-        common_vendor.index.__f__("error", "at pages/challenge/index.vue:797", "期望:", day, "实际:", actualDay);
-      }
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:800", "=== 默认日期设置完成 ===");
-    },
-    // 为指定年月更新天数数组
-    updateDaysForYearMonth(year, month) {
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:805", "更新天数数组 for:", { year, month });
-      const maxDays = new Date(year, month, 0).getDate();
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:808", "该月最大天数:", maxDays);
-      this.days = [];
-      for (let i = 1; i <= maxDays; i++) {
-        this.days.push(i);
-      }
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:815", "生成的天数数组:", this.days);
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:816", "天数数组长度:", this.days.length);
-    },
-    // 验证日期有效性
-    validateDate(dateString) {
-      if (!dateString)
-        return false;
-      const date = new Date(dateString);
-      if (isNaN(date.getTime()))
-        return false;
-      const parts = dateString.split("-");
-      if (parts.length !== 3)
-        return false;
-      const year = parseInt(parts[0]);
-      const month = parseInt(parts[1]);
-      const day = parseInt(parts[2]);
-      if (year < this.years[0] || year > this.years[this.years.length - 1])
-        return false;
-      if (month < 1 || month > 12)
-        return false;
-      const maxDays = new Date(year, month, 0).getDate();
-      if (day < 1 || day > maxDays)
-        return false;
-      return true;
-    },
-    // 更新天数（根据月份变化）- 用于日期选择器变化时
-    updateDays(month) {
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:849", "=== updateDays 调用（用于选择器变化） ===");
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:850", "传入月份:", month);
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:851", "当前datePickerValue:", this.datePickerValue);
-      const selectedYear = this.years[this.datePickerValue[0]];
-      const maxDays = new Date(selectedYear, month, 0).getDate();
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:857", "计算天数:", {
-        selectedYear,
-        month,
-        maxDays
-      });
-      this.days = [];
-      for (let i = 1; i <= maxDays; i++) {
-        this.days.push(i);
-      }
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:868", "生成的天数数组:", this.days);
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:869", "天数数组长度:", this.days.length);
-      if (this.datePickerValue[2] >= this.days.length) {
-        const newIndex = this.days.length - 1;
-        this.datePickerValue[2] = newIndex;
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:875", "调整天数索引到:", newIndex);
-      }
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:878", "=== updateDays 完成 ===");
-    },
-    // 日期选择器变化
-    onDateChange(e) {
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:883", "=== onDateChange 调用 ===");
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:884", "传入的值:", e.detail.value);
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:885", "变化前的索引:", this.datePickerValue);
-      const value = e.detail.value;
-      const [yearIndex, monthIndex, dayIndex] = value;
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:890", "解析的索引:", { yearIndex, monthIndex, dayIndex });
-      this.indexChangeLog.push({
-        timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-        from: [...this.datePickerValue],
-        to: [yearIndex, monthIndex, dayIndex],
-        reason: "picker_change"
-      });
-      if (yearIndex < 0 || yearIndex >= this.years.length || monthIndex < 0 || monthIndex >= this.months.length) {
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:903", "索引超出范围，忽略变化");
-        return;
-      }
-      if (this.datePickerValue[1] !== monthIndex) {
-        common_vendor.index.__f__("log", "at pages/challenge/index.vue:909", "月份发生变化，需要更新天数数组");
-        const selectedMonth = this.months[monthIndex];
-        const selectedYear = this.years[yearIndex];
-        this.updateDaysForYearMonth(selectedYear, selectedMonth);
-        if (dayIndex >= this.days.length) {
-          const adjustedDayIndex = this.days.length - 1;
-          this.datePickerValue = [yearIndex, monthIndex, adjustedDayIndex];
-          this.indexChangeLog.push({
-            timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-            from: [yearIndex, monthIndex, dayIndex],
-            to: [yearIndex, monthIndex, adjustedDayIndex],
-            reason: "day_overflow_adjust"
-          });
-          return;
-        }
-      }
-      const validDayIndex = Math.max(0, Math.min(dayIndex, this.days.length - 1));
-      if (validDayIndex !== dayIndex) {
-        this.indexChangeLog.push({
-          timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-          from: [yearIndex, monthIndex, dayIndex],
-          to: [yearIndex, monthIndex, validDayIndex],
-          reason: "day_index_adjust"
-        });
-      }
       this.datePickerValue = [yearIndex, monthIndex, validDayIndex];
     },
-    // 确认选择日期
+    onDateChange(e) {
+      const [yearIndex, monthIndex, dayIndex] = e.detail.value;
+      this.updateDaysByYearMonth(yearIndex, monthIndex, dayIndex);
+    },
+    validateDate(dateStr) {
+      const date = new Date(dateStr);
+      return !Number.isNaN(date.getTime());
+    },
     confirmDate() {
       const yearIndex = Math.max(0, Math.min(this.datePickerValue[0], this.years.length - 1));
       const monthIndex = Math.max(0, Math.min(this.datePickerValue[1], this.months.length - 1));
       const dayIndex = Math.max(0, Math.min(this.datePickerValue[2], this.days.length - 1));
-      this.datePickerValue = [yearIndex, monthIndex, dayIndex];
       const selectedYear = this.years[yearIndex];
       const selectedMonth = this.months[monthIndex];
       const selectedDay = this.days[dayIndex];
-      const selectedDate = `${selectedYear}-${String(selectedMonth).padStart(2, "0")}-${String(selectedDay).padStart(2, "0")}`;
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:964", "生成的日期:", selectedDate);
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:965", "日期选择器类型:", this.datePickerType);
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:966", "确认后的索引:", this.datePickerValue);
+      const selectedDate = `${selectedYear}-${String(selectedMonth).padStart(2, "0")}-${String(
+        selectedDay
+      ).padStart(2, "0")}`;
       if (!this.validateDate(selectedDate)) {
         common_vendor.index.showToast({
           title: "选择的日期无效",
@@ -542,13 +317,10 @@ const _sfc_main = {
         this.createForm.endDate = selectedDate;
       }
       this.hideDatePicker();
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:985", "=== 确认选择完成 ===");
     },
-    // 隐藏日期选择器
     hideDatePicker() {
       this.showDatePicker = false;
     },
-    // 打开群组选择器
     async openGroupPicker() {
       if (this.groups.length === 0) {
         await this.loadGroups();
@@ -563,15 +335,9 @@ const _sfc_main = {
       this.selectedGroupIndex = this.groupIndex;
       this.showGroupPicker = true;
     },
-    // radio-group选择变化
     onRadioGroupChange(e) {
       this.selectedGroupIndex = parseInt(e.detail.value);
     },
-    // 选择群组（保留兼容性）
-    selectGroup(index) {
-      this.selectedGroupIndex = index;
-    },
-    // 确认群组选择
     confirmGroupSelection() {
       this.groupIndex = this.selectedGroupIndex;
       if (this.groupIndex >= 0 && this.groups[this.groupIndex]) {
@@ -581,20 +347,9 @@ const _sfc_main = {
       }
       this.hideGroupPicker();
     },
-    // 隐藏群组选择器
     hideGroupPicker() {
       this.showGroupPicker = false;
     },
-    // 群组选择（旧方法，保留兼容性）
-    onGroupChange(e) {
-      this.groupIndex = parseInt(e.detail.value);
-      if (this.groupIndex >= 0) {
-        this.createForm.groupId = this.groups[this.groupIndex].id;
-      } else {
-        this.createForm.groupId = null;
-      }
-    },
-    // 选择图片
     chooseImage() {
       common_vendor.index.chooseImage({
         count: 1,
@@ -622,9 +377,9 @@ const _sfc_main = {
               title: "上传成功",
               icon: "success"
             });
-          } catch (e) {
+          } catch (error) {
             common_vendor.index.hideLoading();
-            common_vendor.index.__f__("error", "at pages/challenge/index.vue:1082", "上传失败:", e);
+            common_vendor.index.__f__("error", "at pages/challenge/index.vue:705", "上传失败:", error);
             common_vendor.index.showToast({
               title: "上传失败",
               icon: "none"
@@ -633,11 +388,9 @@ const _sfc_main = {
         }
       });
     },
-    // 移除图片
     removeImage() {
       this.createForm.coverImage = "";
     },
-    // 提交表单
     async submitForm() {
       if (!common_auth.requireLogin()) {
         common_vendor.index.showToast({
@@ -669,7 +422,7 @@ const _sfc_main = {
       }
       if (this.createForm.maxMembers <= 0) {
         common_vendor.index.showToast({
-          title: "参与人数必须大于0",
+          title: "参与人数必须大于 0",
           icon: "none"
         });
         return;
@@ -700,15 +453,9 @@ const _sfc_main = {
       } else if (this.createForm.challengeType === "public") {
         this.createForm.groupId = null;
       }
-      common_vendor.index.__f__("log", "at pages/challenge/index.vue:1174", "提交表单数据:", {
-        ...this.createForm,
-        groups: this.groups,
-        groupIndex: this.groupIndex
-      });
       this.submitting = true;
       try {
         common_vendor.index.showLoading({ title: "创建中..." });
-        let res;
         if (this.createForm.challengeType === "group") {
           const requestData = {
             name: this.createForm.challengeName,
@@ -719,7 +466,7 @@ const _sfc_main = {
             coverImage: this.createForm.coverImage || null,
             groupId: this.createForm.groupId
           };
-          res = await common_api.apiCreateGroupChallenge(requestData);
+          await common_api.apiCreateGroupChallenge(requestData);
         } else {
           const requestData = {
             name: this.createForm.challengeName,
@@ -728,9 +475,8 @@ const _sfc_main = {
             trainRequire: this.createForm.trainRequire,
             maxMembers: parseInt(this.createForm.maxMembers),
             coverImage: this.createForm.coverImage || null
-            // 不传递groupId，表示创建公开挑战
           };
-          res = await common_api.apiChallengeCreate(requestData);
+          await common_api.apiChallengeCreate(requestData);
         }
         common_vendor.index.hideLoading();
         common_vendor.index.showToast({
@@ -740,56 +486,32 @@ const _sfc_main = {
         this.hideCreateModal();
         this.resetForm();
         this.refreshData();
-      } catch (e) {
+      } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/challenge/index.vue:1227", "创建挑战失败:", e);
+        common_vendor.index.__f__("error", "at pages/challenge/index.vue:827", "创建挑战失败:", error);
         common_vendor.index.showToast({
-          title: e.errMsg || "创建失败，请重试",
+          title: error.errMsg || "创建失败，请稍后重试",
           icon: "none"
         });
       } finally {
         this.submitting = false;
       }
     },
-    // 刷新挑战状态
     async refreshChallengeStatus() {
       try {
-        const res = await common_api.apiUpdateChallengeStatus();
+        await common_api.apiUpdateChallengeStatus();
         common_vendor.index.showToast({
           title: "状态已刷新",
           icon: "success"
         });
         this.refreshData();
-      } catch (e) {
-        common_vendor.index.__f__("error", "at pages/challenge/index.vue:1249", "刷新挑战状态失败:", e);
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/challenge/index.vue:845", "刷新挑战状态失败:", error);
         common_vendor.index.showToast({
           title: "刷新失败",
           icon: "none"
         });
       }
-    },
-    // 底部导航方法
-    goHome() {
-      common_vendor.index.switchTab({
-        url: "/pages/index/index"
-      });
-    },
-    goTraining() {
-      common_vendor.index.switchTab({
-        url: "/pages/training/index"
-      });
-    },
-    goChallenge() {
-    },
-    goGroup() {
-      common_vendor.index.switchTab({
-        url: "/pages/group/index"
-      });
-    },
-    goUser() {
-      common_vendor.index.switchTab({
-        url: "/pages/user/profile"
-      });
     }
   }
 };
@@ -797,16 +519,21 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   var _a;
   return common_vendor.e({
     a: common_vendor.o((...args) => $options.showCreateModal && $options.showCreateModal(...args)),
-    b: common_vendor.o([($event) => $data.searchKeyword = $event.detail.value, (...args) => $options.handleSearch && $options.handleSearch(...args)]),
-    c: $data.searchKeyword,
-    d: common_vendor.t($data.statusOptions[$data.statusIndex]),
-    e: common_vendor.o((...args) => $options.onStatusChange && $options.onStatusChange(...args)),
-    f: $data.statusIndex,
-    g: $data.statusOptions,
-    h: common_vendor.o((...args) => $options.refreshChallengeStatus && $options.refreshChallengeStatus(...args)),
-    i: $data.loading && !$data.challenges.length
-  }, $data.loading && !$data.challenges.length ? {} : !$data.challenges.length ? {} : common_vendor.e({
-    k: common_vendor.f($data.challenges, (challenge, k0, i0) => {
+    b: common_vendor.t($data.challenges.length),
+    c: common_vendor.t($data.statusOptions[$data.statusIndex]),
+    d: common_vendor.o([($event) => $data.searchKeyword = $event.detail.value, (...args) => $options.handleSearch && $options.handleSearch(...args)]),
+    e: $data.searchKeyword,
+    f: common_vendor.t($data.statusOptions[$data.statusIndex]),
+    g: common_vendor.o((...args) => $options.onStatusChange && $options.onStatusChange(...args)),
+    h: $data.statusIndex,
+    i: $data.statusOptions,
+    j: common_vendor.o((...args) => $options.refreshChallengeStatus && $options.refreshChallengeStatus(...args)),
+    k: $data.loading && !$data.challenges.length
+  }, $data.loading && !$data.challenges.length ? {} : !$data.challenges.length ? {
+    m: common_vendor.o((...args) => $options.showCreateModal && $options.showCreateModal(...args))
+  } : common_vendor.e({
+    n: common_vendor.t($data.challenges.length),
+    o: common_vendor.f($data.challenges, (challenge, k0, i0) => {
       return common_vendor.e({
         a: challenge.coverImage
       }, challenge.coverImage ? {
@@ -832,104 +559,94 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       } : {}, {
         o: challenge.trainRequire
       }, challenge.trainRequire ? {
-        p: common_vendor.t(challenge.trainRequire.substring(0, 60)),
-        q: common_vendor.t(challenge.trainRequire.length > 60 ? "..." : "")
+        p: common_vendor.t($options.getBriefText(challenge.trainRequire))
       } : {}, {
-        r: challenge.createdAt
+        q: challenge.createdAt
       }, challenge.createdAt ? {
-        s: common_vendor.t($options.formatDate(challenge.createdAt))
+        r: common_vendor.t($options.formatDate(challenge.createdAt))
       } : {}, {
-        t: challenge.id,
-        v: common_vendor.o(($event) => $options.goToDetail(challenge.id), challenge.id)
+        s: challenge.id,
+        t: common_vendor.o(($event) => $options.goToDetail(challenge.id), challenge.id)
       });
     }),
-    l: $data.loadingMore
+    p: $data.loadingMore
   }, $data.loadingMore ? {} : {}, {
-    m: $data.noMoreData && $data.challenges.length > 0
+    q: $data.noMoreData && $data.challenges.length > 0
   }, $data.noMoreData && $data.challenges.length > 0 ? {} : {}), {
-    j: !$data.challenges.length,
-    n: common_vendor.o((...args) => $options.loadMore && $options.loadMore(...args)),
-    o: $data.showCreateModalFlag
+    l: !$data.challenges.length,
+    r: common_vendor.o((...args) => $options.loadMore && $options.loadMore(...args)),
+    s: $data.showCreateModalFlag
   }, $data.showCreateModalFlag ? common_vendor.e({
-    p: common_vendor.o((...args) => $options.hideCreateModal && $options.hideCreateModal(...args)),
-    q: $data.createForm.challengeType === "public" ? 1 : "",
-    r: $data.createForm.challengeType === "public" ? 1 : "",
-    s: common_vendor.o(($event) => $options.selectChallengeType("public")),
-    t: $data.createForm.challengeType === "group" ? 1 : "",
-    v: $data.createForm.challengeType === "group" ? 1 : "",
-    w: common_vendor.o(($event) => $options.selectChallengeType("group")),
-    x: $data.createForm.challengeName,
-    y: common_vendor.o(($event) => $data.createForm.challengeName = $event.detail.value),
-    z: $data.createForm.startDate
-  }, $data.createForm.startDate ? {
-    A: common_vendor.t($data.createForm.startDate)
-  } : {}, {
-    B: common_vendor.o((...args) => $options.openStartDatePicker && $options.openStartDatePicker(...args)),
-    C: $data.createForm.endDate
-  }, $data.createForm.endDate ? {
-    D: common_vendor.t($data.createForm.endDate)
-  } : {}, {
-    E: common_vendor.o((...args) => $options.openEndDatePicker && $options.openEndDatePicker(...args)),
-    F: $data.createForm.maxMembers,
-    G: common_vendor.o(($event) => $data.createForm.maxMembers = $event.detail.value),
-    H: $data.createForm.trainRequire,
-    I: common_vendor.o(($event) => $data.createForm.trainRequire = $event.detail.value),
-    J: !$data.createForm.coverImage
+    t: common_vendor.o((...args) => $options.hideCreateModal && $options.hideCreateModal(...args)),
+    v: $data.createForm.challengeType === "public" ? 1 : "",
+    w: common_vendor.o(($event) => $options.selectChallengeType("public")),
+    x: $data.createForm.challengeType === "group" ? 1 : "",
+    y: common_vendor.o(($event) => $options.selectChallengeType("group")),
+    z: $data.createForm.challengeName,
+    A: common_vendor.o(($event) => $data.createForm.challengeName = $event.detail.value),
+    B: common_vendor.t($data.createForm.startDate || "请选择开始日期"),
+    C: !$data.createForm.startDate ? 1 : "",
+    D: common_vendor.o((...args) => $options.openStartDatePicker && $options.openStartDatePicker(...args)),
+    E: common_vendor.t($data.createForm.endDate || "请选择结束日期"),
+    F: !$data.createForm.endDate ? 1 : "",
+    G: common_vendor.o((...args) => $options.openEndDatePicker && $options.openEndDatePicker(...args)),
+    H: $data.createForm.maxMembers,
+    I: common_vendor.o(($event) => $data.createForm.maxMembers = $event.detail.value),
+    J: $data.createForm.trainRequire,
+    K: common_vendor.o(($event) => $data.createForm.trainRequire = $event.detail.value),
+    L: !$data.createForm.coverImage
   }, !$data.createForm.coverImage ? {} : {
-    K: $data.createForm.coverImage,
-    L: common_vendor.o((...args) => $options.removeImage && $options.removeImage(...args))
+    M: $data.createForm.coverImage,
+    N: common_vendor.o((...args) => $options.removeImage && $options.removeImage(...args))
   }, {
-    M: common_vendor.o((...args) => $options.chooseImage && $options.chooseImage(...args)),
-    N: $data.createForm.challengeType === "group"
-  }, $data.createForm.challengeType === "group" ? common_vendor.e({
-    O: $data.groupIndex >= 0
-  }, $data.groupIndex >= 0 ? {
-    P: common_vendor.t((_a = $data.groups[$data.groupIndex]) == null ? void 0 : _a.groupName)
+    O: common_vendor.o((...args) => $options.chooseImage && $options.chooseImage(...args)),
+    P: $data.createForm.challengeType === "group"
+  }, $data.createForm.challengeType === "group" ? {
+    Q: common_vendor.t($data.groupIndex >= 0 ? (_a = $data.groups[$data.groupIndex]) == null ? void 0 : _a.groupName : "请选择群组"),
+    R: $data.groupIndex < 0 ? 1 : "",
+    S: common_vendor.o((...args) => $options.openGroupPicker && $options.openGroupPicker(...args))
   } : {}, {
-    Q: common_vendor.o((...args) => $options.openGroupPicker && $options.openGroupPicker(...args))
-  }) : {}, {
-    R: !$data.submitting
-  }, !$data.submitting ? {} : {}, {
-    S: $data.submitting ? 1 : "",
-    T: $data.submitting,
-    U: common_vendor.o((...args) => $options.submitForm && $options.submitForm(...args)),
-    V: common_vendor.o(() => {
+    T: common_vendor.o((...args) => $options.hideCreateModal && $options.hideCreateModal(...args)),
+    U: common_vendor.t($data.submitting ? "提交中..." : "创建挑战"),
+    V: $data.submitting ? 1 : "",
+    W: common_vendor.o((...args) => $options.submitForm && $options.submitForm(...args)),
+    X: common_vendor.o(() => {
     }),
-    W: common_vendor.o((...args) => $options.hideCreateModal && $options.hideCreateModal(...args))
+    Y: common_vendor.o((...args) => $options.hideCreateModal && $options.hideCreateModal(...args))
   }) : {}, {
-    X: $data.showDatePicker
+    Z: $data.showDatePicker
   }, $data.showDatePicker ? {
-    Y: common_vendor.o((...args) => $options.hideDatePicker && $options.hideDatePicker(...args)),
-    Z: common_vendor.o((...args) => $options.confirmDate && $options.confirmDate(...args)),
-    aa: common_vendor.f($data.years, (year, index, i0) => {
+    aa: common_vendor.o((...args) => $options.hideDatePicker && $options.hideDatePicker(...args)),
+    ab: common_vendor.o((...args) => $options.confirmDate && $options.confirmDate(...args)),
+    ac: common_vendor.f($data.years, (year, index, i0) => {
       return {
         a: common_vendor.t(year),
         b: index
       };
     }),
-    ab: common_vendor.f($data.months, (month, index, i0) => {
+    ad: common_vendor.f($data.months, (month, index, i0) => {
       return {
         a: common_vendor.t(month),
         b: index
       };
     }),
-    ac: common_vendor.f($data.days, (day, index, i0) => {
+    ae: common_vendor.f($data.days, (day, index, i0) => {
       return {
         a: common_vendor.t(day),
         b: index
       };
     }),
-    ad: $data.datePickerValue,
-    ae: common_vendor.o((...args) => $options.onDateChange && $options.onDateChange(...args)),
-    af: common_vendor.o(() => {
+    af: $data.datePickerValue,
+    ag: common_vendor.o((...args) => $options.onDateChange && $options.onDateChange(...args)),
+    ah: common_vendor.o(() => {
     }),
-    ag: common_vendor.o((...args) => $options.hideDatePicker && $options.hideDatePicker(...args))
+    ai: common_vendor.o((...args) => $options.hideDatePicker && $options.hideDatePicker(...args))
   } : {}, {
-    ah: $data.showGroupPicker
+    aj: $data.showGroupPicker
   }, $data.showGroupPicker ? {
-    ai: common_vendor.o((...args) => $options.hideGroupPicker && $options.hideGroupPicker(...args)),
-    aj: common_vendor.o((...args) => $options.confirmGroupSelection && $options.confirmGroupSelection(...args)),
-    ak: common_vendor.f($data.groups, (group, index, i0) => {
+    ak: common_vendor.o((...args) => $options.hideGroupPicker && $options.hideGroupPicker(...args)),
+    al: common_vendor.o((...args) => $options.confirmGroupSelection && $options.confirmGroupSelection(...args)),
+    am: common_vendor.f($data.groups, (group, index, i0) => {
       return {
         a: index,
         b: $data.selectedGroupIndex === index,
@@ -937,13 +654,11 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         d: group.id || index
       };
     }),
-    al: common_vendor.o((...args) => $options.onRadioGroupChange && $options.onRadioGroupChange(...args)),
-    am: common_vendor.o(() => {
+    an: common_vendor.o((...args) => $options.onRadioGroupChange && $options.onRadioGroupChange(...args)),
+    ao: common_vendor.o(() => {
     }),
-    an: common_vendor.o((...args) => $options.hideGroupPicker && $options.hideGroupPicker(...args))
-  } : {}, {
-    ao: $data.showCreateModalFlag ? 9999 : "auto"
-  });
+    ap: common_vendor.o((...args) => $options.hideGroupPicker && $options.hideGroupPicker(...args))
+  } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-93d7d659"]]);
 wx.createPage(MiniProgramPage);
