@@ -16,7 +16,6 @@ const _sfc_main = {
       hasJoined: false,
       trainingCompleted: false,
       trainingCheckInterval: null,
-      //定时检查训练状态
       isGroupChallenge: false
     };
   },
@@ -32,7 +31,6 @@ const _sfc_main = {
     }
   },
   computed: {
-    // 按完成率排序的参与者列表（用于排行榜）
     sortedParticipants() {
       if (!this.report || !this.report.participants)
         return [];
@@ -43,39 +41,33 @@ const _sfc_main = {
         return b.punchDays - a.punchDays;
       });
     },
-    // 计算平均完成率
     avgCompletionRate() {
       if (!this.report || !this.report.participants || this.report.participants.length === 0) {
         return 0;
       }
-      const total = this.report.participants.reduce((sum, p) => sum + p.completionRate, 0);
+      const total = this.report.participants.reduce((sum, participant) => sum + participant.completionRate, 0);
       return Math.round(total / this.report.participants.length);
     },
-    // 计算全勤人数（完成率100%）
     perfectCount() {
       if (!this.report || !this.report.participants)
         return 0;
-      return this.report.participants.filter((p) => p.completionRate >= 100).length;
+      return this.report.participants.filter((participant) => participant.completionRate >= 100).length;
     },
-    // 计算总打卡次数
     totalPunchDays() {
       if (!this.report || !this.report.participants)
         return 0;
-      return this.report.participants.reduce((sum, p) => sum + p.punchDays, 0);
+      return this.report.participants.reduce((sum, participant) => sum + participant.punchDays, 0);
     },
-    // 计算挑战总天数
     calculateTotalDays() {
       if (!this.report || !this.report.startDate || !this.report.endDate)
         return 0;
       const start = new Date(this.report.startDate);
       const end = new Date(this.report.endDate);
       const diffTime = Math.abs(end - start);
-      const diffDays = Math.ceil(diffTime / (1e3 * 60 * 60 * 24)) + 1;
-      return diffDays;
+      return Math.ceil(diffTime / (1e3 * 60 * 60 * 24)) + 1;
     }
   },
   methods: {
-    // 格式化日期范围显示
     formatDateRange(report) {
       if (!report)
         return "";
@@ -85,7 +77,6 @@ const _sfc_main = {
         return "";
       return `${start} 至 ${end}`;
     },
-    // 根据完成率返回颜色
     getRateColor(rate) {
       if (rate >= 80)
         return "#52c41a";
@@ -93,7 +84,6 @@ const _sfc_main = {
         return "#faad14";
       return "#ff4d4f";
     },
-    // 预览打卡图片
     previewImage(url) {
       if (!url)
         return;
@@ -102,12 +92,10 @@ const _sfc_main = {
         current: url
       });
     },
-    // 获取用户头像文字（取用户ID的最后两位）
     getAvatarText(userId) {
       if (!userId)
         return "?";
-      const str = userId.toString();
-      return str.slice(-2);
+      return userId.toString().slice(-2);
     },
     async loadData() {
       try {
@@ -124,22 +112,24 @@ const _sfc_main = {
         this.loaded = true;
         await this.loadPunchRecord();
         common_vendor.index.hideLoading();
-      } catch (e) {
+      } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/challenge/detail.vue:306", "加载挑战详情失败:", e);
+        common_vendor.index.__f__("error", "at pages/challenge/detail.vue:289", "加载挑战详情失败:", error);
         common_vendor.index.showToast({ title: "加载失败", icon: "none" });
         this.loaded = true;
       }
     },
-    // 检查用户是否参与了挑战
+    statusText(status) {
+      return ["未开始", "进行中", "已结束"][status] || status || "未知";
+    },
     async checkParticipation() {
       try {
         if (!common_auth.requireLogin())
           return;
         const res = await common_api.apiCheckChallengeParticipation(this.id);
         this.hasJoined = (res == null ? void 0 : res.data) ?? res ?? false;
-      } catch (e) {
-        common_vendor.index.__f__("error", "at pages/challenge/detail.vue:320", "检查参与状态失败:", e);
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/challenge/detail.vue:303", "检查参与状态失败:", error);
         this.hasJoined = false;
       }
     },
@@ -147,10 +137,8 @@ const _sfc_main = {
       try {
         if (!common_auth.requireLogin())
           return;
-        const now = /* @__PURE__ */ new Date();
-        const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-      } catch (e) {
-        common_vendor.index.__f__("error", "at pages/challenge/detail.vue:337", "获取打卡记录失败:", e);
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/challenge/detail.vue:311", "获取打卡记录失败:", error);
       }
     },
     async checkTrainingCompletion() {
@@ -162,24 +150,18 @@ const _sfc_main = {
         if (!common_auth.requireLogin())
           return;
         const now = /* @__PURE__ */ new Date();
-        const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+        const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
+          now.getDate()
+        ).padStart(2, "0")}`;
         const res = await common_api.apiGetTodayTraining();
         const todayTrainings = (res == null ? void 0 : res.data) || res || [];
-        const completedTraining = todayTrainings.some(
-          (record) => record.status === 1 && //状态为已完成
-          record.trainDate === date
-          // 日期为今天
-        );
+        const completedTraining = todayTrainings.some((record) => record.status === 1 && record.trainDate === date);
         this.trainingCompleted = completedTraining;
-        if (!completedTraining && this.isGroupChallenge) {
-          common_vendor.index.__f__("log", "at pages/challenge/detail.vue:369", "组内挑战：用户今日训练未完成，无法打卡");
-        }
-      } catch (e) {
-        common_vendor.index.__f__("error", "at pages/challenge/detail.vue:372", "检查训练完成状态失败:", e);
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/challenge/detail.vue:334", "检查训练完成状态失败:", error);
         this.trainingCompleted = false;
       }
     },
-    //启动定时检查训练状态
     startTrainingCheckInterval() {
       if (this.trainingCheckInterval) {
         clearInterval(this.trainingCheckInterval);
@@ -190,7 +172,6 @@ const _sfc_main = {
         }
       }, 3e4);
     },
-    //停止定时检查
     stopTrainingCheckInterval() {
       if (this.trainingCheckInterval) {
         clearInterval(this.trainingCheckInterval);
@@ -213,13 +194,13 @@ const _sfc_main = {
         common_vendor.index.hideLoading();
         common_vendor.index.showToast({ title: "已参与", icon: "success" });
         await this.loadData();
-      } catch (e) {
+      } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/challenge/detail.vue:423", "参与挑战失败:", e);
-        if (e.message && e.message.includes("已参与该挑战")) {
+        common_vendor.index.__f__("error", "at pages/challenge/detail.vue:374", "参与挑战失败:", error);
+        if (error.message && error.message.includes("已参与该挑战")) {
           common_vendor.index.showToast({ title: "您已参与该挑战", icon: "none" });
         } else {
-          common_vendor.index.showToast({ title: e.errMsg || "参与失败，请重试", icon: "none" });
+          common_vendor.index.showToast({ title: error.errMsg || "参与失败，请重试", icon: "none" });
         }
       } finally {
         this.joining = false;
@@ -245,7 +226,9 @@ const _sfc_main = {
               const uploadRes = await common_api.apiUploadAction(res.tempFilePaths[0]);
               common_vendor.index.hideLoading();
               const now = /* @__PURE__ */ new Date();
-              const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+              const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
+                now.getDate()
+              ).padStart(2, "0")}`;
               let objectName = "";
               if (uploadRes && typeof uploadRes === "object") {
                 if (uploadRes.data) {
@@ -268,10 +251,10 @@ const _sfc_main = {
               });
               common_vendor.index.showToast({ title: "打卡成功", icon: "success" });
               this.actionFileUrl = accessibleUrl;
-            } catch (e) {
+            } catch (error) {
               common_vendor.index.hideLoading();
-              common_vendor.index.__f__("error", "at pages/challenge/detail.vue:491", "打卡失败:", e);
-              common_vendor.index.showToast({ title: e.errMsg || "打卡失败，请重试", icon: "none" });
+              common_vendor.index.__f__("error", "at pages/challenge/detail.vue:436", "打卡失败:", error);
+              common_vendor.index.showToast({ title: error.errMsg || "打卡失败，请重试", icon: "none" });
             }
           },
           fail: () => {
@@ -283,16 +266,14 @@ const _sfc_main = {
       }
     },
     onViewReport() {
-      var self = this;
       common_vendor.index.showLoading({ title: "加载中..." });
-      common_api.apiChallengeReport(self.id).then(function(res) {
+      common_api.apiChallengeReport(this.id).then((res) => {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("log", "at pages/challenge/detail.vue:512", "报告数据:", JSON.stringify(res));
-        self.report = res || {};
+        this.report = res || {};
         common_vendor.index.showToast({ title: "加载成功", icon: "success" });
-      }).catch(function(err) {
+      }).catch((error) => {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/challenge/detail.vue:517", "错误:", err);
+        common_vendor.index.__f__("error", "at pages/challenge/detail.vue:458", "加载报告失败:", error);
         common_vendor.index.showToast({ title: "加载失败", icon: "none" });
       });
     },
@@ -310,66 +291,50 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     c: $data.detail.coverImage
   } : {}, {
     d: common_vendor.t($data.detail.challengeName || $data.detail.title || $data.detail.name),
-    e: common_vendor.t($data.detail.id),
-    f: $data.detail.status !== void 0
-  }, $data.detail.status !== void 0 ? {
-    g: common_vendor.t(["未开始", "进行中", "已结束"][$data.detail.status] || $data.detail.status)
-  } : {}, {
-    h: common_vendor.t($data.isGroupChallenge ? "组内挑战" : "公开挑战"),
-    i: $data.detail.startDate
-  }, $data.detail.startDate ? {
-    j: common_vendor.t($data.detail.startDate)
-  } : {}, {
-    k: $data.detail.endDate
-  }, $data.detail.endDate ? {
-    l: common_vendor.t($data.detail.endDate)
-  } : {}, {
-    m: $data.detail.maxMembers
-  }, $data.detail.maxMembers ? {
-    n: common_vendor.t($data.detail.maxMembers)
-  } : {}, {
-    o: $data.detail.trainRequire
-  }, $data.detail.trainRequire ? {
-    p: common_vendor.t($data.detail.trainRequire)
-  } : {}, {
-    q: !$data.hasJoined
+    e: common_vendor.t($data.detail.trainRequire || "查看挑战时间范围、参与状态和打卡进度，决定今天是否参与或继续完成。"),
+    f: common_vendor.t($options.statusText($data.detail.status)),
+    g: common_vendor.t($data.isGroupChallenge ? "组内挑战" : "公开挑战"),
+    h: common_vendor.t($data.detail.startDate || "-"),
+    i: common_vendor.t($data.detail.endDate || "-"),
+    j: common_vendor.t($data.detail.maxMembers || "-"),
+    k: common_vendor.t($data.hasJoined ? "已参与" : "未参与"),
+    l: !$data.hasJoined
   }, !$data.hasJoined ? {
-    r: common_vendor.o((...args) => $options.onJoin && $options.onJoin(...args)),
-    s: $data.joining
+    m: common_vendor.t($data.joining ? "参与中..." : "参与挑战"),
+    n: $data.joining ? 1 : "",
+    o: common_vendor.o((...args) => $options.onJoin && $options.onJoin(...args))
   } : {}, {
-    t: $data.hasJoined && !$data.isTrainingRelatedChallenge
+    p: $data.hasJoined && !$data.isTrainingRelatedChallenge
   }, $data.hasJoined && !$data.isTrainingRelatedChallenge ? {
-    v: common_vendor.o((...args) => $options.onPunch && $options.onPunch(...args)),
-    w: $data.punching || $data.isGroupChallenge && !$data.trainingCompleted
+    q: common_vendor.t($data.punching ? "打卡中..." : "打卡"),
+    r: $data.punching || $data.isGroupChallenge && !$data.trainingCompleted ? 1 : "",
+    s: common_vendor.o((...args) => $options.onPunch && $options.onPunch(...args))
   } : {}, {
-    x: $data.hasJoined && $data.isGroupChallenge && !$data.trainingCompleted && !$data.isTrainingRelatedChallenge
+    t: common_vendor.o((...args) => $options.onViewReport && $options.onViewReport(...args)),
+    v: $data.hasJoined && $data.isGroupChallenge && !$data.trainingCompleted && !$data.isTrainingRelatedChallenge
   }, $data.hasJoined && $data.isGroupChallenge && !$data.trainingCompleted && !$data.isTrainingRelatedChallenge ? {} : {}, {
-    y: $data.isTrainingRelatedChallenge
+    w: $data.isTrainingRelatedChallenge
   }, $data.isTrainingRelatedChallenge ? {} : {}, {
-    z: common_vendor.o((...args) => $options.onViewReport && $options.onViewReport(...args)),
-    A: $data.actionFileUrl
+    x: $data.actionFileUrl
   }, $data.actionFileUrl ? {
-    B: $data.actionFileUrl
+    y: $data.actionFileUrl,
+    z: common_vendor.o(($event) => $options.previewImage($data.actionFileUrl))
   } : {}, {
-    C: $data.report
+    A: $data.report
   }, $data.report ? common_vendor.e({
-    D: common_vendor.t($data.report.challengeName || $data.detail.challengeName),
-    E: common_vendor.t($options.formatDateRange($data.report)),
-    F: $data.report.participants && $data.report.participants.length > 0
+    B: common_vendor.t($options.formatDateRange($data.report)),
+    C: $data.report.participants && $data.report.participants.length > 0
   }, $data.report.participants && $data.report.participants.length > 0 ? {
-    G: common_vendor.t($options.avgCompletionRate),
-    H: $options.getRateColor($options.avgCompletionRate),
-    I: $options.avgCompletionRate + "%",
-    J: $options.getRateColor($options.avgCompletionRate),
-    K: common_vendor.t($options.perfectCount),
-    L: common_vendor.t($options.totalPunchDays)
+    D: common_vendor.t($options.avgCompletionRate),
+    E: $options.getRateColor($options.avgCompletionRate),
+    F: common_vendor.t($options.perfectCount),
+    G: common_vendor.t($options.totalPunchDays)
   } : {}, {
-    M: common_vendor.t($data.report.participantCount || $data.report.participants && $data.report.participants.length || 0),
-    N: common_vendor.t($options.calculateTotalDays),
-    O: $data.report.participants && $data.report.participants.length > 0
+    H: common_vendor.t($data.report.participantCount || $data.report.participants && $data.report.participants.length || 0),
+    I: common_vendor.t($options.calculateTotalDays),
+    J: $data.report.participants && $data.report.participants.length > 0
   }, $data.report.participants && $data.report.participants.length > 0 ? {
-    P: common_vendor.t($data.report.participants.length),
-    Q: common_vendor.f($options.sortedParticipants, (item, index, i0) => {
+    K: common_vendor.f($options.sortedParticipants, (item, index, i0) => {
       return common_vendor.e({
         a: index === 0
       }, index === 0 ? {} : index === 1 ? {} : index === 2 ? {} : {
@@ -387,8 +352,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         j: common_vendor.t(item.punchDays),
         k: item.completionRate + "%",
         l: common_vendor.t(item.completionRate),
-        m: index,
-        n: index < 3 ? 1 : ""
+        m: index
       });
     })
   } : {}) : {}) : {});

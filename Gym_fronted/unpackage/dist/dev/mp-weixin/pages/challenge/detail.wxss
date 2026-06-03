@@ -1,685 +1,347 @@
 
-.container.data-v-bec59fb5 {
-	padding: 30rpx;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	min-height: 100vh;
-}
-.challenge-card.data-v-bec59fb5 {
-	background: rgba(255, 255, 255, 0.95);
-	border-radius: 20rpx;
-	padding: 30rpx;
-	margin-bottom: 20rpx;
-	box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
-	-webkit-backdrop-filter: blur(10rpx);
-	        backdrop-filter: blur(10rpx);
-	border: 1rpx solid rgba(255, 255, 255, 0.2);
-}
-.challenge-header.data-v-bec59fb5 {
-	display: flex;
-	flex-direction: column;
-	gap: 20rpx;
-}
-.cover-image.data-v-bec59fb5 {
-	width: 100%;
-	height: 300rpx;
-	border-radius: 16rpx;
-	margin-bottom: 20rpx;
-	object-fit: cover;
-	box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
-}
-.challenge-info.data-v-bec59fb5 {
-	display: flex;
-	flex-direction: column;
-	gap: 12rpx;
-}
-.challenge-meta.data-v-bec59fb5 {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 15rpx;
-}
-.meta-item.data-v-bec59fb5 {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	padding: 12rpx 20rpx;
-	border-radius: 50rpx;
-	font-size: 24rpx;
-	color: #fff;
-	font-weight: 500;
-	box-shadow: 0 4rpx 10rpx rgba(102, 126, 234, 0.3);
-}
-.challenge-requirements.data-v-bec59fb5 {
-	margin-top: 20rpx;
-	padding: 25rpx;
-	background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-	border-radius: 16rpx;
-	border-left: 5rpx solid #667eea;
-}
-.requirement-text.data-v-bec59fb5 {
-	font-size: 28rpx;
-	color: #333;
-	line-height: 1.6;
-	word-break: break-word;
-}
-.workout-card.data-v-bec59fb5 {
-	background: rgba(255, 255, 255, 0.95);
-	border-radius: 20rpx;
-	padding: 30rpx;
-	margin-bottom: 20rpx;
-	box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
-	-webkit-backdrop-filter: blur(10rpx);
-	        backdrop-filter: blur(10rpx);
-	border: 1rpx solid rgba(255, 255, 255, 0.2);
-}
-.stats-card.data-v-bec59fb5 {
-	background: rgba(255, 255, 255, 0.95);
-	border-radius: 20rpx;
-	padding: 30rpx;
-	box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
-	-webkit-backdrop-filter: blur(10rpx);
-	        backdrop-filter: blur(10rpx);
-	border: 1rpx solid rgba(255, 255, 255, 0.2);
-}
-
-/* ==================== 挑战报告样式（清晰版） ==================== */
-.report-wrapper.data-v-bec59fb5 {
-	background: #ffffff;
-	border-radius: 24rpx;
-	padding: 30rpx;
-	margin-top: 30rpx;
-	box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-}
-
-/* 报告头部卡片 */
-.report-header-card.data-v-bec59fb5 {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	border-radius: 20rpx;
-	overflow: hidden;
-	margin-bottom: 30rpx;
-}
-.header-bg.data-v-bec59fb5 {
-	padding: 40rpx 30rpx;
-}
-.header-main.data-v-bec59fb5 {
-	text-align: center;
-}
-.report-main-title.data-v-bec59fb5 {
-	display: block;
-	font-size: 28rpx;
-	color: rgba(255, 255, 255, 0.8);
-	margin-bottom: 12rpx;
-}
-.report-challenge-name.data-v-bec59fb5 {
-	display: block;
-	font-size: 40rpx;
-	font-weight: 700;
-	color: #fff;
-	margin-bottom: 20rpx;
-}
-.status-tag.data-v-bec59fb5 {
-	display: inline-flex;
-	align-items: center;
-	background: rgba(255, 255, 255, 0.2);
-	padding: 10rpx 24rpx;
-	border-radius: 30rpx;
-	font-size: 24rpx;
-	color: #fff;
-}
-.status-icon.data-v-bec59fb5 {
-	margin-right: 8rpx;
-	font-weight: 700;
-}
-.header-footer.data-v-bec59fb5 {
-	background: rgba(0, 0, 0, 0.1);
-	padding: 20rpx 30rpx;
-}
-.period-box.data-v-bec59fb5 {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-.period-icon.data-v-bec59fb5 {
-	font-size: 28rpx;
-	margin-right: 10rpx;
-}
-.period-text.data-v-bec59fb5 {
-	font-size: 26rpx;
-	color: rgba(255, 255, 255, 0.9);
-}
-
-/* 核心统计数据行 */
-.stats-row.data-v-bec59fb5 {
-	display: flex;
-	align-items: center;
-	background: #f8f9fa;
-	border-radius: 16rpx;
-	padding: 30rpx 20rpx;
-	margin-bottom: 24rpx;
-}
-.stat-box.data-v-bec59fb5 {
-	flex: 1;
-	text-align: center;
-}
-.stat-box-value.data-v-bec59fb5 {
-	display: block;
-	font-size: 48rpx;
-	font-weight: 700;
-	color: #333;
-	margin-bottom: 8rpx;
-}
-.stat-box-value.highlight.data-v-bec59fb5 {
-	color: #52c41a;
-}
-.stat-box-label.data-v-bec59fb5 {
-	display: block;
-	font-size: 24rpx;
-	color: #666;
-	margin-bottom: 12rpx;
-}
-.stat-box-bar.data-v-bec59fb5 {
-	width: 70%;
-	height: 8rpx;
-	background: #e8e8e8;
-	border-radius: 4rpx;
-	margin: 0 auto;
-	overflow: hidden;
-}
-.stat-box-fill.data-v-bec59fb5 {
-	height: 100%;
-	border-radius: 4rpx;
-	transition: width 0.6s ease;
-}
-.stat-box-desc.data-v-bec59fb5 {
-	display: block;
-	font-size: 22rpx;
-	color: #999;
-	margin-top: 8rpx;
-}
-.stat-divider.data-v-bec59fb5 {
-	width: 2rpx;
-	height: 80rpx;
-	background: #e0e0e0;
-}
-
-/* 参与情况 */
-.participation-info.data-v-bec59fb5 {
-	background: #f8f9fa;
-	border-radius: 16rpx;
-	padding: 24rpx 30rpx;
-	margin-bottom: 24rpx;
-}
-.info-row.data-v-bec59fb5 {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 16rpx 0;
-	border-bottom: 1rpx solid #e8e8e8;
-}
-.info-row.data-v-bec59fb5:last-child {
-	border-bottom: none;
-}
-.info-name.data-v-bec59fb5 {
-	font-size: 28rpx;
-	color: #666;
-}
-.info-value.data-v-bec59fb5 {
-	font-size: 30rpx;
-	color: #333;
-	font-weight: 600;
-}
-
-/* 排行榜卡片 */
-.ranking-card.data-v-bec59fb5 {
-	background: #fff;
-	border: 2rpx solid #f0f0f0;
-	border-radius: 16rpx;
-	overflow: hidden;
-}
-.ranking-header.data-v-bec59fb5 {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 24rpx 30rpx;
-	background: #fafafa;
-	border-bottom: 2rpx solid #f0f0f0;
-}
-.ranking-title.data-v-bec59fb5 {
-	font-size: 30rpx;
-	font-weight: 700;
-	color: #333;
-}
-.ranking-count.data-v-bec59fb5 {
-	font-size: 24rpx;
-	color: #999;
-}
-
-/* 表头 */
-.ranking-thead.data-v-bec59fb5 {
-	display: flex;
-	padding: 20rpx 30rpx;
-	background: #f5f5f5;
-	border-bottom: 2rpx solid #e8e8e8;
-}
-.ranking-thead text.data-v-bec59fb5 {
-	font-size: 24rpx;
-	color: #666;
-	font-weight: 600;
-}
-.th-rank.data-v-bec59fb5 {
-	width: 80rpx;
-	text-align: center;
-}
-.th-user.data-v-bec59fb5 {
-	flex: 1;
-}
-.th-days.data-v-bec59fb5 {
-	width: 140rpx;
-	text-align: center;
-}
-.th-rate.data-v-bec59fb5 {
-	width: 180rpx;
-	text-align: center;
-}
-
-/* 表格行 */
-.ranking-tr.data-v-bec59fb5 {
-	display: flex;
-	align-items: center;
-	padding: 24rpx 30rpx;
-	border-bottom: 1rpx solid #f5f5f5;
-}
-.ranking-tr.data-v-bec59fb5:last-child {
-	border-bottom: none;
-}
-.ranking-tr.top-row.data-v-bec59fb5 {
-	background: #fafafa;
-}
-.td-rank.data-v-bec59fb5 {
-	width: 80rpx;
-	text-align: center;
-}
-.rank-medal.data-v-bec59fb5 {
-	font-size: 36rpx;
-}
-.rank-num.data-v-bec59fb5 {
-	font-size: 28rpx;
-	color: #999;
-	font-weight: 600;
-}
-.td-user.data-v-bec59fb5 {
-	flex: 1;
-	display: flex;
-	align-items: center;
-}
-.user-avatar.data-v-bec59fb5 {
-	width: 56rpx;
-	height: 56rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	color: #fff;
-	font-size: 22rpx;
-	font-weight: 600;
-	border-radius: 50%;
-	margin-right: 16rpx;
-}
-.user-name.data-v-bec59fb5 {
-	font-size: 28rpx;
-	color: #333;
-}
-
-/* 打卡图片缩略图 */
-.punch-thumb.data-v-bec59fb5 {
-	width: 48rpx;
-	height: 48rpx;
-	border-radius: 8rpx;
-	margin-left: 12rpx;
-	border: 2rpx solid #e8e8e8;
-}
-.td-days.data-v-bec59fb5 {
-	width: 140rpx;
-	text-align: center;
-}
-.days-val.data-v-bec59fb5 {
-	font-size: 32rpx;
-	font-weight: 700;
-	color: #667eea;
-}
-.days-unit.data-v-bec59fb5 {
-	font-size: 22rpx;
-	color: #999;
-	margin-left: 4rpx;
-}
-.td-rate.data-v-bec59fb5 {
-	width: 180rpx;
-	text-align: center;
-}
-.rate-bar.data-v-bec59fb5 {
-	width: 100rpx;
-	height: 10rpx;
-	background: #e8e8e8;
-	border-radius: 5rpx;
-	overflow: hidden;
-	margin: 0 auto 8rpx;
-}
-.rate-fill.data-v-bec59fb5 {
-	height: 100%;
-	background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-	border-radius: 5rpx;
-	transition: width 0.6s ease;
-}
-.rate-text.data-v-bec59fb5 {
-	font-size: 24rpx;
-	color: #667eea;
-	font-weight: 600;
-}
-.info-value.highlight.data-v-bec59fb5 {
-	color: #ffd700;
-	font-weight: 700;
-}
-
-/* 排行榜样式 */
-.ranking-section.data-v-bec59fb5 {
-	background: rgba(255, 255, 255, 0.95);
-	border-radius: 20rpx;
-	padding: 30rpx;
-	margin-bottom: 25rpx;
-}
-.section-title.data-v-bec59fb5 {
-	display: flex;
-	align-items: center;
-	font-size: 32rpx;
-	font-weight: 700;
-	color: #333;
-	margin-bottom: 25rpx;
-}
-.title-icon.data-v-bec59fb5 {
-	font-size: 36rpx;
-	margin-right: 12rpx;
-}
-.ranking-list.data-v-bec59fb5 {
-	display: flex;
-	flex-direction: column;
-	gap: 16rpx;
-}
-.ranking-item.data-v-bec59fb5 {
-	display: flex;
-	align-items: center;
-	padding: 20rpx;
-	background: #f8f9fa;
-	border-radius: 16rpx;
-	transition: all 0.3s ease;
-}
-.ranking-item.top3.data-v-bec59fb5 {
-	background: linear-gradient(135deg, #fff9e6 0%, #fff5d6 100%);
-	border: 2rpx solid #ffd700;
-}
-.rank-number.data-v-bec59fb5 {
-	width: 60rpx;
-	height: 60rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: #e9ecef;
-	border-radius: 50%;
-	margin-right: 20rpx;
-	font-size: 28rpx;
-	font-weight: 700;
-	color: #666;
-}
-.rank-number.top.data-v-bec59fb5 {
-	background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
-	color: #fff;
-	font-size: 32rpx;
-}
-.rank-info.data-v-bec59fb5 {
-	flex: 1;
-}
-.rank-name.data-v-bec59fb5 {
-	font-size: 28rpx;
-	color: #333;
-	font-weight: 600;
-	display: block;
-	margin-bottom: 10rpx;
-}
-.rank-progress.data-v-bec59fb5 {
-	display: flex;
-	align-items: center;
-	gap: 15rpx;
-}
-.progress-bar.data-v-bec59fb5 {
-	flex: 1;
-	height: 12rpx;
-	background: #e9ecef;
-	border-radius: 6rpx;
-	overflow: hidden;
-}
-.progress-fill.data-v-bec59fb5 {
-	height: 100%;
-	background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-	border-radius: 6rpx;
-	transition: width 0.5s ease;
-}
-.progress-text.data-v-bec59fb5 {
-	font-size: 24rpx;
-	color: #667eea;
-	font-weight: 600;
-	min-width: 120rpx;
-	text-align: right;
-}
-
-/* 统计摘要 */
-.summary-section.data-v-bec59fb5 {
-	background: rgba(255, 255, 255, 0.95);
-	border-radius: 20rpx;
-	padding: 30rpx;
+.challenge-detail-page.data-v-bec59fb5 {
+  min-height: 100vh;
+  padding: 24rpx;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at top right, rgba(111, 146, 255, 0.16), transparent 24%),
+    linear-gradient(180deg, #edf2ff 0%, #f5f7fc 42%, #f4f6fb 100%);
+}
+.hero-card.data-v-bec59fb5,
+.summary-card.data-v-bec59fb5,
+.action-card.data-v-bec59fb5,
+.report-card.data-v-bec59fb5 {
+  border-radius: 32rpx;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18rpx 38rpx rgba(21, 35, 95, 0.08);
+}
+.hero-card.data-v-bec59fb5 {
+  position: relative;
+  height: 430rpx;
+  margin-bottom: 22rpx;
+  box-shadow: 0 20rpx 50rpx rgba(21, 35, 95, 0.16);
+}
+.hero-cover.data-v-bec59fb5 {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.placeholder-cover.data-v-bec59fb5 {
+  background: linear-gradient(150deg, #dce5ff 0%, #c9d7ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.placeholder-text.data-v-bec59fb5 {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #4363f3;
+}
+.hero-overlay.data-v-bec59fb5 {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 34rpx 30rpx;
+  background: linear-gradient(180deg, rgba(9, 18, 48, 0.1), rgba(9, 18, 48, 0.72));
+}
+.hero-badge.data-v-bec59fb5 {
+  display: inline-flex;
+  width: -webkit-fit-content;
+  width: fit-content;
+  height: 42rpx;
+  padding: 0 16rpx;
+  margin-bottom: 18rpx;
+  border-radius: 999rpx;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 20rpx;
+  letter-spacing: 1rpx;
+}
+.hero-title.data-v-bec59fb5 {
+  display: block;
+  margin-bottom: 12rpx;
+  font-size: 40rpx;
+  line-height: 1.28;
+  font-weight: 700;
+  color: #ffffff;
+}
+.hero-desc.data-v-bec59fb5 {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.84);
+}
+.summary-card.data-v-bec59fb5,
+.action-card.data-v-bec59fb5,
+.report-card.data-v-bec59fb5 {
+  padding: 30rpx 24rpx;
+  margin-bottom: 20rpx;
+}
+.summary-grid.data-v-bec59fb5,
+.report-stats.data-v-bec59fb5 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14rpx;
 }
 .summary-grid.data-v-bec59fb5 {
-	display: flex;
-	justify-content: space-around;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
-.summary-item.data-v-bec59fb5 {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding: 20rpx;
+.summary-item.data-v-bec59fb5,
+.report-stat.data-v-bec59fb5 {
+  padding: 20rpx 18rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
 }
-.summary-value.data-v-bec59fb5 {
-	font-size: 48rpx;
-	font-weight: 700;
-	color: #667eea;
-	margin-bottom: 10rpx;
+.summary-label.data-v-bec59fb5,
+.report-stat-label.data-v-bec59fb5 {
+  display: block;
+  margin-bottom: 10rpx;
+  font-size: 22rpx;
+  color: #738198;
 }
-.summary-label.data-v-bec59fb5 {
-	font-size: 24rpx;
-	color: #666;
+.summary-value.data-v-bec59fb5,
+.report-stat-value.data-v-bec59fb5 {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #172233;
 }
-.action-buttons.data-v-bec59fb5 {
-	display: flex;
-	flex-direction: column;
-	gap: 20rpx;
-	margin-top: 20rpx;
+.section-head.data-v-bec59fb5 {
+  margin-bottom: 20rpx;
 }
-.btn-fitness-primary.data-v-bec59fb5 {
-	width: 100%;
-	height: 80rpx;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	border: none;
-	border-radius: 40rpx;
-	color: white;
-	font-size: 32rpx;
-	font-weight: 600;
-	box-shadow: 0 8rpx 20rpx rgba(102, 126, 234, 0.3);
-	position: relative;
-	overflow: hidden;
+.section-title.data-v-bec59fb5,
+.ranking-title.data-v-bec59fb5 {
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #172233;
 }
-.btn-fitness-primary.data-v-bec59fb5::after {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: -100%;
-	width: 100%;
-	height: 100%;
-	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-	transition: left 0.5s;
+.section-subtitle.data-v-bec59fb5 {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.55;
+  color: #74829a;
 }
-.btn-fitness-primary.data-v-bec59fb5:active::after {
-	left: 100%;
+.action-row.data-v-bec59fb5 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
 }
-.btn-fitness-primary.data-v-bec59fb5:active {
-	transform: scale(0.95);
+.action-btn.data-v-bec59fb5 {
+  min-width: 180rpx;
+  height: 84rpx;
+  padding: 0 24rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.btn-fitness-secondary.data-v-bec59fb5 {
-	width: 100%;
-	height: 80rpx;
-	background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-	border: none;
-	border-radius: 40rpx;
-	color: #52c41a;
-	font-size: 32rpx;
-	font-weight: 600;
-	box-shadow: 0 8rpx 20rpx rgba(82, 196, 26, 0.2);
-	position: relative;
-	overflow: hidden;
+.action-btn.primary.data-v-bec59fb5 {
+  background: linear-gradient(150deg, #3253ef 0%, #6980ff 100%);
+  box-shadow: 0 14rpx 24rpx rgba(50, 83, 239, 0.2);
 }
-.btn-fitness-secondary.data-v-bec59fb5::after {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: -100%;
-	width: 100%;
-	height: 100%;
-	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-	transition: left 0.5s;
+.action-btn.secondary.data-v-bec59fb5 {
+  border: 1rpx solid #cfd8ec;
+  background: #ffffff;
 }
-.btn-fitness-secondary.data-v-bec59fb5:active::after {
-	left: 100%;
+.action-btn.ghost.data-v-bec59fb5 {
+  background: #eef3ff;
 }
-.btn-fitness-secondary.data-v-bec59fb5:active {
-	transform: scale(0.95);
+.action-btn.disabled.data-v-bec59fb5 {
+  opacity: 0.65;
 }
-.btn-fitness-strength.data-v-bec59fb5 {
-	width: 100%;
-	height: 80rpx;
-	background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-	border: none;
-	border-radius: 40rpx;
-	color: #d46b08;
-	font-size: 32rpx;
-	font-weight: 600;
-	box-shadow: 0 8rpx 20rpx rgba(212, 107, 8, 0.2);
-	position: relative;
-	overflow: hidden;
+.action-btn-text.data-v-bec59fb5 {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #ffffff;
 }
-.btn-fitness-strength.data-v-bec59fb5::after {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: -100%;
-	width: 100%;
-	height: 100%;
-	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-	transition: left 0.5s;
+.secondary-text.data-v-bec59fb5 {
+  color: #3657ee;
 }
-.btn-fitness-strength.data-v-bec59fb5:active::after {
-	left: 100%;
+.ghost-text.data-v-bec59fb5 {
+  color: #3657ee;
 }
-.btn-fitness-strength.data-v-bec59fb5:active {
-	transform: scale(0.95);
+.joined-pill.data-v-bec59fb5 {
+  height: 84rpx;
+  padding: 0 24rpx;
+  border-radius: 999rpx;
+  background: #eef8f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.btn-fitness-primary.data-v-bec59fb5:disabled,
-.btn-fitness-secondary.data-v-bec59fb5:disabled,
-.btn-fitness-strength.data-v-bec59fb5:disabled {
-	opacity: 0.6;
-	transform: none;
-	pointer-events: none;
+.joined-pill-text.data-v-bec59fb5 {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #2f8a5c;
 }
-.btn-text.data-v-bec59fb5 {
-	color: white;
-	font-weight: 600;
-	font-size: 32rpx;
+.info-box.data-v-bec59fb5 {
+  margin-top: 18rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 24rpx;
+  background: #f4f7ff;
+}
+.info-box.warning.data-v-bec59fb5 {
+  background: #fff5ea;
 }
 .info-text.data-v-bec59fb5 {
-	font-size: 28rpx;
-	color: #666;
-	padding: 16rpx 24rpx;
-	background: linear-gradient(135deg, #fef9d7 0%, #d299c2 100%);
-	border-radius: 16rpx;
-	margin: 12rpx 0;
-	text-align: center;
-	font-weight: 500;
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.55;
+  color: #172233;
 }
-.action-file.data-v-bec59fb5 {
-	margin-top: 25rpx;
+.info-subtext.data-v-bec59fb5 {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #74829a;
 }
-.action-image.data-v-bec59fb5 {
-	width: 100%;
-	height: 200rpx;
-	border-radius: 16rpx;
-	border: 2rpx solid #f5576c;
-	box-shadow: 0 8rpx 20rpx rgba(245, 87, 108, 0.2);
-	object-fit: cover;
+.action-proof.data-v-bec59fb5 {
+  margin-top: 18rpx;
 }
-
-/* 为新添加的元素添加额外样式 */
-.fitness-title.data-v-bec59fb5 {
-	font-size: 40rpx;
-	text-align: center;
-	font-weight: 700;
-	color: #333;
-	margin-bottom: 10rpx;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
-	background-clip: text;
+.proof-title.data-v-bec59fb5 {
+  display: block;
+  margin-bottom: 12rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #172233;
 }
-.fitness-subtitle.data-v-bec59fb5 {
-	font-size: 32rpx;
-	color: #667eea;
-	margin: 20rpx 0 16rpx 0;
-	font-weight: 600;
-	display: flex;
-	align-items: center;
-	gap: 10rpx;
+.proof-image.data-v-bec59fb5 {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 22rpx;
 }
-.fitness-subtitle.data-v-bec59fb5::before {
-	content: "▶";
-	font-size: 24rpx;
-	color: #f5576c;
-	transform: scale(0.8);
+.report-info.data-v-bec59fb5 {
+  margin-top: 18rpx;
 }
-.sub.data-v-bec59fb5 {
-	display: block;
-	margin-top: 8rpx;
-	font-size: 26rpx;
-	color: #666;
-	font-style: italic;
-	word-break: break-word;
-	background: #f8f9fa;
-	padding: 15rpx;
-	border-radius: 12rpx;
-	border-left: 4rpx solid #667eea;
+.report-info-row.data-v-bec59fb5 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #eef1f6;
 }
-.joined-status.data-v-bec59fb5 {
-	padding: 20rpx;
-	text-align: center;
-	background: #e8f5e9;
-	border-radius: 16rpx;
-	margin-bottom: 20rpx;
+.report-info-row.data-v-bec59fb5:last-child {
+  border-bottom: none;
 }
-.joined-text.data-v-bec59fb5 {
-	font-size: 28rpx;
-	color: #4caf50;
-	font-weight: 500;
+.report-info-label.data-v-bec59fb5 {
+  font-size: 24rpx;
+  color: #738198;
 }
-.training-requirement.data-v-bec59fb5 {
-	padding: 15rpx;
-	background: #fff3cd;
-	border-radius: 12rpx;
-	margin: 15rpx 0;
-	border-left: 4rpx solid #ffc107;
+.report-info-value.data-v-bec59fb5 {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #172233;
 }
-.requirement-text.data-v-bec59fb5 {
-	font-size: 26rpx;
-	color: #856404;
-	line-height: 1.4;
+.status-tag.data-v-bec59fb5 {
+  display: inline-flex;
+  height: 42rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  align-items: center;
+  justify-content: center;
+  background: #eef8f2;
+}
+.status-tag-text.data-v-bec59fb5 {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #2f8a5c;
+}
+.ranking-card.data-v-bec59fb5 {
+  margin-top: 18rpx;
+}
+.ranking-list.data-v-bec59fb5 {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+  margin-top: 14rpx;
+}
+.ranking-item.data-v-bec59fb5 {
+  display: grid;
+  grid-template-columns: 72rpx 1fr 120rpx 180rpx;
+  gap: 12rpx;
+  align-items: center;
+  padding: 18rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
+}
+.ranking-rank.data-v-bec59fb5,
+.ranking-days.data-v-bec59fb5 {
+  text-align: center;
+}
+.rank-medal.data-v-bec59fb5,
+.rank-num.data-v-bec59fb5,
+.days-value.data-v-bec59fb5 {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #172233;
+}
+.days-unit.data-v-bec59fb5,
+.rate-text.data-v-bec59fb5 {
+  font-size: 22rpx;
+  color: #738198;
+}
+.ranking-user.data-v-bec59fb5 {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  min-width: 0;
+}
+.user-avatar.data-v-bec59fb5 {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  background: linear-gradient(150deg, #3253ef 0%, #6980ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+.user-name.data-v-bec59fb5 {
+  flex: 1;
+  min-width: 0;
+  font-size: 24rpx;
+  color: #172233;
+}
+.punch-thumb.data-v-bec59fb5 {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 14rpx;
+  flex-shrink: 0;
+}
+.rate-bar.data-v-bec59fb5 {
+  width: 100%;
+  height: 10rpx;
+  border-radius: 999rpx;
+  background: #dde4f2;
+  overflow: hidden;
+  margin-bottom: 8rpx;
+}
+.rate-fill.data-v-bec59fb5 {
+  height: 100%;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #3658ef 0%, #6d82ff 100%);
+}
+@media (max-width: 750rpx) {
+.summary-grid.data-v-bec59fb5,
+  .report-stats.data-v-bec59fb5 {
+    grid-template-columns: 1fr;
+}
+.ranking-item.data-v-bec59fb5 {
+    grid-template-columns: 60rpx 1fr;
+}
+.ranking-days.data-v-bec59fb5,
+  .ranking-rate.data-v-bec59fb5 {
+    grid-column: 2;
+}
 }
