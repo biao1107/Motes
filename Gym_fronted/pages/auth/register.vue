@@ -311,17 +311,17 @@ const viewPrivacy = () => {
 
 .intro-top {
   display: flex;
-  align-items: flex-start;
-  gap: 20rpx;
-  margin-bottom: 18rpx;
+  align-items: center;
+  gap: 18rpx;
+  margin-bottom: 16rpx;
 }
 
 .logo-shell {
-  width: 132rpx;
-  height: 132rpx;
+  width: 126rpx;
+  height: 126rpx;
   flex-shrink: 0;
-  border-radius: 32rpx;
-  background: rgba(255, 255, 255, 0.08);
+  border-radius: 30rpx;
+  background: rgba(255, 255, 255, 0.1);
   border: 1rpx solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 14rpx 40rpx rgba(3, 8, 25, 0.22);
   display: flex;
@@ -335,14 +335,14 @@ const viewPrivacy = () => {
   content: '';
   position: absolute;
   inset: -6rpx;
-  border-radius: 36rpx;
+  border-radius: 34rpx;
   background: linear-gradient(135deg, rgba(108, 141, 255, 0.26), rgba(127, 255, 205, 0));
   z-index: -1;
 }
 
 .logo-img {
-  width: 96rpx;
-  height: 96rpx;
+  width: 102rpx;
+  height: 102rpx;
 }
 
 .brand-copy {
@@ -366,7 +366,7 @@ const viewPrivacy = () => {
 .brand-title {
   display: block;
   margin-bottom: 6rpx;
-  font-size: 42rpx;
+  font-size: 40rpx;
   font-weight: 800;
   color: #ffffff;
   letter-spacing: 2rpx;
@@ -374,21 +374,21 @@ const viewPrivacy = () => {
 
 .brand-subtitle {
   display: block;
-  font-size: 24rpx;
-  line-height: 1.55;
+  font-size: 23rpx;
+  line-height: 1.5;
   color: rgba(232, 241, 255, 0.82);
 }
 
 .feature-list {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12rpx;
+  gap: 10rpx;
 }
 
 .feature-chip {
   min-width: 0;
-  padding: 16rpx 16rpx 18rpx;
-  border-radius: 22rpx;
+  padding: 14rpx 14rpx 16rpx;
+  border-radius: 20rpx;
   background: rgba(255, 255, 255, 0.08);
   border: 1rpx solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12rpx);
@@ -398,15 +398,15 @@ const viewPrivacy = () => {
 .feature-chip-title {
   display: block;
   margin-bottom: 6rpx;
-  font-size: 23rpx;
+  font-size: 22rpx;
   font-weight: 700;
   color: #ffffff;
 }
 
 .feature-chip-text {
   display: block;
-  font-size: 20rpx;
-  line-height: 1.45;
+  font-size: 19rpx;
+  line-height: 1.4;
   color: rgba(232, 241, 255, 0.76);
 }
 
@@ -414,7 +414,7 @@ const viewPrivacy = () => {
   width: 100%;
   max-width: 680rpx;
   margin: 0 auto 26rpx;
-  padding: 30rpx 24rpx 28rpx;
+  padding: 28rpx 22rpx 26rpx;
   border-radius: 34rpx;
   background: rgba(255, 255, 255, 0.98);
   box-shadow: 0 18rpx 48rpx rgba(18, 34, 82, 0.14);
@@ -422,7 +422,7 @@ const viewPrivacy = () => {
 }
 
 .card-head {
-  margin-bottom: 20rpx;
+  margin-bottom: 18rpx;
 }
 
 .card-title {
@@ -587,6 +587,10 @@ const viewPrivacy = () => {
 @media (max-width: 750rpx) {
   .feature-list {
     grid-template-columns: 1fr;
+  }
+
+  .intro-top {
+    align-items: flex-start;
   }
 }
 </style>
