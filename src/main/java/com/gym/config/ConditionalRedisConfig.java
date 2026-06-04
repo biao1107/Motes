@@ -40,26 +40,6 @@ public class ConditionalRedisConfig {
     /**
      * 创建 RedisTemplate Bean，配置序列化方式
      *
-     * 【什么是序列化？】
-     * Redis 只能存储字节（byte[]），不能直接存 Java 对象或字符串。
-     * 序列化就是把 Java 数据转换成字节的过程，反序列化则是反过来。
-     *
-     * 【序列化方案说明】
-     * ┌────────────┬──────────────────────────────┬───────────────────┐
-     * │  数据类型   │      序列化器                  │  存储示例          │
-     * ├────────────┼──────────────────────────────┼───────────────────┤
-     * │ Key（键）   │ StringRedisSerializer        │ "punch:123:456"   │
-     * │ Value（值） │ GenericJackson2JsonSerializer │ {"done":3}        │
-     * │ Hash Key   │ StringRedisSerializer        │ "field_name"      │
-     * │ Hash Value │ GenericJackson2JsonSerializer │ "value_content"   │
-     * └────────────┴──────────────────────────────┴───────────────────┘
-     *
-     * 【什么是 Hash？】
-     * Redis 的 Hash 类似 Java 的 HashMap，一个 key 下存多个 field:value 对。
-     * 本项目用 Hash 存储训练进度，如：
-     *   key: "train:progress:1:2024-01-01"
-     *   field: "userId123" → value: "3/5"（已完成3组/共5组）
-     *
      * @param factory Redis 连接工厂（由 Spring Boot 自动创建，读取 application.yml 配置）
      * @return 配置好序列化方式的 RedisTemplate
      */

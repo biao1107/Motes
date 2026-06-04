@@ -114,16 +114,4 @@ public interface ChatService {
      * @param userId  用户ID
      */
     void markMessagesAsRead(Long groupId, Long userId);
-    
-    /**
-     * 重置用户在群组的阅读状态
-     * 
-     * 【功能说明】
-     * 将最后阅读时间设为当前时间，效果与 markMessagesAsRead 相同
-     * 提供此方法是为了语义清晰：重置状态 vs 标记已读
-     * 
-     * @param groupId 群组ID
-     * @param userId  用户ID
-     */
-    void resetUserReadStatus(Long groupId, Long userId);
 }

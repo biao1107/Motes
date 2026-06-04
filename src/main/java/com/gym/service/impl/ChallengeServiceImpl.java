@@ -63,9 +63,6 @@ import java.util.concurrent.TimeUnit;
 public class ChallengeServiceImpl implements ChallengeService {
 
     // ==================== Redis 缓存键前缀 ====================
-    // 【什么是Redis？】
-    // Redis是一个内存数据库，比MySQL快很多。我们把经常查询的数据放在Redis里，
-    // 用户请求时先查Redis，没有再去查MySQL，这样响应更快。
     
     /**
      * Redis 键前缀：用户打卡记录
@@ -113,14 +110,6 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     /**
      * 创建挑战（公开挑战或组内挑战）
-     * 
-     * 【这个方法做什么？】
-     * 当用户在App上点击"创建挑战"按钮时，就会调用这个方法。
-     * 它负责把用户填写的挑战信息保存到数据库。
-     * 
-     * 【什么是公开挑战和组内挑战？】
-     * - 公开挑战：所有人都能在App里看到，谁都可以参加
-     * - 组内挑战：只有某个小组的成员能看到和参加（比如"健身小分队"内部挑战）
      * 
      * 【如何判断类型？】
      * 看 groupId 参数：

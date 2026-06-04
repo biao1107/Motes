@@ -350,64 +350,7 @@ public class ChatServiceImpl implements ChatService {
             log.warn("未能更新群组 {} 的阅读状态，用户 {}", groupId, userId);
         }
     }
-    
-    /**
-     * 重置用户阅读状态
-     * 
-     * 【功能说明】
-     * 与 markMessagesAsRead 功能相同，将最后阅读时间设为当前时间。
-     * 提供此方法是为了语义清晰：
-     * - markMessagesAsRead：用户阅读消息时调用
-     * - resetUserReadStatus：管理员或特殊操作时调用
-     * 
-     * @param groupId 群组ID
-     * @param userId  用户ID
-     */
-    @Override
-    public void resetUserReadStatus(Long groupId, Long userId) {
-        log.debug("重置用户阅读状态: groupId={}, userId={}", groupId, userId);
-        
-        // 检查用户是否是群组成员
-        GroupMember member = groupMemberMapper.selectOne(
-            new LambdaQueryWrapper<GroupMember>()
-                .eq(GroupMember::getGroupId, groupId)
-                .eq(GroupMember::getUserId, userId)
-        );
-        
-        if (member == null) {
-            log.warn("用户 {} 不是群组 {} 的成员", userId, groupId);
-            return;
-        }
 
-        log.debug("重置前的最后阅读时间: {}", member.getLastReadTime());
-
-        LocalDateTime latestMessageTime = null;
-        List<ChatMessage> latestMessages = chatMessageMapper.selectList(
-            new LambdaQueryWrapper<ChatMessage>()
-                .eq(ChatMessage::getGroupId, groupId)
-                .orderByDesc(ChatMessage::getCreateTime)
-                .last("LIMIT 1")
-        );
-        if (latestMessages != null && !latestMessages.isEmpty()) {
-            latestMessageTime = latestMessages.get(0).getCreateTime();
-        }
-
-        LocalDateTime readTime = latestMessageTime != null ? latestMessageTime : LocalDateTime.now();
-
-        // 将最后阅读时间设置为最新消息时间
-        int result = groupMemberMapper.update(null,
-            new LambdaUpdateWrapper<GroupMember>()
-                .eq(GroupMember::getGroupId, groupId)
-                .eq(GroupMember::getUserId, userId)
-                .set(GroupMember::getLastReadTime, readTime)
-        );
-
-        if (result > 0) {
-            log.debug("成功重置群组 {} 的阅读状态，用户 {}", groupId, userId);
-        } else {
-            log.warn("未能重置群组 {} 的阅读状态，用户 {}", groupId, userId);
-        }
-    }
 
     /**
      * 获取用户未读消息详情

@@ -251,11 +251,6 @@ export function apiSendChatMessage(data) {
 	return post('/chat/send', data);
 }
 
-// 重置群组消息阅读状态
-export function apiResetGroupReadStatus(groupId, userId) {
-	return post(`/chat/group/${groupId}/reset-read?userId=${userId}`, {});
-}
-
 // ==================== 文件模块 ====================
 
 /**

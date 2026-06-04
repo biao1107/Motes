@@ -253,27 +253,6 @@ public class ChatController {
     }
     
     /**
-     * 重置用户在群组的阅读状态
-     * 
-     * 【接口地址】POST /chat/group/{groupId}/reset-read
-     * 【参数】groupId: 群组ID，userId: 用户ID
-     * 【返回】操作结果
-     * 
-     * 【使用场景】
-     * 管理员或用户本人重置阅读状态（将最后阅读时间设为当前时间）
-     * 
-     * @param groupId 群组ID
-     * @param userId 用户ID
-     * @return 操作结果
-     */
-    @PostMapping("/group/{groupId}/reset-read")
-    public ApiResponse<Void> resetReadStatus(@PathVariable Long groupId, @RequestParam Long userId) {
-        log.debug("重置用户阅读状态: groupId={}, userId={}", groupId, userId);
-        chatService.resetUserReadStatus(groupId, userId);
-        return ApiResponse.ok(null);
-    }
-    
-    /**
      * 通过 HTTP 发送群组聊天消息（小程序专用）
      * 
      * 【接口地址】POST /chat/send
