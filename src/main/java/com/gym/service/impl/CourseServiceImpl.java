@@ -54,8 +54,6 @@ public class CourseServiceImpl implements CourseService {
     private final RedisTemplate<String, String> redisTemplate;  // Redis缓存
     private final ObjectMapper objectMapper;      // JSON序列化工具
     
-    // ==================== Redis缓存配置 ====================
-    
     /**
      * Redis缓存键前缀：课程详情（整个对象）
      * 格式：course:detail:课程ID
@@ -133,7 +131,7 @@ public class CourseServiceImpl implements CourseService {
             
             if (cachedJson != null && !cachedJson.isEmpty()) {
                 // 【情况A：缓存命中】反序列化JSON为Course对象
-                log.debug("课程缓存命中: courseId={}", id);
+                log.info("课程缓存命中: courseId={}", id);
                 return objectMapper.readValue(cachedJson, Course.class);
             }
             
@@ -148,7 +146,7 @@ public class CourseServiceImpl implements CourseService {
             if (course != null) {
                 String json = objectMapper.writeValueAsString(course);
                 redisTemplate.opsForValue().set(cacheKey, json, CACHE_EXPIRE_HOURS, TimeUnit.HOURS);
-                log.debug("课程已缓存: courseId={}", id);
+                log.info("课程已缓存: courseId={}", id);
             }
             
             // 【第4步：返回结果】
@@ -157,7 +155,9 @@ public class CourseServiceImpl implements CourseService {
         } catch (Exception e) {
             // 【异常处理】缓存失败时降级为直接查询数据库
             log.warn("课程缓存处理失败，降级为数据库查询: courseId={}", id, e);
-            return courseMapper.selectById(id);
+            LambdaQueryWrapper<Course> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Course::getId, id).eq(Course::getStatus, 1);
+            return courseMapper.selectOne(queryWrapper);
         }
     }
     
@@ -213,25 +213,5 @@ public class CourseServiceImpl implements CourseService {
                    .orderByDesc(Course::getSortWeight, Course::getCreateTime);
         
         return courseMapper.selectPage(page, queryWrapper);
-    }
-    
-    // ==================== 缓存管理方法 ====================
-    
-    /**
-     * 清除课程缓存
-     * 
-     * 【使用场景】课程信息更新或删除时调用
-     * 【作用】保证用户下次查询时能获取最新数据
-     * 
-     * @param courseId 课程ID
-     */
-    public void clearCourseCache(Long courseId) {
-        try {
-            String cacheKey = COURSE_DETAIL_CACHE_KEY + courseId;
-            redisTemplate.delete(cacheKey);
-            log.info("课程缓存已清除: courseId={}", courseId);
-        } catch (Exception e) {
-            log.warn("清除课程缓存失败: courseId={}", courseId, e);
-        }
     }
 }

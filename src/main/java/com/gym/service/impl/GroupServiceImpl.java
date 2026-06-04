@@ -300,91 +300,78 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public Long acceptInvitation(Long userId, Long invitationId) {
-        // ========== 第1步：查找邀请记录 ==========
-        // key格式: group:invitation:toUserId:fromUserId_groupId
-        // 当前用户是toUserId，invitationId是fromUserId
-        // 使用pattern匹配，因为groupId部分不确定
+        // 查找邀请记录 key格式: group:invitation:toUserId:fromUserId_groupId
         String pattern = INVITATION_PREFIX + userId + ":" + invitationId + "_*";
-        log.info("接受邀请查找pattern: {}", pattern);
         Set<String> keys = redisTemplate.keys(pattern);
-        log.info("找到的key: {}", keys);
+        
         if (keys == null || keys.isEmpty()) {
-            log.warn("未找到匹配的邀请key，pattern: {}", pattern);
             throw new BizException(ErrorCode.BAD_REQUEST, "邀约不存在或已过期");
         }
         
-        // 获取第一个匹配的key（理论上只有一个）
-        String key = keys.iterator().next();//获取迭代器，取第一个元素
+        // 获取第一个匹配的key并解析JSON数据
+        String key = keys.iterator().next();
         Object inviteDataObj = redisTemplate.opsForValue().get(key);
         if (inviteDataObj == null) {
             throw new BizException(ErrorCode.BAD_REQUEST, "邀约不存在或已过期");
         }
         
-        // ========== 第2步：解析JSON数据 ==========
+        // 使用Jackson解析JSON字符串
         String jsonStr = inviteDataObj.toString();
-        log.info("接受邀请解析JSON: {}", jsonStr);
-        Long fromUserId = null;
-        Long groupId = null;
-        // 使用正则表达式提取fromUserId
-        java.util.regex.Pattern p = java.util.regex.Pattern.compile("\"fromUserId\"\\s*:\\s*(\\d+)");//定义正则表达式规则
-        java.util.regex.Matcher m = p.matcher(jsonStr);//用正则去匹配目标字符串
-        if (m.find()) {
-            fromUserId = Long.parseLong(m.group(1));
-        }
-        // 使用正则表达式提取groupId
-        p = java.util.regex.Pattern.compile("\"groupId\"\\s*:\\s*(\\d+)");//定义正则表达式规则
-        m = p.matcher(jsonStr);//用正则去匹配目标字符串             
-        if (m.find()) {
-            groupId = Long.parseLong(m.group(1));
-        }
-        
-        // 校验解析结果
-        if (fromUserId == null || groupId == null) {
+        try {
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            java.util.Map<String, Object> jsonData = mapper.readValue(jsonStr, java.util.Map.class);
+            
+            Long fromUserId = jsonData.get("fromUserId") != null ? 
+                    ((Number) jsonData.get("fromUserId")).longValue() : null;
+            Long groupId = jsonData.get("groupId") != null ? 
+                    ((Number) jsonData.get("groupId")).longValue() : null;
+            
+            if (fromUserId == null || groupId == null) {
+                throw new BizException(ErrorCode.BAD_REQUEST, "邀约数据格式错误");
+            }
+            
+            // 删除邀请记录
+            redisTemplate.delete(key);
+            
+            // 检查用户是否已在组中
+            GroupMember existingMember = memberMapper.selectOne(
+                new LambdaQueryWrapper<GroupMember>()
+                    .eq(GroupMember::getGroupId, groupId)
+                    .eq(GroupMember::getUserId, userId)
+            );
+            if (existingMember != null) {
+                throw new BizException(ErrorCode.BAD_REQUEST, "你已经在该组中");
+            }
+            
+            // 添加组成员
+            GroupMember member = new GroupMember();
+            member.setGroupId(groupId);
+            member.setUserId(userId);
+            member.setRole("MEMBER");
+            member.setCreateTime(LocalDateTime.now());
+            memberMapper.insert(member);
+            
+            // 更新Redis缓存
+            try {
+                String cacheKey = USER_GROUPS_PREFIX + userId;
+                redisTemplate.opsForSet().add(cacheKey, groupId);
+            } catch (Exception e) {
+                log.warn("更新Redis缓存失败: {}", e.getMessage());
+            }
+            
+            // 清除统计数据缓存
+            try {
+                statService.clearHomeStatsCache(userId);
+            } catch (Exception e) {
+                log.warn("清除用户统计数据缓存失败: {}", e.getMessage());
+            }
+            
+            return groupId;
+        } catch (BizException e) {
+            throw e;
+        } catch (Exception e) {
             throw new BizException(ErrorCode.BAD_REQUEST, "邀约数据格式错误");
         }
-        
-        // ========== 第3步：删除邀请记录 ==========
-        redisTemplate.delete(key);
-
-        // ========== 第4步：检查是否已在组中 ==========
-        // 查询是否已有该用户在该组的记录
-        GroupMember existingMember = memberMapper.selectOne(
-            new LambdaQueryWrapper<GroupMember>()
-                .eq(GroupMember::getGroupId, groupId)
-                .eq(GroupMember::getUserId, userId)
-        );
-        if (existingMember != null) {
-            throw new BizException(ErrorCode.BAD_REQUEST, "你已经在该组中");
-        }
-        
-        // ========== 第5步：添加组成员 ==========
-        GroupMember member = new GroupMember();
-        member.setGroupId(groupId);
-        member.setUserId(userId);
-        member.setRole("MEMBER"); // 被邀请加入的为普通成员
-        member.setCreateTime(LocalDateTime.now());
-        memberMapper.insert(member);
-        
-        log.info("数据库插入GroupMember记录: groupId={}, userId={}", groupId, userId);
-        log.info("用户 {} 已加入组 {}, 尝试添加到Redis缓存", userId, groupId);
-        
-        // ========== 第6步：更新Redis缓存 ==========
-        try {
-            String cacheKey = USER_GROUPS_PREFIX + userId;
-            redisTemplate.opsForSet().add(cacheKey, groupId);
-            log.info("用户组缓存已更新: {}", cacheKey);
-        } catch (Exception e) {
-            log.warn("更新Redis缓存失败: {}", e.getMessage());
-        }
-        
-        // 用户加入组后，清除其统计数据缓存，确保首页显示最新数据
-        try {
-            statService.clearHomeStatsCache(userId);
-        } catch (Exception e) {
-            log.warn("清除用户统计数据缓存失败: {}", e.getMessage());
-        }
-        
-        return groupId;
     }
 
     /**
@@ -458,37 +445,23 @@ public class GroupServiceImpl implements GroupService {
         List<Map<String, Object>> invitations = new ArrayList<>();
         
         try {
-            // 先列出所有包含 invitation 的key看看
-            Set<String> allKeys = redisTemplate.keys("*invitation*");
-            log.info("所有包含invitation的key: {}", allKeys);
-            
-            // 获取当前用户的邀请 (新格式)
+            // 获取当前用户的邀请
             String pattern = INVITATION_PREFIX + userId + ":*_*";
-            log.info("查询邀请的key pattern: {}", pattern);
             Set<String> keys = redisTemplate.keys(pattern);
-            log.info("找到的key数量: {}", keys != null ? keys.size() : 0);
+            
             if (keys != null && !keys.isEmpty()) {
                 for (String key : keys) {
-                    log.info("处理key: {}", key);
                     Object inviteDataObj = redisTemplate.opsForValue().get(key);
-                    log.info("原始数据: {}", inviteDataObj);
                     if (inviteDataObj != null) {
-                        // 解析JSON字符串
+                        // 使用Jackson解析JSON字符串
                         String jsonStr = inviteDataObj.toString();
-                        log.info("解析JSON: {}", jsonStr);
-                        Long fromUserId = null;
-                        Long groupId = null;
-                        // 简单解析
-                        java.util.regex.Pattern p = java.util.regex.Pattern.compile("\"fromUserId\"\\s*:\\s*(\\d+)");
-                        java.util.regex.Matcher m = p.matcher(jsonStr);
-                        if (m.find()) {
-                            fromUserId = Long.parseLong(m.group(1));
-                        }
-                        p = java.util.regex.Pattern.compile("\"groupId\"\\s*:\\s*(\\d+)");
-                        m = p.matcher(jsonStr);
-                        if (m.find()) {
-                            groupId = Long.parseLong(m.group(1));
-                        }
+                        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                        java.util.Map<String, Object> jsonData = mapper.readValue(jsonStr, java.util.Map.class);
+                        
+                        Long fromUserId = jsonData.get("fromUserId") != null ? 
+                                ((Number) jsonData.get("fromUserId")).longValue() : null;
+                        Long groupId = jsonData.get("groupId") != null ? 
+                                ((Number) jsonData.get("groupId")).longValue() : null;
                         
                         if (fromUserId != null && groupId != null) {
                             User fromUser = userMapper.selectById(fromUserId);
@@ -506,7 +479,7 @@ public class GroupServiceImpl implements GroupService {
                 }
             }
         } catch (Exception e) {
-            log.error("获取邀请列表失败: {}", e.getMessage());
+            log.error("获取邀请列表失败: {}", e.getMessage(), e);
         }
         
         return invitations;
@@ -616,44 +589,14 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public void rejectInvitation(Long userId, Long invitationId) {
         // 查找邀约 key格式: group:invitation:toUserId:fromUserId_groupId
-        // 当前用户是 toUserId, invitationId 是 fromUserId
         String pattern = INVITATION_PREFIX + userId + ":" + invitationId + "_*";
-        log.info("拒绝邀请查找pattern: {}", pattern);
         Set<String> keys = redisTemplate.keys(pattern);
-        log.info("找到的key: {}", keys);
+        
         if (keys == null || keys.isEmpty()) {
-            log.warn("未找到匹配的邀请key，pattern: {}", pattern);
             throw new BizException(ErrorCode.BAD_REQUEST, "邀约不存在或已过期");
-        }
-        
-        String key = keys.iterator().next();
-        Object inviteDataObj = redisTemplate.opsForValue().get(key);
-        if (inviteDataObj == null) {
-            throw new BizException(ErrorCode.BAD_REQUEST, "邀约不存在或已过期");
-        }
-        
-        // 解析JSON字符串
-        String jsonStr = inviteDataObj.toString();
-        log.info("拒绝邀请解析JSON: {}", jsonStr);
-        Long fromUserId = null;
-        Long groupId = null;
-        java.util.regex.Pattern p = java.util.regex.Pattern.compile("\"fromUserId\"\\s*:\\s*(\\d+)");
-        java.util.regex.Matcher m = p.matcher(jsonStr);
-        if (m.find()) {
-            fromUserId = Long.parseLong(m.group(1));
-        }
-        p = java.util.regex.Pattern.compile("\"groupId\"\\s*:\\s*(\\d+)");
-        m = p.matcher(jsonStr);
-        if (m.find()) {
-            groupId = Long.parseLong(m.group(1));
-        }
-        
-        if (fromUserId == null || groupId == null) {
-            throw new BizException(ErrorCode.BAD_REQUEST, "邀约数据格式错误");
         }
         
         // 删除Redis中的邀请记录
-        redisTemplate.delete(key);
-        log.info("成功拒绝邀请，删除Redis记录: key={}", key);
+        redisTemplate.delete(keys);
     }
 }

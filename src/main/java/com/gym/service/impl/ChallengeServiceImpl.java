@@ -747,7 +747,7 @@ public class ChallengeServiceImpl implements ChallengeService {
                 // 如果缓存或URL生成失败，只记录警告日志，不抛异常
                 // 这样即使Redis挂了，主流程也能继续（只是没有缓存加速）
                 log.warn("生成封面图片URL失败: challengeId={}, coverImage={}", challenge.getId(), challenge.getCoverImage(), e);
-            } 
+            }
         }
     }
 
@@ -818,8 +818,6 @@ public class ChallengeServiceImpl implements ChallengeService {
         }
         return group;
     }
-
-
 
     /**
      * 更新即将开始的挑战状态（未开始 → 进行中）
