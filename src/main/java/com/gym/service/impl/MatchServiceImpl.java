@@ -60,6 +60,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.Duration;
 // 集合类
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -191,37 +192,28 @@ public class MatchServiceImpl implements MatchService {
         }
 
         // ========== 第4步：获取候选用户 ==========
-        // 使用Set去重存储候选用户ID
-        Set<Object> candidateIds = new HashSet<>();
+        // 从Redis获取同桶内的所有用户ID（Redis Set已保证唯一性）
+        Set<Object> candidateIds = redisTemplate.opsForSet().members(bucketKey);
         
-        // 从Redis获取同桶内的所有用户ID
-        // members(key)获取Set中的所有成员
-        Set<Object> sameBucket = redisTemplate.opsForSet().members(bucketKey);
-        
-        // 如果同桶不为空，加入候选集
-        if (!CollectionUtils.isEmpty(sameBucket)) {
-            candidateIds.addAll(sameBucket);
+        // 处理空值并排除自己
+        if (candidateIds == null) {
+            candidateIds = Collections.emptySet();
+        } else {
+            candidateIds.remove(userId);
         }
-        
-        // 排除自己（自己不能匹配自己）
-        candidateIds.remove(userId);
 
         // 根据候选ID获取用户详细信息
         List<User> candidates;
         
         // 如果同桶没有候选用户，退化为全量扫描
         if (candidateIds.isEmpty()) {
-            // selectList查询所有用户（排除自己）
-            // LambdaQueryWrapper用于构建查询条件
-            // ne(User::getId, userId)表示id不等于userId
             candidates = userMapper.selectList(new LambdaQueryWrapper<User>()
                     .ne(User::getId, userId));
         } else {
-            // 将Object类型的ID转换为Long类型
+            // 将Object类型的ID转换为Long类型，批量查询候选用户信息
             List<Long> idList = candidateIds.stream()
                     .map(o -> Long.valueOf(o.toString()))
                     .toList();
-            // 批量查询候选用户信息
             candidates = userMapper.selectBatchIds(idList);
         }
 
