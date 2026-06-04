@@ -7,7 +7,7 @@ const common_api = require("../../common/api.js");
 const defaultAvatar = "https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0";
 const _sfc_main = {
   __name: "index",
-  setup(__props, { expose: __expose }) {
+  setup(__props) {
     const iconMap = {
       completeProfile: "/static/icons/home/profile-blue.svg",
       challenge: "/static/icons/home/trophy-blue.svg",
@@ -32,6 +32,7 @@ const _sfc_main = {
     const hasTodo = common_vendor.ref(false);
     const todoCount = common_vendor.ref(0);
     const dataList = common_vendor.ref([]);
+    let unreadRefreshTimer = null;
     const heroTitle = common_vendor.ref("开始今天的协同训练");
     const heroDescription = common_vendor.ref("先约到合适的搭子，再把训练、打卡和反馈连成一个连续动作。");
     const primaryAction = common_vendor.ref({
@@ -140,7 +141,7 @@ const _sfc_main = {
           common_vendor.index.showToast({ title: "数据已刷新", icon: "success", duration: 1e3 });
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:408", "数据刷新失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:410", "数据刷新失败:", error);
         stats.value = { trainDays: 0, partnersCount: 0, activeChallenges: 0 };
         formatDataList();
         common_vendor.index.showToast({ title: "数据加载失败", icon: "none", duration: 1500 });
@@ -166,7 +167,7 @@ const _sfc_main = {
             chatCount = Number(chatRes || 0);
           }
         } catch (detailError) {
-          common_vendor.index.__f__("error", "at pages/index/index.vue:436", "获取未读详情失败，回退到总数接口:", detailError);
+          common_vendor.index.__f__("error", "at pages/index/index.vue:438", "获取未读详情失败，回退到总数接口:", detailError);
           const chatRes = await common_api.apiGetUnreadCount(userId);
           chatCount = Number(chatRes || 0);
         }
@@ -175,12 +176,12 @@ const _sfc_main = {
           const inviteRes = await common_api.apiGetInvitations();
           invitations = Array.isArray(inviteRes) ? inviteRes.length : 0;
         } catch (error) {
-          common_vendor.index.__f__("error", "at pages/index/index.vue:446", "获取邀请列表失败:", error);
+          common_vendor.index.__f__("error", "at pages/index/index.vue:448", "获取邀请列表失败:", error);
         }
         inviteCount.value = invitations;
         unreadCount.value = chatCount + invitations;
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:452", "获取未读消息失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:454", "获取未读消息失败:", error);
         unreadCount.value = 0;
         inviteCount.value = 0;
       }
@@ -193,7 +194,7 @@ const _sfc_main = {
         hasTodo.value = count > 0;
         updateHeroContent();
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:466", "获取待办数量失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:468", "获取待办数量失败:", error);
         todoCount.value = 0;
         hasTodo.value = false;
         updateHeroContent();
@@ -217,7 +218,7 @@ const _sfc_main = {
         common_vendor.index.showToast({ title: "已加入搭子组", icon: "success", duration: 1200 });
         await Promise.all([refreshUserData(), getUnreadSummary(), getTodoSummary()]);
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:492", "接受邀请失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:494", "接受邀请失败:", error);
         common_vendor.index.showToast({ title: "操作失败，请稍后重试", icon: "none", duration: 1500 });
       }
     };
@@ -225,6 +226,7 @@ const _sfc_main = {
       const fromName = payload.fromUserName || "你的好友";
       const groupName = payload.groupName || "健身搭子组";
       msgShake();
+      getUnreadSummary();
       common_vendor.index.showModal({
         title: "新的搭子邀请",
         content: `${fromName} 邀请你加入 ${groupName}，是否接受？`,
@@ -246,8 +248,8 @@ const _sfc_main = {
           break;
         case "CHAT":
         case "CHAT_MESSAGE":
-          unreadCount.value += 1;
           msgShake();
+          getUnreadSummary();
           break;
         case "NOTIFICATION":
           msgShake();
@@ -264,7 +266,7 @@ const _sfc_main = {
         await common_wsNative.initNativeWebSocket();
         common_wsNative.setMessageCallback(handleMessage);
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:545", "首页 WebSocket 初始化失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:548", "首页 WebSocket 初始化失败:", error);
       }
     };
     const navigateTo = (url) => {
@@ -289,7 +291,13 @@ const _sfc_main = {
     };
     common_vendor.onMounted(() => {
       msgAni.value = common_vendor.index.createAnimation({ duration: 200, timingFunction: "ease" });
-      common_vendor.index.$on("refresh-home-unread", getUnreadSummary);
+      common_vendor.index.$on("refresh-home-unread", () => {
+        getUnreadSummary();
+        unreadRefreshTimer && clearTimeout(unreadRefreshTimer);
+        unreadRefreshTimer = setTimeout(() => {
+          getUnreadSummary();
+        }, 600);
+      });
       if (!checkLoginStatus()) {
         return;
       }
@@ -313,24 +321,21 @@ const _sfc_main = {
       getUnreadSummary();
       getTodoSummary();
     });
-    const onShow = () => {
+    common_vendor.onShow(() => {
       if (!common_auth.requireLogin())
         return;
       refreshUserData();
       initWS();
       getUnreadSummary();
       getTodoSummary();
-    };
-    const onUnload = () => {
+    });
+    common_vendor.onUnload(() => {
       common_wsNative.setMessageCallback(null);
-    };
+    });
     common_vendor.onUnmounted(() => {
       common_wsNative.setMessageCallback(null);
-      common_vendor.index.$off("refresh-home-unread", getUnreadSummary);
-    });
-    __expose({
-      onShow,
-      onUnload
+      unreadRefreshTimer && clearTimeout(unreadRefreshTimer);
+      common_vendor.index.$off("refresh-home-unread");
     });
     return (_ctx, _cache) => {
       return common_vendor.e({

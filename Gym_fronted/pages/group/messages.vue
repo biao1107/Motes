@@ -24,7 +24,7 @@
       <view class="section-head">
         <view>
           <text class="section-title">收到的邀请</text>
-          <text class="section-subtitle">先处理新的邀请，避免错过最近的组队机会</text>
+          <text class="section-subtitle">先处理新的邀请</text>
         </view>
       </view>
 
@@ -36,14 +36,18 @@
         >
           <view class="invite-avatar">邀</view>
           <view class="invite-content">
-            <text class="invite-name">{{ invite.fromUserName }}</text>
-            <text class="invite-desc">
-              邀请你加入 {{ invite.groupName || '健身搭子组' }}
-            </text>
-          </view>
-          <view class="invite-actions">
-            <view class="invite-btn accept" @tap.stop="acceptInvite(invite.fromUserId, invite.groupId)">接受</view>
-            <view class="invite-btn reject" @tap.stop="rejectInvite(invite.fromUserId, invite.groupId)">拒绝</view>
+            <view class="invite-head">
+              <text class="invite-name">{{ invite.fromUserName }}</text>
+              <text class="invite-status">邀请</text>
+            </view>
+            <view class="invite-meta-row">
+              <text class="invite-meta-chip">{{ invite.groupName || '健身搭子组' }}</text>
+            </view>
+            <text class="invite-desc">邀请你加入搭子组协作训练</text>
+            <view class="invite-actions">
+              <view class="invite-btn accept" @tap.stop="acceptInvite(invite.fromUserId, invite.groupId)">接受</view>
+              <view class="invite-btn reject" @tap.stop="rejectInvite(invite.fromUserId, invite.groupId)">拒绝</view>
+            </view>
           </view>
         </view>
       </view>
@@ -318,6 +322,11 @@ export default {
     },
     enterChat(groupId) {
       this.markGroupMessagesAsRead(groupId);
+      const targetGroup = this.groups.find((group) => group.id === Number(groupId));
+      if (targetGroup) {
+        targetGroup.unreadCount = 0;
+      }
+      uni.$emit('refresh-home-unread');
       uni.navigateTo({
         url: '/pages/group/chat?id=' + groupId
       });
@@ -598,6 +607,14 @@ export default {
   min-width: 0;
 }
 
+.invite-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-bottom: 6rpx;
+}
+
 .invite-name,
 .group-name {
   display: block;
@@ -606,8 +623,26 @@ export default {
   color: #172233;
 }
 
-.invite-name {
+.invite-status {
+  flex-shrink: 0;
+  font-size: 21rpx;
+  font-weight: 700;
+  color: #ff8a72;
+}
+
+.invite-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
   margin-bottom: 8rpx;
+}
+
+.invite-meta-chip {
+  padding: 6rpx 12rpx;
+  border-radius: 999rpx;
+  background: #fff1ea;
+  font-size: 20rpx;
+  color: #b96a52;
 }
 
 .invite-desc,
@@ -620,12 +655,13 @@ export default {
 
 .invite-actions {
   display: flex;
-  flex-direction: column;
+  justify-content: flex-end;
   gap: 10rpx;
+  margin-top: 12rpx;
 }
 
 .invite-btn {
-  min-width: 104rpx;
+  min-width: 92rpx;
   height: 58rpx;
   padding: 0 18rpx;
   border-radius: 999rpx;

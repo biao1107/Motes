@@ -193,6 +193,13 @@
   flex: 1;
   min-width: 0;
 }
+.invite-head.data-v-1ffa5f7a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-bottom: 6rpx;
+}
 .invite-name.data-v-1ffa5f7a,
 .group-name.data-v-1ffa5f7a {
   display: block;
@@ -200,8 +207,24 @@
   font-weight: 700;
   color: #172233;
 }
-.invite-name.data-v-1ffa5f7a {
+.invite-status.data-v-1ffa5f7a {
+  flex-shrink: 0;
+  font-size: 21rpx;
+  font-weight: 700;
+  color: #ff8a72;
+}
+.invite-meta-row.data-v-1ffa5f7a {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
   margin-bottom: 8rpx;
+}
+.invite-meta-chip.data-v-1ffa5f7a {
+  padding: 6rpx 12rpx;
+  border-radius: 999rpx;
+  background: #fff1ea;
+  font-size: 20rpx;
+  color: #b96a52;
 }
 .invite-desc.data-v-1ffa5f7a,
 .message-text.data-v-1ffa5f7a {
@@ -212,11 +235,12 @@
 }
 .invite-actions.data-v-1ffa5f7a {
   display: flex;
-  flex-direction: column;
+  justify-content: flex-end;
   gap: 10rpx;
+  margin-top: 12rpx;
 }
 .invite-btn.data-v-1ffa5f7a {
-  min-width: 104rpx;
+  min-width: 92rpx;
   height: 58rpx;
   padding: 0 18rpx;
   border-radius: 999rpx;

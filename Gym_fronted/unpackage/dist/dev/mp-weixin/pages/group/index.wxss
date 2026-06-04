@@ -196,7 +196,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12rpx;
-  margin-bottom: 10rpx;
+  margin-bottom: 8rpx;
 }
 .group-name.data-v-191b8d1f {
   flex: 1;
@@ -204,11 +204,21 @@
   font-weight: 700;
   color: #172233;
 }
-.group-arrow.data-v-191b8d1f {
+.group-head-actions.data-v-191b8d1f {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
   flex-shrink: 0;
+}
+.group-arrow.data-v-191b8d1f {
   font-size: 22rpx;
   font-weight: 700;
   color: #4564f2;
+}
+.group-delete-link.data-v-191b8d1f {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #ef5350;
 }
 .meta-row.data-v-191b8d1f {
   display: flex;
@@ -235,25 +245,6 @@
 }
 .group-desc.muted.data-v-191b8d1f {
   color: #8692a8;
-}
-.admin-bar.data-v-191b8d1f {
-  margin-top: 18rpx;
-  padding-top: 18rpx;
-  border-top: 1rpx solid #dfe6f4;
-  display: flex;
-  justify-content: flex-end;
-}
-.delete-btn.data-v-191b8d1f {
-  height: 62rpx;
-  padding: 0 24rpx;
-  border-radius: 999rpx;
-  border: 1rpx solid #ef5350;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24rpx;
-  font-weight: 700;
-  color: #ef5350;
 }
 .empty-card.data-v-191b8d1f {
   text-align: center;

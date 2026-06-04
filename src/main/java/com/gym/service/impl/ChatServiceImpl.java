@@ -322,12 +322,26 @@ public class ChatServiceImpl implements ChatService {
 
         log.debug("更新前的最后阅读时间: {}", member.getLastReadTime());
 
-        // 更新最后阅读时间为当前时间
+        // 以当前群组最新一条消息时间作为已读基准，避免使用本地当前时间造成边界误差
+        LocalDateTime latestMessageTime = null;
+        List<ChatMessage> latestMessages = chatMessageMapper.selectList(
+            new LambdaQueryWrapper<ChatMessage>()
+                .eq(ChatMessage::getGroupId, groupId)
+                .orderByDesc(ChatMessage::getCreateTime)
+                .last("LIMIT 1")
+        );
+        if (latestMessages != null && !latestMessages.isEmpty()) {
+            latestMessageTime = latestMessages.get(0).getCreateTime();
+        }
+
+        LocalDateTime readTime = latestMessageTime != null ? latestMessageTime : LocalDateTime.now();
+
+        // 更新最后阅读时间
         int result = groupMemberMapper.update(null,
             new LambdaUpdateWrapper<GroupMember>()
                 .eq(GroupMember::getGroupId, groupId)
                 .eq(GroupMember::getUserId, userId)
-                .set(GroupMember::getLastReadTime, LocalDateTime.now())
+                .set(GroupMember::getLastReadTime, readTime)
         );
 
         if (result > 0) {
@@ -367,12 +381,25 @@ public class ChatServiceImpl implements ChatService {
 
         log.debug("重置前的最后阅读时间: {}", member.getLastReadTime());
 
-        // 将最后阅读时间设置为当前时间
+        LocalDateTime latestMessageTime = null;
+        List<ChatMessage> latestMessages = chatMessageMapper.selectList(
+            new LambdaQueryWrapper<ChatMessage>()
+                .eq(ChatMessage::getGroupId, groupId)
+                .orderByDesc(ChatMessage::getCreateTime)
+                .last("LIMIT 1")
+        );
+        if (latestMessages != null && !latestMessages.isEmpty()) {
+            latestMessageTime = latestMessages.get(0).getCreateTime();
+        }
+
+        LocalDateTime readTime = latestMessageTime != null ? latestMessageTime : LocalDateTime.now();
+
+        // 将最后阅读时间设置为最新消息时间
         int result = groupMemberMapper.update(null,
             new LambdaUpdateWrapper<GroupMember>()
                 .eq(GroupMember::getGroupId, groupId)
                 .eq(GroupMember::getUserId, userId)
-                .set(GroupMember::getLastReadTime, LocalDateTime.now())
+                .set(GroupMember::getLastReadTime, readTime)
         );
 
         if (result > 0) {

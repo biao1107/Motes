@@ -42,7 +42,7 @@ const _sfc_main = {
         const res = await common_api.apiGetInvitations();
         this.invitations = Array.isArray(res) ? res : [];
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/group/messages.vue:161", "加载邀请列表失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/messages.vue:165", "加载邀请列表失败:", error);
         this.invitations = [];
       }
     },
@@ -60,7 +60,7 @@ const _sfc_main = {
         this.loadGroups();
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/group/messages.vue:179", "接受邀请失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/messages.vue:183", "接受邀请失败:", error);
         common_vendor.index.showToast({ title: "接受失败", icon: "none" });
       }
     },
@@ -79,7 +79,7 @@ const _sfc_main = {
         this.loadInvitations();
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/group/messages.vue:199", "拒绝邀请失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/messages.vue:203", "拒绝邀请失败:", error);
         common_vendor.index.showToast({ title: "拒绝失败", icon: "none" });
       }
     },
@@ -91,7 +91,7 @@ const _sfc_main = {
           const myGroupsRes = await common_api.apiMyGroups();
           myGroups = Array.isArray(myGroupsRes) ? myGroupsRes : [];
         } catch (groupsError) {
-          common_vendor.index.__f__("error", "at pages/group/messages.vue:212", "获取群组列表失败:", groupsError);
+          common_vendor.index.__f__("error", "at pages/group/messages.vue:216", "获取群组列表失败:", groupsError);
           common_vendor.index.hideLoading();
           common_vendor.index.showToast({
             title: "获取群组列表失败",
@@ -104,7 +104,7 @@ const _sfc_main = {
           const res = await common_api.apiGetUnreadDetail(this.userId);
           unreadData = Array.isArray(res) ? res : [];
         } catch (unreadError) {
-          common_vendor.index.__f__("error", "at pages/group/messages.vue:226", "获取未读详情失败:", unreadError);
+          common_vendor.index.__f__("error", "at pages/group/messages.vue:230", "获取未读详情失败:", unreadError);
           unreadData = [];
         }
         this.groups = myGroups.filter((group) => group && group.id).map((group) => {
@@ -121,7 +121,7 @@ const _sfc_main = {
         await this.loadAllGroupMembers();
         common_vendor.index.hideLoading();
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/group/messages.vue:248", "加载消息会话失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/messages.vue:252", "加载消息会话失败:", error);
         this.groups = [];
         common_vendor.index.hideLoading();
         common_vendor.index.showToast({
@@ -137,7 +137,7 @@ const _sfc_main = {
             const detail = await common_api.apiGroupDetailWithMembers(group.id);
             return { groupId: group.id, members: (detail == null ? void 0 : detail.members) || [] };
           } catch (error) {
-            common_vendor.index.__f__("error", "at pages/group/messages.vue:264", `加载消息组 ${group.id} 成员失败:`, error);
+            common_vendor.index.__f__("error", "at pages/group/messages.vue:268", `加载消息组 ${group.id} 成员失败:`, error);
             return { groupId: group.id, members: [] };
           }
         })
@@ -197,6 +197,11 @@ const _sfc_main = {
     },
     enterChat(groupId) {
       this.markGroupMessagesAsRead(groupId);
+      const targetGroup = this.groups.find((group) => group.id === Number(groupId));
+      if (targetGroup) {
+        targetGroup.unreadCount = 0;
+      }
+      common_vendor.index.$emit("refresh-home-unread");
       common_vendor.index.navigateTo({
         url: "/pages/group/chat?id=" + groupId
       });
@@ -211,7 +216,7 @@ const _sfc_main = {
           this.groups[groupIndex].unreadCount = 0;
         }
       }).catch((error) => {
-        common_vendor.index.__f__("error", "at pages/group/messages.vue:338", "标记已读失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/messages.vue:347", "标记已读失败:", error);
         common_vendor.index.showToast({
           title: "同步已读状态失败，请稍后重试",
           icon: "none",

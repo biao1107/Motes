@@ -262,9 +262,11 @@ const _sfc_main = {
           this.$nextTick(() => {
             this.scrollToBottom();
           });
+          this.markMessagesAsRead();
+          common_vendor.index.$emit("refresh-home-unread");
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/group/chat.vue:432", "发送消息失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/chat.vue:435", "发送消息失败:", error);
         common_vendor.index.showToast({
           title: "发送失败",
           icon: "none"
@@ -304,7 +306,7 @@ const _sfc_main = {
               throw new Error("图片上传失败");
             }
           } catch (error) {
-            common_vendor.index.__f__("error", "at pages/group/chat.vue:474", "图片发送失败:", error);
+            common_vendor.index.__f__("error", "at pages/group/chat.vue:477", "图片发送失败:", error);
             common_vendor.index.showToast({ title: "图片发送失败", icon: "none" });
           } finally {
             common_vendor.index.hideLoading();
@@ -323,7 +325,7 @@ const _sfc_main = {
         common_ws.initWebSocket().then(() => {
           this.subscription = common_ws.subscribeGroupChat(this.id, this.handleWsMessage);
         }).catch((error) => {
-          common_vendor.index.__f__("error", "at pages/group/chat.vue:496", "WebSocket重新连接失败:", error);
+          common_vendor.index.__f__("error", "at pages/group/chat.vue:499", "WebSocket重新连接失败:", error);
         });
         return;
       }
@@ -370,9 +372,11 @@ const _sfc_main = {
           this.$nextTick(() => {
             this.scrollToBottom();
           });
+          this.markMessagesAsRead();
+          common_vendor.index.$emit("refresh-home-unread");
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/group/chat.vue:552", "轮询获取新消息失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/chat.vue:558", "轮询获取新消息失败:", error);
       }
     },
     stopListening() {
@@ -399,6 +403,8 @@ const _sfc_main = {
         this.$nextTick(() => {
           this.scrollToBottom();
         });
+        this.markMessagesAsRead();
+        common_vendor.index.$emit("refresh-home-unread");
       }
     },
     onScroll(e) {
@@ -436,8 +442,10 @@ const _sfc_main = {
     markMessagesAsRead() {
       if (!this.id || !this.userId)
         return;
-      common_api.apiMarkGroupRead(Number(this.id), Number(this.userId)).catch((error) => {
-        common_vendor.index.__f__("error", "at pages/group/chat.vue:625", "标记群组消息已读失败:", error);
+      common_api.apiMarkGroupRead(Number(this.id), Number(this.userId)).then(() => {
+        common_vendor.index.$emit("refresh-home-unread");
+      }).catch((error) => {
+        common_vendor.index.__f__("error", "at pages/group/chat.vue:638", "标记群组消息已读失败:", error);
         common_vendor.index.showToast({
           title: "同步阅读状态失败，请稍后重试",
           icon: "none",

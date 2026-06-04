@@ -41,7 +41,7 @@ const _sfc_main = {
         common_vendor.index.hideLoading();
         await this.loadAllGroupMembers();
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/group/index.vue:194", "加载搭子组失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/index.vue:200", "加载搭子组失败:", error);
         this.loaded = true;
         common_vendor.index.hideLoading();
         common_vendor.index.showToast({
@@ -59,7 +59,7 @@ const _sfc_main = {
             [group.id]: (detail == null ? void 0 : detail.members) || []
           };
         } catch (error) {
-          common_vendor.index.__f__("error", "at pages/group/index.vue:212", `加载组 ${group.id} 成员失败:`, error);
+          common_vendor.index.__f__("error", "at pages/group/index.vue:218", `加载组 ${group.id} 成员失败:`, error);
           this.groupMembers = {
             ...this.groupMembers,
             [group.id]: []
@@ -140,7 +140,7 @@ const _sfc_main = {
         this.loadData();
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/group/index.vue:298", "创建搭子组失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/index.vue:304", "创建搭子组失败:", error);
         common_vendor.index.showToast({
           title: (error == null ? void 0 : error.message) || "创建失败，请稍后重试",
           icon: "none"
@@ -191,7 +191,7 @@ const _sfc_main = {
         });
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/group/index.vue:352", "删除搭子组失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/index.vue:358", "删除搭子组失败:", error);
         common_vendor.index.showToast({
           title: error.errMsg || error.message || "删除失败，请稍后重试",
           icon: "none"
@@ -227,18 +227,18 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         c: common_vendor.n(`count-${$options.getGroupAvatarCount(item.id)}`)
       } : {}, {
         d: common_vendor.t(item.groupName || "未命名搭子组"),
-        e: common_vendor.t(item.fixedTime || "未设置固定时间"),
-        f: common_vendor.t($options.getGroupMemberCount(item.id)),
-        g: common_vendor.t($options.isAdminInGroup(item.id) ? "管理员" : "成员"),
-        h: item.desc
-      }, item.desc ? {
-        i: common_vendor.t(item.desc)
-      } : {}, {
-        j: common_vendor.o(($event) => $options.goDetail(item.id), item.id),
-        k: $options.isAdminInGroup(item.id)
+        e: $options.isAdminInGroup(item.id)
       }, $options.isAdminInGroup(item.id) ? {
-        l: common_vendor.o(($event) => $options.showDeleteConfirm(item.id, item.groupName), item.id)
+        f: common_vendor.o(($event) => $options.showDeleteConfirm(item.id, item.groupName), item.id)
       } : {}, {
+        g: common_vendor.t(item.fixedTime || "未设置固定时间"),
+        h: common_vendor.t($options.getGroupMemberCount(item.id)),
+        i: common_vendor.t($options.isAdminInGroup(item.id) ? "管理员" : "成员"),
+        j: item.desc
+      }, item.desc ? {
+        k: common_vendor.t(item.desc)
+      } : {}, {
+        l: common_vendor.o(($event) => $options.goDetail(item.id), item.id),
         m: item.id
       });
     })

@@ -245,6 +245,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { onShow as onPageShow, onUnload as onPageUnload } from '@dcloudio/uni-app';
 import * as wsNative from '@/common/ws-native.js';
 import { getUserIdFromToken, requireLogin } from '@/common/auth.js';
 import {
@@ -284,6 +285,7 @@ const msgAni = ref(null);
 const hasTodo = ref(false);
 const todoCount = ref(0);
 const dataList = ref([]);
+let unreadRefreshTimer = null;
 const heroTitle = ref('开始今天的协同训练');
 const heroDescription = ref('先约到合适的搭子，再把训练、打卡和反馈连成一个连续动作。');
 const primaryAction = ref({
@@ -499,6 +501,7 @@ const handleInvite = (payload) => {
   const groupName = payload.groupName || '健身搭子组';
 
   msgShake();
+  getUnreadSummary();
   uni.showModal({
     title: '新的搭子邀请',
     content: `${fromName} 邀请你加入 ${groupName}，是否接受？`,
@@ -521,8 +524,8 @@ const handleMessage = (payload) => {
       break;
     case 'CHAT':
     case 'CHAT_MESSAGE':
-      unreadCount.value += 1;
       msgShake();
+      getUnreadSummary();
       break;
     case 'NOTIFICATION':
       msgShake();
@@ -573,7 +576,13 @@ const handleManualRefresh = async () => {
 
 onMounted(() => {
   msgAni.value = uni.createAnimation({ duration: 200, timingFunction: 'ease' });
-  uni.$on('refresh-home-unread', getUnreadSummary);
+  uni.$on('refresh-home-unread', () => {
+    getUnreadSummary();
+    unreadRefreshTimer && clearTimeout(unreadRefreshTimer);
+    unreadRefreshTimer = setTimeout(() => {
+      getUnreadSummary();
+    }, 600);
+  });
 
   if (!checkLoginStatus()) {
     return;
@@ -602,26 +611,22 @@ onMounted(() => {
   getTodoSummary();
 });
 
-const onShow = () => {
+onPageShow(() => {
   if (!requireLogin()) return;
   refreshUserData();
   initWS();
   getUnreadSummary();
   getTodoSummary();
-};
+});
 
-const onUnload = () => {
+onPageUnload(() => {
   wsNative.setMessageCallback(null);
-};
+});
 
 onUnmounted(() => {
   wsNative.setMessageCallback(null);
-  uni.$off('refresh-home-unread', getUnreadSummary);
-});
-
-defineExpose({
-  onShow,
-  onUnload
+  unreadRefreshTimer && clearTimeout(unreadRefreshTimer);
+  uni.$off('refresh-home-unread');
 });
 </script>
 

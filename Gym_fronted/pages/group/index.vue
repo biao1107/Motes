@@ -52,7 +52,16 @@
               <view class="group-content">
                 <view class="group-head">
                   <text class="group-name">{{ item.groupName || '未命名搭子组' }}</text>
-                  <text class="group-arrow">查看</text>
+                  <view class="group-head-actions">
+                    <text class="group-arrow">查看</text>
+                    <text
+                      v-if="isAdminInGroup(item.id)"
+                      class="group-delete-link"
+                      @tap.stop="showDeleteConfirm(item.id, item.groupName)"
+                    >
+                      删除
+                    </text>
+                  </view>
                 </view>
 
                 <view class="meta-row">
@@ -66,9 +75,6 @@
               </view>
             </view>
 
-            <view v-if="isAdminInGroup(item.id)" class="admin-bar">
-              <view class="delete-btn" @tap.stop="showDeleteConfirm(item.id, item.groupName)">删除小组</view>
-            </view>
           </view>
         </view>
       </view>
@@ -588,7 +594,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   gap: 12rpx;
-  margin-bottom: 10rpx;
+  margin-bottom: 8rpx;
 }
 
 .group-name {
@@ -598,11 +604,23 @@ export default {
   color: #172233;
 }
 
-.group-arrow {
+.group-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
   flex-shrink: 0;
+}
+
+.group-arrow {
   font-size: 22rpx;
   font-weight: 700;
   color: #4564f2;
+}
+
+.group-delete-link {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #ef5350;
 }
 
 .meta-row {
@@ -634,27 +652,6 @@ export default {
 
 .group-desc.muted {
   color: #8692a8;
-}
-
-.admin-bar {
-  margin-top: 18rpx;
-  padding-top: 18rpx;
-  border-top: 1rpx solid #dfe6f4;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.delete-btn {
-  height: 62rpx;
-  padding: 0 24rpx;
-  border-radius: 999rpx;
-  border: 1rpx solid #ef5350;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24rpx;
-  font-weight: 700;
-  color: #ef5350;
 }
 
 .empty-card {

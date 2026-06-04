@@ -427,6 +427,9 @@ export default {
           this.$nextTick(() => {
             this.scrollToBottom();
           });
+
+          this.markMessagesAsRead();
+          uni.$emit('refresh-home-unread');
         }
       } catch (error) {
         console.error('发送消息失败:', error);
@@ -547,6 +550,9 @@ export default {
           this.$nextTick(() => {
             this.scrollToBottom();
           });
+
+          this.markMessagesAsRead();
+          uni.$emit('refresh-home-unread');
         }
       } catch (error) {
         console.error('轮询获取新消息失败:', error);
@@ -581,6 +587,9 @@ export default {
         this.$nextTick(() => {
           this.scrollToBottom();
         });
+
+        this.markMessagesAsRead();
+        uni.$emit('refresh-home-unread');
       }
     },
     onScroll(e) {
@@ -621,7 +630,11 @@ export default {
     markMessagesAsRead() {
       if (!this.id || !this.userId) return;
 
-      apiMarkGroupRead(Number(this.id), Number(this.userId)).catch((error) => {
+      apiMarkGroupRead(Number(this.id), Number(this.userId))
+        .then(() => {
+          uni.$emit('refresh-home-unread');
+        })
+        .catch((error) => {
         console.error('标记群组消息已读失败:', error);
         uni.showToast({
           title: '同步阅读状态失败，请稍后重试',
