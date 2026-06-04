@@ -1,313 +1,232 @@
 # Motes - 健身搭子智能匹配与协同训练系统
 
-## 项目简介
+聚焦“找搭子难、监督弱、易放弃”的健身痛点，围绕「智能匹配 + 搭子组协作 + 协同训练 + 挑战打卡 + 实时聊天」构建一套完整的健身社交闭环。
 
-聚焦"找搭子难、监督弱、易放弃"的健身痛点，打造「多维度精准匹配 + 实时协同训练 + 趣味激励」的闭环系统。
+## 项目亮点
 
-## 应用截图
+- 智能匹配：根据健身目标、训练时间、训练场景、监督需求和基础水平做多维匹配。
+- 搭子组协作：支持创建小组、邀请成员、查看组内协作安排与挑战节奏。
+- 协同训练：训练过程支持实时上报进度，形成更强的陪伴感和监督感。
+- 挑战打卡：支持公开挑战和组内挑战，把训练坚持做成可追踪的节奏。
+- 实时消息：组内聊天、邀约通知、未读消息聚合到统一消息中心。
+- 数据看板：从个人训练、组内协作、挑战进度多个维度做复盘。
 
-### 登录与首页
+## 项目效果
+
+### 1. 登录、首页与邀请
 <p align="center">
-  <img src="screenshots/图片1.png" width="200" alt="登录页面">
-  <img src="screenshots/图片2.png" width="200" alt="首页">
-  <img src="screenshots/Snipaste_2026-03-13_15-24-00.png" width="200" alt="邀请弹窗">
+  <img src="screenshots/图片1.png" width="220" alt="登录页">
+  <img src="screenshots/图片2.png" width="220" alt="首页">
+  <img src="screenshots/Snipaste_2026-03-13_15-24-00.png" width="220" alt="邀请弹窗">
 </p>
 
-### 个人档案
+### 2. 搭子组、消息与聊天
 <p align="center">
-  <img src="screenshots/图片3.png" width="200" alt="个人档案">
-  <img src="screenshots/Snipaste_2026-03-13_14-22-19.png" width="200" alt="编辑档案">
+  <img src="screenshots/Snipaste_2026-03-13_14-22-53.png" width="220" alt="搭子组详情">
+  <img src="screenshots/图片7.png" width="220" alt="消息中心">
+  <img src="screenshots/Snipaste_2026-03-13_15-16-48.png" width="220" alt="聊天室">
 </p>
 
-### 搭子组与聊天
+### 3. 协同训练、匹配与课程
 <p align="center">
-  <img src="screenshots/Snipaste_2026-03-13_14-22-53.png" width="200" alt="群组详情">
-  <img src="screenshots/Snipaste_2026-03-13_15-16-48.png" width="200" alt="聊天室">
+  <img src="screenshots/图片5.png" width="220" alt="协同训练">
+  <img src="screenshots/图片6.png" width="220" alt="智能匹配">
+  <img src="screenshots/图片4.png" width="220" alt="课程库">
+</p>
+
+### 4. 档案与组管理
+<p align="center">
+  <img src="screenshots/图片3.png" width="220" alt="个人档案">
+  <img src="screenshots/Snipaste_2026-03-13_14-22-19.png" width="220" alt="档案编辑">
 </p>
 
 ## 核心功能
 
-### 1. 用户认证模块
-- ✅ 手机号+密码登录
-- ✅ 手机号+验证码登录（模拟短信）
-- ✅ 用户注册
-- ✅ JWT Token认证
-- ✅ Spring Security权限控制
+### 用户认证
+- 手机号 + 密码登录
+- 手机号 + 验证码登录
+- JWT Token 认证
+- Spring Security 权限控制
 
-### 2. 用户档案模块
-- ✅ 个人健身档案CRUD
-- ✅ 档案信息缓存（Redis）
-- ✅ 档案更新自动刷新匹配池
+### 用户档案
+- 健身目标、训练时间、训练场景、监督需求等档案管理
+- 档案信息缓存
+- 档案更新后自动影响匹配结果
 
-### 3. 搭子匹配模块（核心创新）
-- ✅ 多维度匹配算法（目标30% + 时间25% + 场景20% + 监督15% + 基础10%）
-- ✅ Redis分桶粗筛优化
-- ✅ 匹配结果缓存（1小时）
-- ✅ 支持1v1和3人组匹配
+### 搭子匹配
+- 多维度匹配算法
+- Redis 分桶粗筛优化
+- 匹配结果缓存
+- 支持 1v1 和多人组队
 
-### 4. 组管理模块
-- ✅ 创建搭子组
-- ✅ 发送/接受邀约
-- ✅ 组信息查询
-- ✅ 组成员管理
+### 搭子组与消息
+- 创建搭子组
+- 发送 / 接受 / 拒绝邀约
+- 组详情、成员管理、组内挑战
+- 消息中心与组内聊天
 
-### 5. 协同训练模块（实时交互）
-- ✅ 训练进度实时上报
-- ✅ Redis事务保证并发一致性
-- ✅ WebSocket实时推送进度
-- ✅ 训练启动/放弃通知
-- ✅ 定时任务同步Redis到MySQL
+### 协同训练
+- 开始训练 / 放弃训练 / 上报进度
+- 训练进度实时同步
+- Redis + 定时任务做状态同步
 
-### 6. 挑战模块
-- ✅ 创建挑战（组内/公开）
-- ✅ 参与挑战
-- ✅ 打卡防重（Redis + DB唯一索引）
-- ✅ 挑战报告生成
-- ✅ 挑战类型区分（组内挑战/公开挑战）
-- ✅ 差异化打卡规则（组内挑战需完成协同训练，公开挑战可直接打卡）
+### 挑战系统
+- 创建公开挑战 / 组内挑战
+- 参与挑战、打卡、防重处理
+- 挑战报告与状态跟踪
 
-#### 挑战类型说明
-- **组内挑战（type=0）**：仅限指定搭子组成员参与，需完成当日协同训练后方可手动打卡
-- **公开挑战（type=1）**：面向所有用户开放，可直接打卡无需前置条件
+### 数据统计
+- 个人训练统计
+- 组内协作统计
+- 挑战完成度统计
+- 首页概览数据
 
-### 7. 消息通知模块
-- ✅ WebSocket实时推送（训练进度、邀约、提醒）
-- ✅ RabbitMQ异步处理（打卡提醒、挑战报告）
-- ✅ 站内信支持
-
-### 8. 数据统计模块
-- ✅ 个人统计数据（训练次数、完成率、平均分数）
-- ✅ 组统计数据（完成率、成员排名）
-- ✅ 挑战统计数据
-- ✅ Redis缓存热点数据（30天）
-
-### 9. 文件存储模块
-- ✅ MinIO集成
-- ✅ 动作照片/视频上传
-- ✅ 奖杯图片生成
+### 课程系统
+- 推荐课程、课程筛选、课程详情
+- 支持不同类型和难度等级
 
 ## 技术栈
 
-- **框架**: Spring Boot 3.2.5
-- **安全**: Spring Security + JWT
-- **数据库**: MySQL 8 + MyBatis-Plus
-- **缓存**: Redis（匹配池、进度缓存、统计缓存）
-- **消息队列**: RabbitMQ（异步通知）
-- **实时通信**: WebSocket (STOMP)
-- **文件存储**: MinIO
-- **API文档**: Swagger/OpenAPI
-- **工具**: Lombok
+### 前端
+- `uni-app`
+- `Vue`
+- `SCSS`
+- `WebSocket / 轮询`
+
+### 后端
+- `Spring Boot 3.2.5`
+- `Spring Security`
+- `JWT`
+- `MyBatis-Plus`
+- `MySQL 8`
+- `Redis`
+- `RabbitMQ`
+- `WebSocket + STOMP`
+- `MinIO`
+- `Swagger / OpenAPI`
+
+## 系统架构图
+
+```mermaid
+flowchart LR
+    U[用户 / 微信小程序 / H5] --> FE[uni-app 前端]
+    FE --> API[Spring Boot API]
+    FE --> WS[WebSocket / STOMP]
+
+    API --> SEC[Spring Security + JWT]
+    API --> SVC[业务服务层]
+    SVC --> DB[(MySQL)]
+    SVC --> REDIS[(Redis)]
+    SVC --> MQ[(RabbitMQ)]
+    SVC --> MINIO[(MinIO)]
+
+    WS --> CHAT[实时聊天 / 训练推送]
+    MQ --> ASYNC[异步提醒 / 报告生成]
+    REDIS --> CACHE[匹配缓存 / 统计缓存 / 进度缓存]
+```
+
+## 业务流程图
+
+```mermaid
+flowchart TD
+    A[用户注册 / 登录] --> B[完善健身档案]
+    B --> C[智能匹配搭子]
+    C --> D[创建或加入搭子组]
+    D --> E[组内聊天 / 邀请成员]
+    D --> F[发起或参与挑战]
+    D --> G[开始协同训练]
+    G --> H[实时上报训练进度]
+    H --> I[完成训练 / 打卡挑战]
+    I --> J[首页与统计页复盘]
+    E --> J
+    F --> J
+```
+
+## 项目结构
+
+```text
+Gym/
+├── src/main/java/com/gym/          # 后端代码
+├── src/main/resources/             # 配置与资源
+├── Gym_fronted/                    # 前端 uni-app 项目
+│   ├── pages/                      # 页面
+│   ├── common/                     # API / auth / ws / config
+│   ├── static/                     # 图标、背景等静态资源
+│   └── components/                 # 公共组件
+├── docs/                           # 数据库脚本与说明文档
+├── screenshots/                    # 项目截图
+├── PROJECT_OVERVIEW.md             # 项目总览
+└── CODE_DOCUMENTATION.md           # 代码注释说明
+```
 
 ## 快速开始
 
 ### 环境要求
 - JDK 17+
 - Maven 3.6+
-- MySQL 8.0+
-- Redis 6.0+
+- MySQL 8+
+- Redis 6+
 - RabbitMQ 3.8+
 - MinIO（可选）
 
-### 数据库初始化
-```sql
--- 执行 docs/schema.sql 创建表结构
+### 1. 初始化数据库
+
+```bash
+mysql -u root -p gym < docs/gym.sql
 ```
 
-### 配置文件
-修改 `src/main/resources/application.yml`:
-```yaml
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/gym
-    username: root
-    password: root
-  data:
-    redis:
-      host: localhost
-      port: 6379
-  rabbitmq:
-    host: localhost
-    port: 5672
-    # 5672 = AMQP 端口（Spring AMQP 连接使用）；15672 = RabbitMQ 管理后台端口（HTTP UI）
-    virtual-host: /gym
-    username: gym
-    password: 123
+### 2. 修改后端配置
 
-minio:
-  endpoint: http://localhost:9000
-  access-key: minioadmin
-  secret-key: minioadmin
+编辑 `src/main/resources/application.yml`，配置：
+- MySQL
+- Redis
+- RabbitMQ
+- MinIO
+
+### 3. 启动后端
+
+```bash
+mvn spring-boot:run
 ```
 
-### 运行项目
+或
+
 ```bash
 mvn clean package
 java -jar target/gym-0.0.1-SNAPSHOT.jar
 ```
 
-或直接运行：
-```bash
-mvn spring-boot:run
-```
+### 4. 启动前端
 
-### 访问Swagger文档
-```
+编辑 `Gym_fronted/common/config.js` 中的后端地址，然后：
+- 使用 `HBuilderX` 打开 `Gym_fronted`
+- 运行到微信开发者工具或 H5
+
+### 5. 查看接口文档
+
+```text
 http://localhost:8080/swagger-ui/index.html
 ```
 
-## API接口说明
+## 典型页面
 
-### 认证接口
-- `POST /auth/register` - 注册
-- `POST /auth/login` - 密码登录
-- `POST /auth/login/code` - 验证码登录
-- `POST /auth/send-code` - 发送验证码
+- 首页：`Gym_fronted/pages/index/index.vue`
+- 智能匹配：`Gym_fronted/pages/match/index.vue`
+- 搭子组：`Gym_fronted/pages/group/index.vue`
+- 消息中心：`Gym_fronted/pages/group/messages.vue`
+- 组内聊天：`Gym_fronted/pages/group/chat.vue`
+- 协同训练：`Gym_fronted/pages/training/index.vue`
+- 挑战系统：`Gym_fronted/pages/challenge/index.vue`
+- 课程系统：`Gym_fronted/pages/course/index.vue`
 
-### 用户接口
-- `GET /user/profile` - 获取档案
-- `PUT /user/profile` - 更新档案
+## 相关文档
 
-### 匹配接口
-- `GET /match/top` - 获取Top匹配结果
-
-### 组管理接口
-- `POST /group/create` - 创建组
-- `POST /group/invite` - 发送邀约
-- `POST /group/accept` - 同意邀约
-- `GET /group/my-groups/me` - 我的组列表
-- `GET /group/{groupId}` - 组详情
-- `GET /group/{groupId}/detail` - 组详情（包含成员信息）
-- `GET /group/{groupId}/members` - 组成员列表（调试用）
-
-### 训练接口
-- `POST /training/report` - 上报进度
-- `POST /training/start` - 开始训练
-- `POST /training/abandon` - 放弃训练
-
-### 挑战接口
-- `POST /challenge/create` - 创建挑战
-- `POST /challenge/join` - 参与挑战
-- `POST /challenge/punch` - 打卡
-- `GET /challenge/list` - 挑战列表
-- `GET /challenge/{challengeId}` - 挑战详情
-- `GET /challenge/{challengeId}/report` - 生成报告
-
-### 统计接口
-- `GET /stat/personal` - 个人统计
-- `GET /stat/group` - 组统计
-- `GET /stat/challenge` - 挑战统计
-
-### 文件接口
-- `POST /storage/upload/action` - 上传动作文件
-- `GET /storage/url` - 获取文件URL
-
-## 核心技术亮点
-
-### 1. 匹配算法优化
-- Redis分桶粗筛，减少计算范围
-- 权重打分算法，多维度匹配
-- 结果缓存1小时，避免重复计算
-
-### 2. 并发一致性保障
-- Redis事务（WATCH/MULTI/EXEC）保证进度更新不覆盖
-- 定时任务同步Redis到MySQL，最终一致性
-- 打卡防重：Redis + DB唯一索引双重保障
-
-### 3. WebSocket长连接管理
-- JWT握手鉴权
-- 心跳检测（前端30s，后端60s超时）
-- 组播消息推送
-
-### 4. 异步消息处理
-- RabbitMQ队列：打卡提醒、挑战报告
-- 消息重试机制
-- 失败降级处理
-
-## 项目结构
-
-```
-Gym/
-├── src/
-│   ├── main/java/com/gym/
-│   │   ├── common/          # 通用类（响应、异常、错误码）
-│   │   ├── config/          # 配置类
-│   │   │   ├── ConditionalRedisConfig.java    # Redis配置
-│   │   │   ├── CorsConfig.java                # 跨域配置
-│   │   │   ├── JwtAuthFilter.java             # JWT认证过滤器
-│   │   │   ├── JwtHandshakeInterceptor.java   # WebSocket握手拦截器
-│   │   │   ├── MinioConfig.java               # MinIO对象存储配置
-│   │   │   ├── MultipartConfig.java           # 文件上传配置
-│   │   │   ├── NativeWebSocketConfig.java     # 原生WebSocket配置（小程序）
-│   │   │   ├── NativeWebSocketHandler.java    # 原生WebSocket处理器
-│   │   │   ├── RabbitConfig.java              # RabbitMQ配置
-│   │   │   ├── SecurityConfig.java            # Spring Security配置
-│   │   │   ├── SwaggerConfig.java             # API文档配置
-│   │   │   ├── WebConfig.java                 # Web配置
-│   │   │   ├── WebSocketAuthInterceptor.java  # WebSocket认证拦截器
-│   │   │   └── WebSocketConfig.java           # STOMP WebSocket配置
-│   │   ├── controller/      # 控制器层
-│   │   ├── service/         # 服务接口
-│   │   ├── service/impl/    # 服务实现
-│   │   ├── entity/          # 实体类
-│   │   ├── mapper/          # MyBatis-Plus Mapper
-│   │   ├── consumer/        # RabbitMQ消费者
-│   │   ├── job/             # 定时任务
-│   │   │   ├── ChallengeStatusUpdateJob.java  # 挑战状态更新
-│   │   │   └── TrainingSyncJob.java           # 训练进度同步
-│   │   └── util/            # 工具类
-│   │       └── JwtUtils.java                  # JWT工具类
-│   └── resources/
-│       ├── application.yml   # 配置文件
-│       └── mapper/           # MyBatis XML（已迁移到MyBatis-Plus）
-├── Gym_fronted/              # 前端uni-app项目
-│   ├── pages/                # 页面文件
-│   │   ├── auth/             # 认证页面
-│   │   │   ├── login.vue     # 登录页
-│   │   │   └── register.vue  # 注册页
-│   │   ├── index/            # 首页
-│   │   ├── user/             # 用户中心
-│   │   ├── match/            # 智能匹配
-│   │   ├── group/            # 搭子组
-│   │   ├── training/         # 协同训练
-│   │   ├── challenge/        # 挑战系统
-│   │   ├── stat/             # 数据统计
-│   │   └── course/           # 课程系统
-│   ├── components/           # 通用组件
-│   ├── common/               # 通用工具
-│   │   ├── api.js            # API接口封装
-│   │   ├── auth.js           # 认证工具
-│   │   ├── config.js         # 全局配置
-│   │   ├── http.js           # HTTP请求封装
-│   │   ├── ws.js             # WebSocket封装（STOMP）
-│   │   └── ws-native.js      # 原生WebSocket封装（小程序）
-│   ├── static/               # 静态资源
-│   └── unpackage/            # 构建产物
-├── docs/                     # 文档目录
-│   ├── gym.sql              # 数据库脚本
-│   ├── DATABASE_SETUP.md    # 数据库设置指南
-│   └── CHAT_FEATURE.md      # 聊天功能说明
-├── screenshots/              # 应用截图
-└── CODE_DOCUMENTATION.md    # 代码注释文档
-```
-
-## 数据库设置
-
-所有数据库相关脚本已整合到单个文件中：
-- `docs/gym.sql`：包含完整的数据库结构、字段添加、数据初始化和验证查询
-
-执行方式：
-```bash
-mysql -u root -p gym < docs/gym.sql
-```
-
-## 后续优化方向
-
-1. AI动作标准度评分（MediaPipe集成）
-2. ~~分布式锁优化（Redisson）~~ - 已删除未使用的 RedisLockHelper
-3. ✅ 消息队列延迟队列（打卡提醒）- 已实现
-4. 数据可视化（ECharts前端）
-5. 性能优化（索引优化、缓存预热）
+- [项目总览](PROJECT_OVERVIEW.md)
+- [代码注释说明](CODE_DOCUMENTATION.md)
+- [数据库初始化脚本](docs/gym.sql)
+- [数据库配置说明](docs/DATABASE_SETUP.md)
+- [聊天功能说明](docs/CHAT_FEATURE.md)
 
 ## 许可证
 
-MIT License
+MIT
