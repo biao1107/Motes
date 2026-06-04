@@ -206,6 +206,7 @@ public class TrainingServiceImpl implements TrainingService {
         // 查询当日是否已有记录
         TrainRecord record = trainRecordMapper.selectOne(new LambdaQueryWrapper<TrainRecord>()
                 .eq(TrainRecord::getUserId, userId)
+                .eq(TrainRecord::getGroupId, groupId)
                 .eq(TrainRecord::getTrainDate, date));
         
         if (record == null) {
@@ -289,9 +290,6 @@ public class TrainingServiceImpl implements TrainingService {
      * @param userId 用户ID
      * @param groupId 搭子组ID
      * @param date 训练日期
-     * 
-     * @Transactional 说明：
-     * 开启事务，保证数据库操作的原子性
      * 
      * 作用：
      * 用户中途放弃训练时调用，将训练记录状态改为"放弃"
