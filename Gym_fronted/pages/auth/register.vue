@@ -12,24 +12,23 @@
               <image class="logo-img" src="/static/icons/page-style-logo.svg" mode="aspectFit" />
             </view>
             <view class="brand-copy">
-              <text class="brand-kicker">Get Started</text>
+              <text class="brand-kicker">创建账号</text>
               <text class="brand-title">新用户注册</text>
-              <text class="brand-subtitle">先建立你的账号，再把训练目标、搭子关系和挑战节奏串起来。</text>
+              <text class="brand-subtitle">先建账号，再开始训练和找搭子。</text>
+              <text class="brand-caption">先完成注册，后续再补充档案</text>
             </view>
           </view>
 
           <view class="feature-list">
             <view class="feature-chip">
+              <image class="feature-icon" src="/static/icons/home/profile-white.svg" mode="aspectFit" />
               <text class="feature-chip-title">快速建档</text>
-              <text class="feature-chip-text">注册后即可完善健身目标和训练偏好，提升匹配准确度</text>
+              <text class="feature-chip-text">先填基础信息，后补训练偏好</text>
             </view>
             <view class="feature-chip">
+              <image class="feature-icon" src="/static/icons/home/group-white.svg" mode="aspectFit" />
               <text class="feature-chip-title">搭子协作</text>
-              <text class="feature-chip-text">建立搭子组后，你能更稳定地完成协同训练和挑战打卡</text>
-            </view>
-            <view class="feature-chip">
-              <text class="feature-chip-title">训练记录</text>
-              <text class="feature-chip-text">把每天的训练和挑战结果都收进一套连续的运动档案里</text>
+              <text class="feature-chip-text">建组后更容易稳定训练</text>
             </view>
           </view>
         </view>
@@ -37,7 +36,7 @@
         <view class="register-card">
           <view class="card-head">
             <text class="card-title">创建你的训练账号</text>
-            <text class="card-subtitle">先完成基础注册，后续再补充档案和训练信息</text>
+            <text class="card-subtitle">先完成注册，后续再补充档案</text>
           </view>
 
           <view class="input-group">
@@ -102,7 +101,7 @@
           </view>
 
           <view class="security-note">
-            <text class="security-note-text">注册成功后，你可以继续完善档案，让系统给出更准确的搭子推荐。</text>
+            <text class="security-note-text">注册成功后可继续完善档案，提升推荐准确度。</text>
           </view>
 
           <button class="register-primary-btn" @tap="onSubmit" hover-class="btn-hover">
@@ -306,14 +305,14 @@ const viewPrivacy = () => {
 
 .intro-panel {
   padding-top: 8rpx;
-  margin-bottom: 20rpx;
+  margin-bottom: 16rpx;
 }
 
 .intro-top {
   display: flex;
   align-items: center;
   gap: 18rpx;
-  margin-bottom: 16rpx;
+  margin-bottom: 14rpx;
 }
 
 .logo-shell {
@@ -374,25 +373,44 @@ const viewPrivacy = () => {
 
 .brand-subtitle {
   display: block;
+  margin-bottom: 8rpx;
   font-size: 23rpx;
   line-height: 1.5;
   color: rgba(232, 241, 255, 0.82);
 }
 
+.brand-caption {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: rgba(232, 241, 255, 0.76);
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .feature-list {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10rpx;
 }
 
 .feature-chip {
   min-width: 0;
-  padding: 14rpx 14rpx 16rpx;
+  min-height: 120rpx;
+  padding: 16rpx 14rpx 14rpx;
   border-radius: 20rpx;
   background: rgba(255, 255, 255, 0.08);
   border: 1rpx solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12rpx);
   box-sizing: border-box;
+}
+
+.feature-icon {
+  width: 26rpx;
+  height: 26rpx;
+  margin-bottom: 8rpx;
 }
 
 .feature-chip-title {
@@ -585,10 +603,6 @@ const viewPrivacy = () => {
 }
 
 @media (max-width: 750rpx) {
-  .feature-list {
-    grid-template-columns: 1fr;
-  }
-
   .intro-top {
     align-items: flex-start;
   }

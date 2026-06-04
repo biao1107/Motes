@@ -1,9 +1,11 @@
 <template>
   <view class="chat-page">
     <view v-if="showError" class="error-card">
-      <view class="error-icon">聊</view>
+      <view class="error-icon">
+        <image class="error-icon-image" src="/static/icons/home/message-white.svg" mode="aspectFit" />
+      </view>
       <text class="error-title">聊天页无法加载</text>
-      <text class="error-desc">当前群组 ID 无效，暂时不能进入聊天页。</text>
+      <text class="error-desc">当前群组 ID 无效。</text>
       <view class="error-action" @tap="goBack">
         <text class="error-action-text">返回群组列表</text>
       </view>
@@ -11,9 +13,47 @@
 
     <template v-else>
       <view class="hero-card">
-        <view class="hero-badge">Chat Room</view>
-        <text class="hero-title">把组内训练沟通和图片分享集中到一个更轻量的会话空间里</text>
-        <text class="hero-desc">向上可以查看历史消息，向下则直接发送文本和图片，保持组内互动不断线。</text>
+        <view class="hero-badge">
+          <image class="hero-badge-icon" src="/static/icons/home/message-white.svg" mode="aspectFit" />
+          <text class="hero-badge-text">组内聊天</text>
+        </view>
+        <text class="hero-title">训练沟通和图片分享都在这里</text>
+        <text class="hero-desc">向上看历史，向下直接发消息。</text>
+
+        <view class="chat-group-badge">
+          <view class="chat-group-avatar">
+            <template v-if="getGroupAvatarList().length > 0">
+              <view
+                v-for="(member, index) in getGroupAvatarList()"
+                :key="`chat-${index}`"
+                class="chat-avatar-cell"
+                :class="`count-${getGroupAvatarList().length}`"
+              >
+                <view class="chat-avatar-fallback">{{ getAvatarLabel(member.nickname, groupName) }}</view>
+                <image
+                  v-if="member.avatar && !isBrokenAvatar(index)"
+                  :src="member.avatar"
+                  class="chat-avatar-image"
+                  mode="aspectFill"
+                  @error="markBrokenAvatar(index)"
+                ></image>
+              </view>
+            </template>
+            <view v-else class="chat-avatar-empty">组</view>
+          </view>
+          <text class="chat-group-name">{{ groupName }}</text>
+        </view>
+
+        <view class="hero-meta">
+          <view class="hero-chip">
+            <image class="hero-chip-icon" src="/static/icons/home/message-white.svg" mode="aspectFit" />
+            <text class="hero-chip-text">{{ messages.length }} 条消息</text>
+          </view>
+          <view class="hero-chip">
+            <image class="hero-chip-icon" src="/static/icons/home/image-blue.svg" mode="aspectFit" />
+            <text class="hero-chip-text">支持图片发送</text>
+          </view>
+        </view>
       </view>
 
       <scroll-view
@@ -72,12 +112,12 @@
         </view>
       </scroll-view>
 
-      <view class="input-container">
-        <view class="input-actions">
-          <view class="action-btn" @tap="chooseImage">
-            <text class="action-icon">图</text>
+        <view class="input-container">
+          <view class="input-actions">
+            <view class="action-btn" @tap="chooseImage">
+              <image class="action-icon-image" src="/static/icons/home/image-blue.svg" mode="aspectFit" />
+            </view>
           </view>
-        </view>
         <input
           class="message-input"
           v-model="inputMessage"
@@ -90,7 +130,8 @@
           :class="{ disabled: !inputMessage.trim() }"
           @tap="sendMessage"
         >
-          <text class="send-icon">发送</text>
+          <image class="send-icon-image" src="/static/icons/home/send-white.svg" mode="aspectFit" />
+          <text class="send-icon-text">发送</text>
         </view>
       </view>
     </template>
@@ -104,7 +145,8 @@ import {
   apiUploadAction,
   apiGetFileUrl,
   apiMarkGroupRead,
-  apiSendChatMessage
+  apiSendChatMessage,
+  apiGroupDetailWithMembers
 } from '@/common/api.js';
 import { requireLogin, getUserIdFromToken, getUserNickname } from '@/common/auth.js';
 import { sendChatMessage, subscribeGroupChat, isConnected, initWebSocket } from '@/common/ws.js';
@@ -120,6 +162,9 @@ export default {
       inputFocus: false,
       userId: null,
       nickname: '',
+      groupName: '搭子组',
+      groupMembers: [],
+      brokenAvatarMap: {},
       scrollTop: 0,
       loadingMore: false,
       hasMore: true,
@@ -162,6 +207,8 @@ export default {
 
     this.userId = getUserIdFromToken();
     this.loadUserProfile();
+    this.loadGroupProfile();
+    uni.$emit('refresh-home-unread');
 
     this.$nextTick(() => {
       this.initWebSocketConnection()
@@ -203,6 +250,8 @@ export default {
 
       this.userId = getUserIdFromToken();
       this.loadUserProfile();
+      this.loadGroupProfile();
+      uni.$emit('refresh-home-unread');
 
       this.$nextTick(() => {
         this.initWebSocketConnection()
@@ -223,6 +272,46 @@ export default {
     },
     loadUserProfile() {
       this.nickname = getUserNickname();
+    },
+    async loadGroupProfile() {
+      if (!this.id || Number.isNaN(Number(this.id)) || Number(this.id) <= 0) return;
+
+      try {
+        const detail = await apiGroupDetailWithMembers(Number(this.id));
+        this.groupName = detail?.groupName || '搭子组';
+        this.groupMembers = Array.isArray(detail?.members) ? detail.members : [];
+      } catch (error) {
+        console.error('加载聊天群组信息失败:', error);
+        this.groupName = '搭子组';
+        this.groupMembers = [];
+      }
+    },
+    getGroupAvatarList() {
+      return this.groupMembers.slice(0, 4).map((member) => ({
+        avatar: member?.avatar || '',
+        nickname: member?.nickname || ''
+      }));
+    },
+    getGroupAvatarFallback(index) {
+      const member = this.groupMembers[index];
+      const name = member?.nickname || '';
+      return name ? name.charAt(0) : '组';
+    },
+    getAvatarLabel(nickname, groupName) {
+      const name = (nickname || '').trim();
+      if (name) return name.charAt(0);
+      const group = (groupName || '').trim();
+      if (group) return group.charAt(0);
+      return '组';
+    },
+    markBrokenAvatar(index) {
+      this.brokenAvatarMap = {
+        ...this.brokenAvatarMap,
+        [`chat-${index}`]: true
+      };
+    },
+    isBrokenAvatar(index) {
+      return !!this.brokenAvatarMap[`chat-${index}`];
     },
     async loadChatHistory() {
       if (!this.hasMore || this.loadingMore) return;
@@ -573,13 +662,22 @@ export default {
 
 .hero-badge {
   display: inline-flex;
-  height: 42rpx;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 44rpx;
   padding: 0 16rpx;
   margin-bottom: 18rpx;
   border-radius: 999rpx;
-  align-items: center;
-  justify-content: center;
   background: rgba(255, 255, 255, 0.14);
+}
+
+.hero-badge-icon {
+  width: 22rpx;
+  height: 22rpx;
+}
+
+.hero-badge-text {
   color: rgba(255, 255, 255, 0.92);
   font-size: 20rpx;
   letter-spacing: 1rpx;
@@ -597,8 +695,122 @@ export default {
 .hero-desc {
   display: block;
   font-size: 24rpx;
-  line-height: 1.65;
+  line-height: 1.5;
   color: rgba(255, 255, 255, 0.84);
+}
+
+.chat-group-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 14rpx 16rpx;
+  margin-top: 18rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.chat-group-avatar {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 18rpx;
+  background: rgba(255, 255, 255, 0.12);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 3rpx;
+  padding: 4rpx;
+  box-sizing: border-box;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.chat-avatar-cell {
+  position: relative;
+  border-radius: 10rpx;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.chat-avatar-cell.count-1 {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+}
+
+.chat-avatar-cell.count-2:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1 / -1;
+}
+
+.chat-avatar-cell.count-2:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1 / -1;
+}
+
+.chat-avatar-cell.count-3:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1 / -1;
+}
+
+.chat-avatar-image,
+.chat-avatar-fallback {
+  width: 100%;
+  height: 100%;
+}
+
+.chat-avatar-image {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.chat-avatar-fallback,
+.chat-avatar-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.chat-avatar-fallback {
+  font-size: 16rpx;
+}
+
+.chat-avatar-empty {
+  grid-column: 1 / -1;
+  font-size: 20rpx;
+}
+
+.chat-group-name {
+  font-size: 23rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 20rpx;
+}
+
+.hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 14rpx 16rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.hero-chip-icon {
+  width: 22rpx;
+  height: 22rpx;
+  flex-shrink: 0;
+}
+
+.hero-chip-text {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .chat-container {
@@ -725,10 +937,9 @@ export default {
   background: #eef3ff;
 }
 
-.action-icon {
-  font-size: 24rpx;
-  font-weight: 700;
-  color: #3657ee;
+.action-icon-image {
+  width: 24rpx;
+  height: 24rpx;
 }
 
 .message-input {
@@ -746,13 +957,19 @@ export default {
   padding: 0 18rpx;
   border-radius: 999rpx;
   background: linear-gradient(150deg, #3253ef 0%, #6980ff 100%);
+  gap: 8rpx;
 }
 
 .send-btn.disabled {
   opacity: 0.6;
 }
 
-.send-icon {
+.send-icon-image {
+  width: 22rpx;
+  height: 22rpx;
+}
+
+.send-icon-text {
   font-size: 24rpx;
   font-weight: 700;
   color: #ffffff;
@@ -777,9 +994,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #ffffff;
+}
+
+.error-icon-image {
+  width: 42rpx;
+  height: 42rpx;
 }
 
 .error-title {

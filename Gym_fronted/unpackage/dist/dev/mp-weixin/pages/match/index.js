@@ -2,6 +2,7 @@
 const common_vendor = require("../../common/vendor.js");
 const common_api = require("../../common/api.js");
 const common_auth = require("../../common/auth.js");
+const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   data() {
     return {
@@ -39,7 +40,7 @@ const _sfc_main = {
         this.loaded = true;
         common_vendor.index.hideLoading();
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/match/index.vue:158", "加载匹配结果失败:", error);
+        common_vendor.index.__f__("error", "at pages/match/index.vue:186", "加载匹配结果失败:", error);
         this.matchResult = [];
         this.loaded = true;
         common_vendor.index.hideLoading();
@@ -76,20 +77,23 @@ const _sfc_main = {
       common_vendor.index.navigateTo({ url: "/pages/group/index" });
     },
     onAvatarLoadError(error) {
-      common_vendor.index.__f__("log", "at pages/match/index.vue:192", "头像加载失败:", error);
+      common_vendor.index.__f__("log", "at pages/match/index.vue:220", "头像加载失败:", error);
     }
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: common_vendor.t($data.matchResult.length),
-    b: common_vendor.t($data.loaded ? "已生成" : "匹配中"),
-    c: !$data.loaded
+    a: common_assets._imports_0$1,
+    b: common_assets._imports_1,
+    c: common_vendor.t($data.matchResult.length),
+    d: common_assets._imports_8,
+    e: common_vendor.t($data.loaded ? "已生成" : "匹配中"),
+    f: !$data.loaded
   }, !$data.loaded ? {} : common_vendor.e({
-    d: $options.hasMatchResult
+    g: $options.hasMatchResult
   }, $options.hasMatchResult ? {
-    e: common_vendor.t($data.matchResult.length),
-    f: common_vendor.f($data.matchResult, (item, index, i0) => {
+    h: common_vendor.t($data.matchResult.length),
+    i: common_vendor.f($data.matchResult, (item, index, i0) => {
       return common_vendor.e({
         a: item.avatar && item.avatar.trim()
       }, item.avatar && item.avatar.trim() ? {
@@ -104,30 +108,40 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         h: `${$options.formatScore(item.score)}%`,
         i: item.goal
       }, item.goal ? {
-        j: common_vendor.t(item.goal)
+        j: common_assets._imports_4$1,
+        k: common_vendor.t(item.goal)
       } : {}, {
-        k: item.preferTime
+        l: item.preferTime
       }, item.preferTime ? {
-        l: common_vendor.t(item.preferTime)
+        m: common_assets._imports_1$1,
+        n: common_vendor.t(item.preferTime)
       } : {}, {
-        m: item.scene
+        o: item.scene
       }, item.scene ? {
-        n: common_vendor.t(item.scene)
+        p: common_assets._imports_5$1,
+        q: common_vendor.t(item.scene)
       } : {}, {
-        o: item.mode
+        r: item.mode
       }, item.mode ? {
-        p: common_vendor.t(item.mode)
+        s: common_assets._imports_1$2,
+        t: common_vendor.t(item.mode)
       } : {}, {
-        q: common_vendor.o((...args) => $options.goProfile && $options.goProfile(...args), item.id || item.userId || index),
-        r: common_vendor.o((...args) => $options.goToGroups && $options.goToGroups(...args), item.id || item.userId || index),
-        s: item.id || item.userId || index
+        v: common_vendor.o((...args) => $options.goProfile && $options.goProfile(...args), item.id || item.userId || index),
+        w: common_vendor.o((...args) => $options.goToGroups && $options.goToGroups(...args), item.id || item.userId || index),
+        x: item.id || item.userId || index
       });
-    })
+    }),
+    j: common_assets._imports_10,
+    k: common_assets._imports_1
   } : {
-    g: common_vendor.o((...args) => $options.goProfile && $options.goProfile(...args)),
-    h: common_vendor.o((...args) => $options.loadData && $options.loadData(...args))
+    l: common_assets._imports_0$1,
+    m: common_assets._imports_2$1,
+    n: common_vendor.o((...args) => $options.goProfile && $options.goProfile(...args)),
+    o: common_assets._imports_9,
+    p: common_vendor.o((...args) => $options.loadData && $options.loadData(...args))
   }, {
-    i: common_vendor.o((...args) => $options.loadData && $options.loadData(...args))
+    q: common_assets._imports_10$1,
+    r: common_vendor.o((...args) => $options.loadData && $options.loadData(...args))
   }));
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-edf061ca"]]);

@@ -2,12 +2,22 @@
 const common_vendor = require("../../common/vendor.js");
 const common_api = require("../../common/api.js");
 const common_auth = require("../../common/auth.js");
+const common_assets = require("../../common/assets.js");
 const _sfc_main = {
+  computed: {
+    totalUnreadCount() {
+      if (!Array.isArray(this.groups))
+        return 0;
+      return this.groups.reduce((sum, group) => sum + Number((group == null ? void 0 : group.unreadCount) || 0), 0);
+    }
+  },
   data() {
     return {
       groups: [],
       invitations: [],
-      userId: null
+      userId: null,
+      groupMembers: {},
+      brokenAvatarMap: {}
     };
   },
   onShow() {
@@ -16,6 +26,7 @@ const _sfc_main = {
     this.userId = common_auth.getUserIdFromToken();
     this.loadInvitations();
     this.loadGroups();
+    common_vendor.index.$emit("refresh-home-unread");
   },
   activated() {
     if (!common_auth.requireLogin())
@@ -23,14 +34,16 @@ const _sfc_main = {
     this.userId = common_auth.getUserIdFromToken();
     this.loadInvitations();
     this.loadGroups();
+    common_vendor.index.$emit("refresh-home-unread");
   },
   methods: {
     async loadInvitations() {
       try {
         const res = await common_api.apiGetInvitations();
-        this.invitations = (res == null ? void 0 : res.data) || res || [];
+        this.invitations = Array.isArray(res) ? res : [];
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/group/messages.vue:114", "加载邀请列表失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/messages.vue:161", "加载邀请列表失败:", error);
+        this.invitations = [];
       }
     },
     refreshInvitations() {
@@ -47,7 +60,7 @@ const _sfc_main = {
         this.loadGroups();
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/group/messages.vue:131", "接受邀请失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/messages.vue:179", "接受邀请失败:", error);
         common_vendor.index.showToast({ title: "接受失败", icon: "none" });
       }
     },
@@ -66,7 +79,7 @@ const _sfc_main = {
         this.loadInvitations();
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/group/messages.vue:151", "拒绝邀请失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/messages.vue:199", "拒绝邀请失败:", error);
         common_vendor.index.showToast({ title: "拒绝失败", icon: "none" });
       }
     },
@@ -76,9 +89,9 @@ const _sfc_main = {
         let myGroups = [];
         try {
           const myGroupsRes = await common_api.apiMyGroups();
-          myGroups = (myGroupsRes == null ? void 0 : myGroupsRes.data) || myGroupsRes || [];
+          myGroups = Array.isArray(myGroupsRes) ? myGroupsRes : [];
         } catch (groupsError) {
-          common_vendor.index.__f__("error", "at pages/group/messages.vue:164", "获取群组列表失败:", groupsError);
+          common_vendor.index.__f__("error", "at pages/group/messages.vue:212", "获取群组列表失败:", groupsError);
           common_vendor.index.hideLoading();
           common_vendor.index.showToast({
             title: "获取群组列表失败",
@@ -89,29 +102,98 @@ const _sfc_main = {
         let unreadData = [];
         try {
           const res = await common_api.apiGetUnreadDetail(this.userId);
-          unreadData = (res == null ? void 0 : res.data) || res || [];
+          unreadData = Array.isArray(res) ? res : [];
         } catch (unreadError) {
-          common_vendor.index.__f__("error", "at pages/group/messages.vue:178", "获取未读详情失败:", unreadError);
+          common_vendor.index.__f__("error", "at pages/group/messages.vue:226", "获取未读详情失败:", unreadError);
+          unreadData = [];
         }
         this.groups = myGroups.filter((group) => group && group.id).map((group) => {
           const unreadInfo = unreadData.find((item) => item.groupId === group.id);
           return {
             id: group.id,
             groupName: group.groupName || "搭子组",
-            lastMessage: (unreadInfo == null ? void 0 : unreadInfo.lastMessage) || "",
+            fixedTime: group.fixedTime || "",
+            lastMessage: this.formatLastMessagePreview((unreadInfo == null ? void 0 : unreadInfo.lastMessage) || ""),
             lastMessageTime: unreadInfo == null ? void 0 : unreadInfo.lastMessageTime,
             unreadCount: (unreadInfo == null ? void 0 : unreadInfo.unreadCount) || 0
           };
         });
+        await this.loadAllGroupMembers();
         common_vendor.index.hideLoading();
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/group/messages.vue:196", "加载消息会话失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/messages.vue:248", "加载消息会话失败:", error);
+        this.groups = [];
         common_vendor.index.hideLoading();
         common_vendor.index.showToast({
           title: "加载失败",
           icon: "none"
         });
       }
+    },
+    async loadAllGroupMembers() {
+      const detailList = await Promise.all(
+        this.groups.map(async (group) => {
+          try {
+            const detail = await common_api.apiGroupDetailWithMembers(group.id);
+            return { groupId: group.id, members: (detail == null ? void 0 : detail.members) || [] };
+          } catch (error) {
+            common_vendor.index.__f__("error", "at pages/group/messages.vue:264", `加载消息组 ${group.id} 成员失败:`, error);
+            return { groupId: group.id, members: [] };
+          }
+        })
+      );
+      detailList.forEach((item) => {
+        this.groupMembers = {
+          ...this.groupMembers,
+          [item.groupId]: item.members
+        };
+      });
+    },
+    getGroupAvatarList(groupId) {
+      const members = this.groupMembers[groupId] || [];
+      return members.slice(0, 4).map((member) => ({
+        avatar: (member == null ? void 0 : member.avatar) || "",
+        nickname: (member == null ? void 0 : member.nickname) || ""
+      }));
+    },
+    getGroupAvatarCount(groupId) {
+      const members = this.groupMembers[groupId] || [];
+      return Math.min(members.length, 4);
+    },
+    getGroupMemberCount(groupId) {
+      const members = this.groupMembers[groupId] || [];
+      return members.length;
+    },
+    getGroupAvatarFallback(groupId, index) {
+      const members = this.groupMembers[groupId] || [];
+      const member = members[index];
+      const name = (member == null ? void 0 : member.nickname) || "";
+      return name ? name.charAt(0) : "组";
+    },
+    getAvatarLabel(nickname, groupName) {
+      const name = (nickname || "").trim();
+      if (name)
+        return name.charAt(0);
+      const group = (groupName || "").trim();
+      if (group)
+        return group.charAt(0);
+      return "组";
+    },
+    markBrokenAvatar(groupId, index) {
+      this.brokenAvatarMap = {
+        ...this.brokenAvatarMap,
+        [`${groupId}-${index}`]: true
+      };
+    },
+    isBrokenAvatar(groupId, index) {
+      return !!this.brokenAvatarMap[`${groupId}-${index}`];
+    },
+    formatLastMessagePreview(message) {
+      if (!message)
+        return "";
+      if (message === "[图片]")
+        return "发送了一张图片";
+      return message;
     },
     enterChat(groupId) {
       this.markGroupMessagesAsRead(groupId);
@@ -129,7 +211,7 @@ const _sfc_main = {
           this.groups[groupIndex].unreadCount = 0;
         }
       }).catch((error) => {
-        common_vendor.index.__f__("error", "at pages/group/messages.vue:223", "标记已读失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/messages.vue:338", "标记已读失败:", error);
         common_vendor.index.showToast({
           title: "同步已读状态失败，请稍后重试",
           icon: "none",
@@ -161,9 +243,14 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: $data.invitations.length > 0
-  }, $data.invitations.length > 0 ? {
-    b: common_vendor.f($data.invitations, (invite, k0, i0) => {
+    a: common_assets._imports_0$3,
+    b: common_assets._imports_0$3,
+    c: common_vendor.t($options.totalUnreadCount),
+    d: common_assets._imports_1,
+    e: common_vendor.t($data.invitations.length),
+    f: Array.isArray($data.invitations) && $data.invitations.length > 0
+  }, Array.isArray($data.invitations) && $data.invitations.length > 0 ? {
+    g: common_vendor.f($data.invitations, (invite, k0, i0) => {
       return {
         a: common_vendor.t(invite.fromUserName),
         b: common_vendor.t(invite.groupName || "健身搭子组"),
@@ -173,29 +260,52 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     })
   } : {}, {
-    c: $data.groups.length > 0
-  }, $data.groups.length > 0 ? {
-    d: common_vendor.f($data.groups, (group, k0, i0) => {
+    h: Array.isArray($data.groups) && $data.groups.length > 0
+  }, Array.isArray($data.groups) && $data.groups.length > 0 ? {
+    i: common_vendor.f($data.groups, (group, k0, i0) => {
       return common_vendor.e({
-        a: common_vendor.t(group.groupName || "搭子组"),
-        b: group.lastMessageTime
+        a: $options.getGroupAvatarCount(group.id) > 0
+      }, $options.getGroupAvatarCount(group.id) > 0 ? {
+        b: common_vendor.f($options.getGroupAvatarList(group.id), (member, index, i1) => {
+          return common_vendor.e({
+            a: common_vendor.t($options.getAvatarLabel(member.nickname, group.groupName)),
+            b: member.avatar && !$options.isBrokenAvatar(group.id, index)
+          }, member.avatar && !$options.isBrokenAvatar(group.id, index) ? {
+            c: member.avatar,
+            d: common_vendor.o(($event) => $options.markBrokenAvatar(group.id, index), `${group.id}-${index}`)
+          } : {}, {
+            e: `${group.id}-${index}`
+          });
+        }),
+        c: common_vendor.n(`count-${$options.getGroupAvatarCount(group.id)}`)
+      } : {}, {
+        d: common_vendor.t(group.groupName || "搭子组"),
+        e: group.lastMessageTime
       }, group.lastMessageTime ? {
-        c: common_vendor.t($options.formatTime(group.lastMessageTime))
+        f: common_vendor.t($options.formatTime(group.lastMessageTime))
       } : {}, {
-        d: group.lastMessage
+        g: group.fixedTime
+      }, group.fixedTime ? {
+        h: common_vendor.t(group.fixedTime)
+      } : {}, {
+        i: $options.getGroupMemberCount(group.id)
+      }, $options.getGroupMemberCount(group.id) ? {
+        j: common_vendor.t($options.getGroupMemberCount(group.id))
+      } : {}, {
+        k: group.lastMessage
       }, group.lastMessage ? {
-        e: common_vendor.t(group.lastMessage)
+        l: common_vendor.t(group.lastMessage)
       } : {}, {
-        f: group.unreadCount > 0
+        m: group.unreadCount > 0
       }, group.unreadCount > 0 ? {
-        g: common_vendor.t(group.unreadCount > 99 ? "99+" : group.unreadCount)
+        n: common_vendor.t(group.unreadCount > 99 ? "99+" : group.unreadCount)
       } : {}, {
-        h: group.id,
-        i: common_vendor.o(($event) => $options.enterChat(group.id), group.id)
+        o: group.id,
+        p: common_vendor.o(($event) => $options.enterChat(group.id), group.id)
       });
     })
-  } : $data.invitations.length === 0 ? {} : {}, {
-    e: $data.invitations.length === 0
+  } : Array.isArray($data.invitations) && $data.invitations.length === 0 ? {} : {}, {
+    j: Array.isArray($data.invitations) && $data.invitations.length === 0
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-1ffa5f7a"]]);

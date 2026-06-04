@@ -95,7 +95,7 @@ const _sfc_main = {
         }, 1e3);
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/auth/login.vue:247", "发送验证码失败:", error);
+        common_vendor.index.__f__("error", "at pages/auth/login.vue:246", "发送验证码失败:", error);
         const errMsg = (error == null ? void 0 : error.msg) || (error == null ? void 0 : error.message) || "发送失败，请重试";
         common_vendor.index.showToast({ title: errMsg, icon: "none", duration: 2e3, mask: true });
       }
@@ -137,12 +137,12 @@ const _sfc_main = {
               nickname: "用户" + getUserIdFromToken(token)
             };
             common_auth.setUserInfo(fallbackUser);
-            common_vendor.index.__f__("error", "at pages/auth/login.vue:293", "获取用户信息失败:", error);
+            common_vendor.index.__f__("error", "at pages/auth/login.vue:292", "获取用户信息失败:", error);
           }
           try {
             await common_ws.initWebSocket();
           } catch (error) {
-            common_vendor.index.__f__("error", "at pages/auth/login.vue:299", "WebSocket 初始化失败:", error);
+            common_vendor.index.__f__("error", "at pages/auth/login.vue:298", "WebSocket 初始化失败:", error);
           }
           common_vendor.index.hideLoading();
           common_vendor.index.showToast({ title: "登录成功", icon: "success", duration: 1500, mask: true });
@@ -155,7 +155,7 @@ const _sfc_main = {
         }
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/auth/login.vue:313", "登录失败:", error);
+        common_vendor.index.__f__("error", "at pages/auth/login.vue:312", "登录失败:", error);
         const errMsg = (error == null ? void 0 : error.msg) || (error == null ? void 0 : error.message) || "登录失败，请重试";
         common_vendor.index.showToast({ title: errMsg, icon: "none", duration: 2e3, mask: true });
       }
@@ -184,38 +184,40 @@ const _sfc_main = {
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_assets._imports_0,
-        b: common_vendor.n(loginType.value === "password" ? "active" : ""),
-        c: common_vendor.o(($event) => switchLoginType("password")),
-        d: common_vendor.n(loginType.value === "code" ? "active" : ""),
-        e: common_vendor.o(($event) => switchLoginType("code")),
-        f: common_vendor.o(($event) => setActiveInput("phone")),
-        g: common_vendor.o(clearActiveInput),
-        h: formData.value.phone,
-        i: common_vendor.o(($event) => formData.value.phone = $event.detail.value),
-        j: activeInput.value === "phone" ? 1 : "",
-        k: loginType.value === "password"
+        b: common_assets._imports_0$1,
+        c: common_assets._imports_0$2,
+        d: common_vendor.n(loginType.value === "password" ? "active" : ""),
+        e: common_vendor.o(($event) => switchLoginType("password")),
+        f: common_vendor.n(loginType.value === "code" ? "active" : ""),
+        g: common_vendor.o(($event) => switchLoginType("code")),
+        h: common_vendor.o(($event) => setActiveInput("phone")),
+        i: common_vendor.o(clearActiveInput),
+        j: formData.value.phone,
+        k: common_vendor.o(($event) => formData.value.phone = $event.detail.value),
+        l: activeInput.value === "phone" ? 1 : "",
+        m: loginType.value === "password"
       }, loginType.value === "password" ? {
-        l: common_vendor.o(($event) => setActiveInput("password")),
-        m: common_vendor.o(clearActiveInput),
-        n: formData.value.password,
-        o: common_vendor.o(($event) => formData.value.password = $event.detail.value),
-        p: activeInput.value === "password" ? 1 : ""
+        n: common_vendor.o(($event) => setActiveInput("password")),
+        o: common_vendor.o(clearActiveInput),
+        p: formData.value.password,
+        q: common_vendor.o(($event) => formData.value.password = $event.detail.value),
+        r: activeInput.value === "password" ? 1 : ""
       } : {
-        q: common_vendor.o(($event) => setActiveInput("code")),
-        r: common_vendor.o(clearActiveInput),
-        s: formData.value.code,
-        t: common_vendor.o(($event) => formData.value.code = $event.detail.value),
-        v: activeInput.value === "code" ? 1 : "",
-        w: common_vendor.t(codeBtnText.value),
-        x: isCodeBtnDisabled.value ? 1 : "",
-        y: isCodeBtnDisabled.value,
-        z: common_vendor.o(sendVerificationCode)
+        s: common_vendor.o(($event) => setActiveInput("code")),
+        t: common_vendor.o(clearActiveInput),
+        v: formData.value.code,
+        w: common_vendor.o(($event) => formData.value.code = $event.detail.value),
+        x: activeInput.value === "code" ? 1 : "",
+        y: common_vendor.t(codeBtnText.value),
+        z: isCodeBtnDisabled.value ? 1 : "",
+        A: isCodeBtnDisabled.value,
+        B: common_vendor.o(sendVerificationCode)
       }, {
-        A: common_vendor.o(handleLogin),
-        B: common_vendor.o(goToRegister),
-        C: common_vendor.o(viewTerms),
-        D: common_vendor.o(viewPrivacy),
-        E: safeAreaTop.value + "px"
+        C: common_vendor.o(handleLogin),
+        D: common_vendor.o(goToRegister),
+        E: common_vendor.o(viewTerms),
+        F: common_vendor.o(viewPrivacy),
+        G: safeAreaTop.value + "px"
       });
     };
   }

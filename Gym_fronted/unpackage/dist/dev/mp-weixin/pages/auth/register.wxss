@@ -54,13 +54,13 @@
 }
 .intro-panel.data-v-4bb68961 {
   padding-top: 8rpx;
-  margin-bottom: 20rpx;
+  margin-bottom: 16rpx;
 }
 .intro-top.data-v-4bb68961 {
   display: flex;
   align-items: center;
   gap: 18rpx;
-  margin-bottom: 16rpx;
+  margin-bottom: 14rpx;
 }
 .logo-shell.data-v-4bb68961 {
   width: 126rpx;
@@ -115,24 +115,41 @@
 }
 .brand-subtitle.data-v-4bb68961 {
   display: block;
+  margin-bottom: 8rpx;
   font-size: 23rpx;
   line-height: 1.5;
   color: rgba(232, 241, 255, 0.82);
 }
+.brand-caption.data-v-4bb68961 {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: rgba(232, 241, 255, 0.76);
+  background: rgba(255, 255, 255, 0.08);
+}
 .feature-list.data-v-4bb68961 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10rpx;
 }
 .feature-chip.data-v-4bb68961 {
   min-width: 0;
-  padding: 14rpx 14rpx 16rpx;
+  min-height: 120rpx;
+  padding: 16rpx 14rpx 14rpx;
   border-radius: 20rpx;
   background: rgba(255, 255, 255, 0.08);
   border: 1rpx solid rgba(255, 255, 255, 0.1);
   -webkit-backdrop-filter: blur(12rpx);
           backdrop-filter: blur(12rpx);
   box-sizing: border-box;
+}
+.feature-icon.data-v-4bb68961 {
+  width: 26rpx;
+  height: 26rpx;
+  margin-bottom: 8rpx;
 }
 .feature-chip-title.data-v-4bb68961 {
   display: block;
@@ -298,9 +315,6 @@
   background: rgba(79, 112, 251, 0.08) !important;
 }
 @media (max-width: 750rpx) {
-.feature-list.data-v-4bb68961 {
-    grid-template-columns: 1fr;
-}
 .intro-top.data-v-4bb68961 {
     align-items: flex-start;
 }

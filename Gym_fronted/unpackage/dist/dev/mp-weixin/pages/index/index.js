@@ -8,6 +8,16 @@ const defaultAvatar = "https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQ
 const _sfc_main = {
   __name: "index",
   setup(__props, { expose: __expose }) {
+    const iconMap = {
+      completeProfile: "/static/icons/home/profile-blue.svg",
+      challenge: "/static/icons/home/trophy-blue.svg",
+      training: "/static/icons/home/dumbbell-blue.svg",
+      group: "/static/icons/home/group-blue.svg",
+      match: "/static/icons/home/compass-blue.svg",
+      trainDays: "/static/icons/home/calendar-blue.svg",
+      partners: "/static/icons/home/group-blue.svg",
+      stats: "/static/icons/home/chart-blue.svg"
+    };
     const userProfile = common_vendor.ref({});
     const stats = common_vendor.ref({
       trainDays: 0,
@@ -26,7 +36,8 @@ const _sfc_main = {
     const heroDescription = common_vendor.ref("先约到合适的搭子，再把训练、打卡和反馈连成一个连续动作。");
     const primaryAction = common_vendor.ref({
       label: "去开始训练",
-      url: "/pages/training/index"
+      url: "/pages/training/index",
+      icon: iconMap.training
     });
     const checkLoginStatus = () => {
       if (!common_auth.requireLogin()) {
@@ -41,7 +52,8 @@ const _sfc_main = {
         heroDescription.value = "补齐目标、时间和场景信息后，搭子推荐和挑战分发会更准确。";
         primaryAction.value = {
           label: "去完善档案",
-          url: "/pages/user/profile"
+          url: "/pages/user/profile",
+          icon: iconMap.completeProfile
         };
         return;
       }
@@ -50,7 +62,8 @@ const _sfc_main = {
         heroDescription.value = "优先处理今日待办，更容易把训练节奏稳定下来。";
         primaryAction.value = {
           label: "去处理待办",
-          url: "/pages/challenge/index"
+          url: "/pages/challenge/index",
+          icon: iconMap.challenge
         };
         return;
       }
@@ -59,7 +72,8 @@ const _sfc_main = {
         heroDescription.value = "你已经在进行挑战，继续上报训练和打卡，会更快形成正反馈。";
         primaryAction.value = {
           label: "继续训练",
-          url: "/pages/training/index"
+          url: "/pages/training/index",
+          icon: iconMap.training
         };
         return;
       }
@@ -68,7 +82,8 @@ const _sfc_main = {
         heroDescription.value = "你已经建立了搭子关系，现在最重要的是把互动和训练形成固定节奏。";
         primaryAction.value = {
           label: "查看搭子组",
-          url: "/pages/group/index"
+          url: "/pages/group/index",
+          icon: iconMap.group
         };
         return;
       }
@@ -76,7 +91,8 @@ const _sfc_main = {
       heroDescription.value = "先约到合适的搭子，再把训练、打卡和反馈连成一个连续动作。";
       primaryAction.value = {
         label: "去找搭子",
-        url: "/pages/match/index"
+        url: "/pages/match/index",
+        icon: iconMap.match
       };
     };
     const formatDataList = () => {
@@ -84,17 +100,20 @@ const _sfc_main = {
         {
           value: stats.value.trainDays || 0,
           label: "累计训练",
-          trend: null
+          trend: null,
+          icon: iconMap.trainDays
         },
         {
           value: stats.value.partnersCount || 0,
           label: "健身搭子",
-          trend: null
+          trend: null,
+          icon: iconMap.partners
         },
         {
           value: stats.value.activeChallenges || 0,
           label: "进行挑战",
-          trend: null
+          trend: null,
+          icon: iconMap.stats
         }
       ];
       updateHeroContent();
@@ -121,7 +140,7 @@ const _sfc_main = {
           common_vendor.index.showToast({ title: "数据已刷新", icon: "success", duration: 1e3 });
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:353", "数据刷新失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:408", "数据刷新失败:", error);
         stats.value = { trainDays: 0, partnersCount: 0, activeChallenges: 0 };
         formatDataList();
         common_vendor.index.showToast({ title: "数据加载失败", icon: "none", duration: 1500 });
@@ -130,7 +149,6 @@ const _sfc_main = {
       }
     };
     const getUnreadSummary = async () => {
-      var _a;
       const userId = common_auth.getUserIdFromToken();
       if (!userId) {
         unreadCount.value = 0;
@@ -138,19 +156,31 @@ const _sfc_main = {
         return;
       }
       try {
-        const chatRes = await common_api.apiGetUnreadCount(userId);
-        const chatCount = (chatRes == null ? void 0 : chatRes.data) || chatRes || 0;
+        let chatCount = 0;
+        try {
+          const unreadDetail = await common_api.apiGetUnreadDetail(userId);
+          if (Array.isArray(unreadDetail)) {
+            chatCount = unreadDetail.reduce((sum, item) => sum + Number((item == null ? void 0 : item.unreadCount) || 0), 0);
+          } else {
+            const chatRes = await common_api.apiGetUnreadCount(userId);
+            chatCount = Number(chatRes || 0);
+          }
+        } catch (detailError) {
+          common_vendor.index.__f__("error", "at pages/index/index.vue:436", "获取未读详情失败，回退到总数接口:", detailError);
+          const chatRes = await common_api.apiGetUnreadCount(userId);
+          chatCount = Number(chatRes || 0);
+        }
         let invitations = 0;
         try {
           const inviteRes = await common_api.apiGetInvitations();
-          invitations = ((_a = inviteRes == null ? void 0 : inviteRes.data) == null ? void 0 : _a.length) || (inviteRes == null ? void 0 : inviteRes.length) || 0;
+          invitations = Array.isArray(inviteRes) ? inviteRes.length : 0;
         } catch (error) {
-          common_vendor.index.__f__("error", "at pages/index/index.vue:379", "获取邀请列表失败:", error);
+          common_vendor.index.__f__("error", "at pages/index/index.vue:446", "获取邀请列表失败:", error);
         }
         inviteCount.value = invitations;
         unreadCount.value = chatCount + invitations;
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:385", "获取未读消息失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:452", "获取未读消息失败:", error);
         unreadCount.value = 0;
         inviteCount.value = 0;
       }
@@ -163,7 +193,7 @@ const _sfc_main = {
         hasTodo.value = count > 0;
         updateHeroContent();
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:399", "获取待办数量失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:466", "获取待办数量失败:", error);
         todoCount.value = 0;
         hasTodo.value = false;
         updateHeroContent();
@@ -187,7 +217,7 @@ const _sfc_main = {
         common_vendor.index.showToast({ title: "已加入搭子组", icon: "success", duration: 1200 });
         await Promise.all([refreshUserData(), getUnreadSummary(), getTodoSummary()]);
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:425", "接受邀请失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:492", "接受邀请失败:", error);
         common_vendor.index.showToast({ title: "操作失败，请稍后重试", icon: "none", duration: 1500 });
       }
     };
@@ -234,7 +264,7 @@ const _sfc_main = {
         await common_wsNative.initNativeWebSocket();
         common_wsNative.setMessageCallback(handleMessage);
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:478", "首页 WebSocket 初始化失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:545", "首页 WebSocket 初始化失败:", error);
       }
     };
     const navigateTo = (url) => {
@@ -259,6 +289,7 @@ const _sfc_main = {
     };
     common_vendor.onMounted(() => {
       msgAni.value = common_vendor.index.createAnimation({ duration: 200, timingFunction: "ease" });
+      common_vendor.index.$on("refresh-home-unread", getUnreadSummary);
       if (!checkLoginStatus()) {
         return;
       }
@@ -295,6 +326,7 @@ const _sfc_main = {
     };
     common_vendor.onUnmounted(() => {
       common_wsNative.setMessageCallback(null);
+      common_vendor.index.$off("refresh-home-unread", getUnreadSummary);
     });
     __expose({
       onShow,
@@ -309,70 +341,87 @@ const _sfc_main = {
         e: common_vendor.o(showProfilePopup),
         f: common_vendor.t(heroTitle.value),
         g: common_vendor.t(heroDescription.value),
-        h: common_vendor.t(primaryAction.value.label),
-        i: common_vendor.o(($event) => navigateTo(primaryAction.value.url)),
-        j: common_vendor.o(($event) => navigateTo("/pages/match/index")),
-        k: common_vendor.t(stats.value.activeChallenges || 0),
-        l: common_vendor.t(unreadCount.value),
-        m: common_vendor.o(handleManualRefresh),
-        n: !isLoading.value
+        h: primaryAction.value.icon,
+        i: common_vendor.t(primaryAction.value.label),
+        j: common_vendor.o(($event) => navigateTo(primaryAction.value.url)),
+        k: common_assets._imports_2,
+        l: common_vendor.t(stats.value.activeChallenges || 0),
+        m: common_assets._imports_0$3,
+        n: common_vendor.t(unreadCount.value),
+        o: common_assets._imports_0$1,
+        p: common_vendor.o(($event) => navigateTo("/pages/match/index")),
+        q: common_assets._imports_1,
+        r: common_vendor.o(($event) => navigateTo("/pages/group/index")),
+        s: common_vendor.o(handleManualRefresh),
+        t: !isLoading.value
       }, !isLoading.value ? {
-        o: common_vendor.f(dataList.value, (item, k0, i0) => {
+        v: common_vendor.f(dataList.value, (item, k0, i0) => {
           return common_vendor.e({
-            a: common_vendor.t(item.value),
-            b: common_vendor.t(item.label),
-            c: item.trend !== null
+            a: item.icon,
+            b: common_vendor.t(item.value),
+            c: common_vendor.t(item.label),
+            d: item.trend !== null
           }, item.trend !== null ? {
-            d: common_vendor.t(item.trend > 0 ? "↑" : "↓"),
-            e: common_vendor.n(item.trend > 0 ? "up" : "down"),
-            f: common_vendor.t(Math.abs(item.trend))
+            e: common_vendor.t(item.trend > 0 ? "↑" : "↓"),
+            f: common_vendor.n(item.trend > 0 ? "up" : "down"),
+            g: common_vendor.t(Math.abs(item.trend))
           } : {}, {
-            g: item.label
+            h: item.label
           });
         })
       } : {
-        p: common_vendor.f(3, (i, k0, i0) => {
+        w: common_vendor.f(3, (i, k0, i0) => {
           return {
             a: i
           };
         })
       }, {
-        q: common_vendor.o(($event) => navigateTo("/pages/match/index")),
-        r: common_vendor.o(($event) => navigateTo("/pages/training/today")),
-        s: common_vendor.o(($event) => navigateTo("/pages/challenge/index")),
-        t: common_vendor.o(($event) => navigateTo("/pages/stat/index")),
-        v: hasTodo.value
+        x: common_assets._imports_1,
+        y: common_vendor.o(($event) => navigateTo("/pages/match/index")),
+        z: common_assets._imports_0$2,
+        A: common_vendor.o(($event) => navigateTo("/pages/training/today")),
+        B: common_assets._imports_6,
+        C: common_vendor.o(($event) => navigateTo("/pages/challenge/index")),
+        D: common_assets._imports_7,
+        E: common_vendor.o(($event) => navigateTo("/pages/stat/index")),
+        F: hasTodo.value
       }, hasTodo.value ? {
-        w: common_vendor.t(todoCount.value),
-        x: common_vendor.t(todoCount.value),
-        y: common_vendor.o(($event) => navigateTo("/pages/challenge/index"))
+        G: common_vendor.t(todoCount.value),
+        H: common_vendor.t(todoCount.value),
+        I: common_vendor.o(($event) => navigateTo("/pages/challenge/index"))
       } : {}, {
-        z: common_vendor.o(($event) => navigateTo("/pages/course/index")),
-        A: msgAni.value,
-        B: unreadCount.value > 0
+        J: common_assets._imports_3,
+        K: common_vendor.o(($event) => navigateTo("/pages/course/index")),
+        L: common_assets._imports_11,
+        M: msgAni.value,
+        N: unreadCount.value > 0
       }, unreadCount.value > 0 ? {
-        C: common_vendor.t(unreadCount.value)
+        O: common_vendor.t(unreadCount.value)
       } : {}, {
-        D: common_vendor.o(($event) => navigateTo("/pages/group/messages")),
-        E: common_vendor.o(($event) => navigateTo("/pages/training/index")),
-        F: common_vendor.o(($event) => navigateTo("/pages/group/index")),
-        G: common_vendor.o(showProfilePopup),
-        H: showProfile.value
+        P: common_vendor.o(($event) => navigateTo("/pages/group/messages")),
+        Q: common_assets._imports_5,
+        R: hasTodo.value ? 1 : "",
+        S: common_vendor.o(($event) => navigateTo("/pages/training/index")),
+        T: common_assets._imports_4,
+        U: common_vendor.o(($event) => navigateTo("/pages/group/index")),
+        V: common_assets._imports_10,
+        W: common_vendor.o(showProfilePopup),
+        X: showProfile.value
       }, showProfile.value ? {
-        I: common_vendor.o(hideProfilePopup),
-        J: userProfile.value.avatar || defaultAvatar,
-        K: common_vendor.t(userProfile.value.nickname || "未设置昵称"),
-        L: common_vendor.t(userProfile.value.fitnessLevel || "入门"),
-        M: common_vendor.t(stats.value.trainDays || 0),
-        N: common_vendor.t(stats.value.partnersCount || 0),
-        O: common_vendor.t(userProfile.value.trainTime || "未设置"),
-        P: common_vendor.t(userProfile.value.trainScene || "未设置"),
-        Q: common_vendor.t(userProfile.value.superviseDemand || "未设置"),
-        R: common_vendor.o(($event) => navigateToAndClose("/pages/user/profile")),
-        S: common_vendor.o(($event) => navigateToAndClose("/pages/user/setting")),
-        T: common_vendor.o(() => {
+        Y: common_vendor.o(hideProfilePopup),
+        Z: userProfile.value.avatar || defaultAvatar,
+        aa: common_vendor.t(userProfile.value.nickname || "未设置昵称"),
+        ab: common_vendor.t(userProfile.value.fitnessLevel || "入门"),
+        ac: common_vendor.t(stats.value.trainDays || 0),
+        ad: common_vendor.t(stats.value.partnersCount || 0),
+        ae: common_vendor.t(userProfile.value.trainTime || "未设置"),
+        af: common_vendor.t(userProfile.value.trainScene || "未设置"),
+        ag: common_vendor.t(userProfile.value.superviseDemand || "未设置"),
+        ah: common_vendor.o(($event) => navigateToAndClose("/pages/user/profile")),
+        ai: common_vendor.o(($event) => navigateToAndClose("/pages/user/setting")),
+        aj: common_vendor.o(() => {
         }),
-        U: common_vendor.o(hideProfilePopup)
+        ak: common_vendor.o(hideProfilePopup)
       } : {});
     };
   }

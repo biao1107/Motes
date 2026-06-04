@@ -3,46 +3,59 @@
     <view v-if="!loaded" class="loading-panel">
       <view class="loading-spinner"></view>
       <text class="loading-title">正在加载组详情</text>
-      <text class="loading-copy">准备同步组成员、固定训练时间和组内挑战信息</text>
+          <text class="loading-copy">同步成员、时间和挑战信息</text>
     </view>
 
     <template v-else>
-      <view v-if="errorMessage" class="error-card">
-        <view class="error-icon">组</view>
-        <text class="error-title">组详情加载失败</text>
-        <text class="error-desc">{{ errorMessage }}</text>
-        <view class="error-action" @tap="loadData">
-          <text class="error-action-text">重新加载</text>
+        <view v-if="errorMessage" class="error-card">
+        <view class="error-icon">
+          <image class="error-icon-image" src="/static/icons/home/group-white.svg" mode="aspectFit" />
         </view>
+          <text class="error-title">组详情加载失败</text>
+          <text class="error-desc">{{ errorMessage }}</text>
+          <view class="error-action" @tap="loadData">
+            <text class="error-action-text">重新加载</text>
+          </view>
       </view>
 
       <template v-else>
         <view class="hero-card">
           <view class="hero-top">
             <view>
-              <view class="hero-badge">Group Detail</view>
+              <view class="hero-badge">
+                <image class="hero-badge-icon" src="/static/icons/home/group-white.svg" mode="aspectFit" />
+                <text class="hero-badge-text">搭子组详情</text>
+              </view>
               <text class="hero-title">{{ detail.groupName || '未命名搭子组' }}</text>
-              <text class="hero-desc">
-                {{ detail.fixedTime ? `固定训练时间：${detail.fixedTime}` : '还没有配置固定训练时间，建议补充后方便大家协同训练。' }}
-              </text>
+              <text class="hero-desc">{{ detail.fixedTime ? detail.fixedTime : '还没设固定训练时间' }}</text>
             </view>
 
             <view class="hero-action" @tap="showInvite = true">
+              <image class="hero-action-icon" src="/static/icons/home/invite-white.svg" mode="aspectFit" />
               <text class="hero-action-text">邀请搭子</text>
             </view>
           </view>
 
           <view class="hero-meta">
             <view class="hero-chip">
-              <text class="chip-label">成员数量</text>
+              <view class="chip-head">
+                <image class="chip-icon" src="/static/icons/home/group-white.svg" mode="aspectFit" />
+                <text class="chip-label">成员数量</text>
+              </view>
               <text class="chip-value">{{ memberCount }}</text>
             </view>
             <view class="hero-chip">
-              <text class="chip-label">我的角色</text>
+              <view class="chip-head">
+                <image class="chip-icon" src="/static/icons/home/profile-white.svg" mode="aspectFit" />
+                <text class="chip-label">我的角色</text>
+              </view>
               <text class="chip-value">{{ myRoleLabel }}</text>
             </view>
             <view class="hero-chip">
-              <text class="chip-label">创建时间</text>
+              <view class="chip-head">
+                <image class="chip-icon" src="/static/icons/home/calendar-white.svg" mode="aspectFit" />
+                <text class="chip-label">创建时间</text>
+              </view>
               <text class="chip-value small">{{ formatDate(detail.createTime) || '未知' }}</text>
             </view>
           </view>
@@ -50,9 +63,11 @@
 
         <view class="quick-actions">
           <view class="quick-btn primary" @tap="goToChatRoom">
+            <image class="quick-btn-icon" src="/static/icons/home/message-white.svg" mode="aspectFit" />
             <text class="quick-btn-text">进入聊天室</text>
           </view>
           <view class="quick-btn secondary" @tap="showCreateChallenge = true">
+            <image class="quick-btn-icon" src="/static/icons/home/trophy-blue.svg" mode="aspectFit" />
             <text class="quick-btn-text secondary-text">创建组内挑战</text>
           </view>
         </view>
@@ -61,20 +76,37 @@
           <view class="section-head">
             <view>
               <text class="section-title">组信息概览</text>
-              <text class="section-subtitle">这部分展示当前组的固定节奏和基础状态</text>
+              <text class="section-subtitle">一眼看清组状态、时间和挑战数</text>
             </view>
+          </view>
+
+          <view class="overview-banner">
+            <view class="overview-copy">
+              <text class="overview-title">{{ detail.fixedTime ? '固定训练节奏已设定' : '建议补充固定训练时间' }}</text>
+              <text class="overview-desc">{{ detail.fixedTime || '设置后更方便大家按同一节奏训练' }}</text>
+            </view>
+            <image class="overview-image" src="/static/icons/home/dumbbell-blue.svg" mode="aspectFit" />
           </view>
 
           <view class="summary-grid">
             <view class="summary-card">
+              <view class="summary-icon-wrap">
+                <image class="summary-icon" src="/static/icons/home/status-green.svg" mode="aspectFit" />
+              </view>
               <text class="summary-label">组状态</text>
               <text class="summary-value">{{ detail.status === 1 ? '正常' : '已停用' }}</text>
             </view>
             <view class="summary-card">
+              <view class="summary-icon-wrap">
+                <image class="summary-icon" src="/static/icons/home/clock-orange.svg" mode="aspectFit" />
+              </view>
               <text class="summary-label">固定训练时间</text>
               <text class="summary-value">{{ detail.fixedTime || '未设置' }}</text>
             </view>
             <view class="summary-card">
+              <view class="summary-icon-wrap">
+                <image class="summary-icon" src="/static/icons/home/trophy-blue.svg" mode="aspectFit" />
+              </view>
               <text class="summary-label">组内挑战</text>
               <text class="summary-value">{{ groupChallenges.length }}</text>
             </view>
@@ -85,7 +117,7 @@
           <view class="section-head">
             <view>
               <text class="section-title">组成员</text>
-              <text class="section-subtitle">查看成员角色、加入时间和当前协作关系</text>
+              <text class="section-subtitle">成员、角色与加入时间</text>
             </view>
             <text class="section-count">{{ memberCount }} 人</text>
           </view>
@@ -110,6 +142,7 @@
           </view>
 
           <view v-else class="empty-inline">
+            <image class="empty-inline-icon" src="/static/icons/home/group-blue.svg" mode="aspectFit" />
             <text class="empty-inline-text">这个组还没有成员信息。</text>
           </view>
         </view>
@@ -118,9 +151,10 @@
           <view class="section-head">
             <view>
               <text class="section-title">组内挑战</text>
-              <text class="section-subtitle">在组里持续发起挑战，会更容易把协同训练节奏固定下来</text>
+              <text class="section-subtitle">挑战与打卡节奏</text>
             </view>
             <view class="inline-action" @tap="showCreateChallenge = true">
+              <image class="inline-action-icon" src="/static/icons/home/trophy-blue.svg" mode="aspectFit" />
               <text class="inline-action-text">创建挑战</text>
             </view>
           </view>
@@ -152,7 +186,8 @@
           </view>
 
           <view v-else class="empty-inline">
-            <text class="empty-inline-text">暂时还没有组内挑战，建议创建一个让大家一起打卡。</text>
+            <image class="empty-inline-icon" src="/static/icons/home/trophy-blue.svg" mode="aspectFit" />
+            <text class="empty-inline-text">还没有组内挑战，创建一个开始打卡吧。</text>
           </view>
         </view>
       </template>
@@ -167,7 +202,7 @@
           <view class="field-block">
             <text class="field-label">对方用户名</text>
             <view class="input-wrapper">
-              <text class="input-icon">我</text>
+              <image class="input-icon-image" src="/static/icons/home/profile-blue.svg" mode="aspectFit" />
               <input
                 class="invite-input"
                 type="text"
@@ -231,8 +266,8 @@
             <text class="field-label">挑战封面</text>
             <view class="upload-area" @tap="selectChallengeCoverImage">
               <view v-if="!challengeCoverImageUrl" class="upload-placeholder">
-                <text class="upload-icon">上传</text>
-                <text class="upload-text">点击上传挑战封面图片</text>
+                <image class="upload-icon-image" src="/static/icons/home/chart-blue.svg" mode="aspectFit" />
+                <text class="upload-text">上传挑战封面</text>
               </view>
               <view v-else class="cover-preview">
                 <image :src="challengeCoverImageUrl" mode="aspectFill" class="preview-image"></image>
@@ -533,13 +568,22 @@ export default {
 
 .hero-badge {
   display: inline-flex;
-  height: 42rpx;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 44rpx;
   padding: 0 16rpx;
   margin-bottom: 18rpx;
   border-radius: 999rpx;
-  align-items: center;
-  justify-content: center;
   background: rgba(255, 255, 255, 0.14);
+}
+
+.hero-badge-icon {
+  width: 22rpx;
+  height: 22rpx;
+}
+
+.hero-badge-text {
   color: rgba(255, 255, 255, 0.92);
   font-size: 20rpx;
   letter-spacing: 1rpx;
@@ -557,7 +601,7 @@ export default {
 .hero-desc {
   display: block;
   font-size: 24rpx;
-  line-height: 1.65;
+  line-height: 1.5;
   color: rgba(255, 255, 255, 0.82);
 }
 
@@ -578,6 +622,12 @@ export default {
   padding: 0 20rpx;
   border-radius: 999rpx;
   background: rgba(255, 255, 255, 0.16);
+  gap: 8rpx;
+}
+
+.hero-action-icon {
+  width: 24rpx;
+  height: 24rpx;
 }
 
 .hero-action-text {
@@ -599,9 +649,20 @@ export default {
   background: rgba(255, 255, 255, 0.12);
 }
 
-.chip-label {
-  display: block;
+.chip-head {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
   margin-bottom: 8rpx;
+}
+
+.chip-icon {
+  width: 22rpx;
+  height: 22rpx;
+  flex-shrink: 0;
+}
+
+.chip-label {
   font-size: 22rpx;
   color: rgba(255, 255, 255, 0.72);
 }
@@ -627,6 +688,13 @@ export default {
   flex: 1;
   height: 84rpx;
   border-radius: 999rpx;
+  gap: 10rpx;
+}
+
+.quick-btn-icon {
+  width: 24rpx;
+  height: 24rpx;
+  flex-shrink: 0;
 }
 
 .quick-btn.primary {
@@ -689,6 +757,43 @@ export default {
   color: #4564f2;
 }
 
+.overview-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+  padding: 22rpx 20rpx;
+  margin-bottom: 18rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, #edf3ff 0%, #f5f8ff 100%);
+}
+
+.overview-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.overview-title {
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #172233;
+}
+
+.overview-desc {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: #74829a;
+}
+
+.overview-image {
+  width: 60rpx;
+  height: 60rpx;
+  flex-shrink: 0;
+}
+
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -700,6 +805,22 @@ export default {
   border-radius: 24rpx;
   text-align: center;
   background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
+}
+
+.summary-icon-wrap {
+  width: 52rpx;
+  height: 52rpx;
+  margin: 0 auto 10rpx;
+  border-radius: 16rpx;
+  background: #eef3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary-icon {
+  width: 28rpx;
+  height: 28rpx;
 }
 
 .summary-label {
@@ -845,6 +966,12 @@ export default {
   text-align: center;
 }
 
+.empty-inline-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-bottom: 10rpx;
+}
+
 .empty-inline-text {
   font-size: 24rpx;
   color: #8692a8;
@@ -856,6 +983,12 @@ export default {
   padding: 0 16rpx;
   border-radius: 999rpx;
   background: #eef3ff;
+  gap: 8rpx;
+}
+
+.inline-action-icon {
+  width: 20rpx;
+  height: 20rpx;
 }
 
 .inline-action-text {
@@ -948,9 +1081,11 @@ export default {
 
 .input-icon {
   margin-right: 16rpx;
-  font-size: 24rpx;
-  font-weight: 700;
-  color: #4564f2;
+}
+
+.input-icon-image {
+  width: 22rpx;
+  height: 22rpx;
 }
 
 .invite-input {
@@ -1000,10 +1135,12 @@ export default {
 }
 
 .upload-icon {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #4363f3;
   margin-bottom: 10rpx;
+}
+
+.upload-icon-image {
+  width: 34rpx;
+  height: 34rpx;
 }
 
 .upload-text {
@@ -1091,9 +1228,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #ffffff;
+}
+
+.error-icon-image {
+  width: 42rpx;
+  height: 42rpx;
 }
 
 .error-action {

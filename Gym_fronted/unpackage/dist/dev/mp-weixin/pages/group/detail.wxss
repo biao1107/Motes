@@ -30,13 +30,20 @@
 }
 .hero-badge.data-v-858a584d {
   display: inline-flex;
-  height: 42rpx;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 44rpx;
   padding: 0 16rpx;
   margin-bottom: 18rpx;
   border-radius: 999rpx;
-  align-items: center;
-  justify-content: center;
   background: rgba(255, 255, 255, 0.14);
+}
+.hero-badge-icon.data-v-858a584d {
+  width: 22rpx;
+  height: 22rpx;
+}
+.hero-badge-text.data-v-858a584d {
   color: rgba(255, 255, 255, 0.92);
   font-size: 20rpx;
   letter-spacing: 1rpx;
@@ -52,7 +59,7 @@
 .hero-desc.data-v-858a584d {
   display: block;
   font-size: 24rpx;
-  line-height: 1.65;
+  line-height: 1.5;
   color: rgba(255, 255, 255, 0.82);
 }
 .hero-action.data-v-858a584d,
@@ -71,6 +78,11 @@
   padding: 0 20rpx;
   border-radius: 999rpx;
   background: rgba(255, 255, 255, 0.16);
+  gap: 8rpx;
+}
+.hero-action-icon.data-v-858a584d {
+  width: 24rpx;
+  height: 24rpx;
 }
 .hero-action-text.data-v-858a584d {
   font-size: 24rpx;
@@ -88,9 +100,18 @@
   border-radius: 22rpx;
   background: rgba(255, 255, 255, 0.12);
 }
-.chip-label.data-v-858a584d {
-  display: block;
+.chip-head.data-v-858a584d {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
   margin-bottom: 8rpx;
+}
+.chip-icon.data-v-858a584d {
+  width: 22rpx;
+  height: 22rpx;
+  flex-shrink: 0;
+}
+.chip-label.data-v-858a584d {
   font-size: 22rpx;
   color: rgba(255, 255, 255, 0.72);
 }
@@ -112,6 +133,12 @@
   flex: 1;
   height: 84rpx;
   border-radius: 999rpx;
+  gap: 10rpx;
+}
+.quick-btn-icon.data-v-858a584d {
+  width: 24rpx;
+  height: 24rpx;
+  flex-shrink: 0;
 }
 .quick-btn.primary.data-v-858a584d {
   background: linear-gradient(150deg, #3253ef 0%, #6980ff 100%);
@@ -164,6 +191,38 @@
   font-weight: 600;
   color: #4564f2;
 }
+.overview-banner.data-v-858a584d {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+  padding: 22rpx 20rpx;
+  margin-bottom: 18rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, #edf3ff 0%, #f5f8ff 100%);
+}
+.overview-copy.data-v-858a584d {
+  flex: 1;
+  min-width: 0;
+}
+.overview-title.data-v-858a584d {
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #172233;
+}
+.overview-desc.data-v-858a584d {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: #74829a;
+}
+.overview-image.data-v-858a584d {
+  width: 60rpx;
+  height: 60rpx;
+  flex-shrink: 0;
+}
 .summary-grid.data-v-858a584d {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -174,6 +233,20 @@
   border-radius: 24rpx;
   text-align: center;
   background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
+}
+.summary-icon-wrap.data-v-858a584d {
+  width: 52rpx;
+  height: 52rpx;
+  margin: 0 auto 10rpx;
+  border-radius: 16rpx;
+  background: #eef3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.summary-icon.data-v-858a584d {
+  width: 28rpx;
+  height: 28rpx;
 }
 .summary-label.data-v-858a584d {
   display: block;
@@ -295,6 +368,11 @@
   padding: 28rpx 0 8rpx;
   text-align: center;
 }
+.empty-inline-icon.data-v-858a584d {
+  width: 40rpx;
+  height: 40rpx;
+  margin-bottom: 10rpx;
+}
 .empty-inline-text.data-v-858a584d {
   font-size: 24rpx;
   color: #8692a8;
@@ -305,6 +383,11 @@
   padding: 0 16rpx;
   border-radius: 999rpx;
   background: #eef3ff;
+  gap: 8rpx;
+}
+.inline-action-icon.data-v-858a584d {
+  width: 20rpx;
+  height: 20rpx;
 }
 .inline-action-text.data-v-858a584d {
   font-size: 22rpx;
@@ -384,9 +467,10 @@
 }
 .input-icon.data-v-858a584d {
   margin-right: 16rpx;
-  font-size: 24rpx;
-  font-weight: 700;
-  color: #4564f2;
+}
+.input-icon-image.data-v-858a584d {
+  width: 22rpx;
+  height: 22rpx;
 }
 .invite-input.data-v-858a584d {
   flex: 1;
@@ -428,10 +512,11 @@
   justify-content: center;
 }
 .upload-icon.data-v-858a584d {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #4363f3;
   margin-bottom: 10rpx;
+}
+.upload-icon-image.data-v-858a584d {
+  width: 34rpx;
+  height: 34rpx;
 }
 .upload-text.data-v-858a584d {
   font-size: 23rpx;
@@ -507,9 +592,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #ffffff;
+}
+.error-icon-image.data-v-858a584d {
+  width: 42rpx;
+  height: 42rpx;
 }
 .error-action.data-v-858a584d {
   min-width: 180rpx;

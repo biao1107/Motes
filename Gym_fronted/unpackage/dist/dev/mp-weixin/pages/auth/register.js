@@ -81,7 +81,7 @@ const _sfc_main = {
         }, 800);
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/auth/register.vue:215", "注册失败：", error);
+        common_vendor.index.__f__("error", "at pages/auth/register.vue:214", "注册失败：", error);
         const errMsg = (error == null ? void 0 : error.msg) || (error == null ? void 0 : error.message) || ((_a = error == null ? void 0 : error.data) == null ? void 0 : _a.msg) || "注册失败，请稍后重试";
         common_vendor.index.showToast({ title: errMsg, icon: "none", duration: 2500, mask: true });
       }
@@ -110,31 +110,33 @@ const _sfc_main = {
     return (_ctx, _cache) => {
       return {
         a: common_assets._imports_0,
-        b: common_vendor.o(($event) => setActiveInput("phone")),
-        c: common_vendor.o(clearActiveInput),
-        d: form.value.phone,
-        e: common_vendor.o(($event) => form.value.phone = $event.detail.value),
-        f: activeInput.value === "phone" ? 1 : "",
-        g: common_vendor.o(($event) => setActiveInput("nickname")),
-        h: common_vendor.o(clearActiveInput),
-        i: form.value.nickname,
-        j: common_vendor.o(($event) => form.value.nickname = $event.detail.value),
-        k: activeInput.value === "nickname" ? 1 : "",
-        l: common_vendor.o(($event) => setActiveInput("password")),
-        m: common_vendor.o(clearActiveInput),
-        n: form.value.password,
-        o: common_vendor.o(($event) => form.value.password = $event.detail.value),
-        p: activeInput.value === "password" ? 1 : "",
-        q: common_vendor.o(($event) => setActiveInput("confirmPassword")),
-        r: common_vendor.o(clearActiveInput),
-        s: form.value.confirmPassword,
-        t: common_vendor.o(($event) => form.value.confirmPassword = $event.detail.value),
-        v: activeInput.value === "confirmPassword" ? 1 : "",
-        w: common_vendor.o(onSubmit),
-        x: common_vendor.o(goToLogin),
-        y: common_vendor.o(viewTerms),
-        z: common_vendor.o(viewPrivacy),
-        A: safeAreaTop.value + "px"
+        b: common_assets._imports_2$1,
+        c: common_assets._imports_1,
+        d: common_vendor.o(($event) => setActiveInput("phone")),
+        e: common_vendor.o(clearActiveInput),
+        f: form.value.phone,
+        g: common_vendor.o(($event) => form.value.phone = $event.detail.value),
+        h: activeInput.value === "phone" ? 1 : "",
+        i: common_vendor.o(($event) => setActiveInput("nickname")),
+        j: common_vendor.o(clearActiveInput),
+        k: form.value.nickname,
+        l: common_vendor.o(($event) => form.value.nickname = $event.detail.value),
+        m: activeInput.value === "nickname" ? 1 : "",
+        n: common_vendor.o(($event) => setActiveInput("password")),
+        o: common_vendor.o(clearActiveInput),
+        p: form.value.password,
+        q: common_vendor.o(($event) => form.value.password = $event.detail.value),
+        r: activeInput.value === "password" ? 1 : "",
+        s: common_vendor.o(($event) => setActiveInput("confirmPassword")),
+        t: common_vendor.o(clearActiveInput),
+        v: form.value.confirmPassword,
+        w: common_vendor.o(($event) => form.value.confirmPassword = $event.detail.value),
+        x: activeInput.value === "confirmPassword" ? 1 : "",
+        y: common_vendor.o(onSubmit),
+        z: common_vendor.o(goToLogin),
+        A: common_vendor.o(viewTerms),
+        B: common_vendor.o(viewPrivacy),
+        C: safeAreaTop.value + "px"
       };
     };
   }

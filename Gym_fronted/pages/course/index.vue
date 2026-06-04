@@ -1,15 +1,17 @@
 <template>
   <view class="course-page">
     <view class="hero-card">
-      <view class="hero-badge">Course Library</view>
-      <text class="hero-title">把课程内容做成可筛选、可浏览、可快速进入的训练内容库</text>
-      <text class="hero-desc">
-        你可以先按训练类型和难度缩小范围，再进入课程详情页决定今天练什么。
-      </text>
+      <view class="hero-badge">
+        <image class="hero-badge-icon" src="/static/icons/home/course-white.svg" mode="aspectFit" />
+        <text class="hero-badge-text">课程库</text>
+      </view>
+      <text class="hero-title">按类型和难度快速选课</text>
+      <text class="hero-desc">先筛选，再开始今天的训练。</text>
     </view>
 
     <view class="filter-card">
       <view class="search-box">
+        <image class="search-icon" src="/static/icons/home/search-blue.svg" mode="aspectFit" />
         <input
           class="search-input"
           type="text"
@@ -17,7 +19,18 @@
           v-model="searchKeyword"
           @confirm="onSearch"
         />
-        <view class="search-trigger" @tap="onSearch">搜索</view>
+        <view class="search-trigger" @tap="onSearch">
+          <image class="search-trigger-icon" src="/static/icons/home/search-blue.svg" mode="aspectFit" />
+          <text class="search-trigger-text">搜索</text>
+        </view>
+      </view>
+
+      <view class="filter-banner">
+        <view class="filter-banner-copy">
+          <text class="filter-banner-title">{{ activeType || activeDifficulty || searchKeyword ? '已启用筛选' : '从推荐里开始也可以' }}</text>
+          <text class="filter-banner-desc">{{ activeType || activeDifficulty || searchKeyword ? '当前列表会按条件收缩范围' : '先看热门课，再决定要不要细筛' }}</text>
+        </view>
+        <image class="filter-banner-image" src="/static/icons/home/course-blue.svg" mode="aspectFit" />
       </view>
 
       <view class="filter-group">
@@ -125,9 +138,11 @@
       </view>
 
       <view v-else-if="!loading" class="empty-card">
-        <view class="empty-icon">课</view>
+        <view class="empty-icon">
+          <image class="empty-icon-image" src="/static/icons/home/course-white.svg" mode="aspectFit" />
+        </view>
         <text class="empty-title">没有找到相关课程</text>
-        <text class="empty-desc">可以切换筛选条件，或者换一个更宽泛的关键词继续搜索。</text>
+        <text class="empty-desc">换个关键词或筛选条件再试试。</text>
       </view>
     </view>
   </view>
@@ -280,13 +295,22 @@ export default {
 
 .hero-badge {
   display: inline-flex;
-  height: 42rpx;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 44rpx;
   padding: 0 16rpx;
   margin-bottom: 18rpx;
   border-radius: 999rpx;
-  align-items: center;
-  justify-content: center;
   background: rgba(255, 255, 255, 0.14);
+}
+
+.hero-badge-icon {
+  width: 22rpx;
+  height: 22rpx;
+}
+
+.hero-badge-text {
   color: rgba(255, 255, 255, 0.92);
   font-size: 20rpx;
   letter-spacing: 1rpx;
@@ -304,7 +328,7 @@ export default {
 .hero-desc {
   display: block;
   font-size: 24rpx;
-  line-height: 1.65;
+  line-height: 1.5;
   color: rgba(255, 255, 255, 0.82);
 }
 
@@ -322,11 +346,18 @@ export default {
 .search-box {
   display: flex;
   align-items: center;
+  gap: 12rpx;
   height: 84rpx;
   padding: 0 10rpx 0 24rpx;
   border-radius: 999rpx;
   background: #f4f7ff;
   margin-bottom: 24rpx;
+}
+
+.search-icon {
+  width: 24rpx;
+  height: 24rpx;
+  flex-shrink: 0;
 }
 
 .search-input {
@@ -342,9 +373,55 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8rpx;
+}
+
+.search-trigger-icon {
+  width: 20rpx;
+  height: 20rpx;
+}
+
+.search-trigger-text {
   color: #ffffff;
   font-size: 24rpx;
   font-weight: 700;
+}
+
+.filter-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+  padding: 22rpx 20rpx;
+  margin-bottom: 20rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, #edf3ff 0%, #f5f8ff 100%);
+}
+
+.filter-banner-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-banner-title {
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #172233;
+}
+
+.filter-banner-desc {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: #74829a;
+}
+
+.filter-banner-image {
+  width: 56rpx;
+  height: 56rpx;
+  flex-shrink: 0;
 }
 
 .filter-group + .filter-group {
@@ -642,9 +719,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #ffffff;
+}
+
+.empty-icon-image {
+  width: 42rpx;
+  height: 42rpx;
 }
 
 .empty-title {

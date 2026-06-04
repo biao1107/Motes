@@ -4,6 +4,7 @@ const common_api = require("../../common/api.js");
 const common_auth = require("../../common/auth.js");
 const common_analytics = require("../../common/analytics.js");
 const common_wsNative = require("../../common/ws-native.js");
+const common_assets = require("../../common/assets.js");
 const CONFIG = {
   MAX_MESSAGE_COUNT: 20,
   MIN_TARGET_VALUE: 1,
@@ -203,7 +204,7 @@ const _sfc_main = {
           this.loadGroupChallenges(this.form.groupId);
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/training/index.vue:425", "加载组列表失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:474", "加载组列表失败:", error);
         common_vendor.index.showToast({
           title: this.$t("training.loadGroupsFailed"),
           icon: "none",
@@ -273,7 +274,7 @@ const _sfc_main = {
           challengeCount: this.challenges.length
         });
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/training/index.vue:505", "加载挑战列表失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:554", "加载挑战列表失败:", error);
         common_vendor.index.showToast({
           title: this.$t("training.loadChallengesFailed"),
           icon: "none",
@@ -303,7 +304,7 @@ const _sfc_main = {
       try {
         return common_auth.getUserIdFromToken();
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/training/index.vue:536", "获取用户ID失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:585", "获取用户ID失败:", error);
         return null;
       }
     },
@@ -321,7 +322,7 @@ const _sfc_main = {
         });
         common_wsNative.subscribeGroup(groupId);
       } catch (error) {
-        common_vendor.index.__f__("warn", "at pages/training/index.vue:557", "订阅组频道失败（不影响基本功能）:", error.message);
+        common_vendor.index.__f__("warn", "at pages/training/index.vue:606", "订阅组频道失败（不影响基本功能）:", error.message);
       }
     },
     handleWsMessage(payload) {
@@ -357,7 +358,7 @@ const _sfc_main = {
           groupId: payload.groupId
         });
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/training/index.vue:596", "处理WebSocket消息失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:645", "处理WebSocket消息失败:", error);
       }
     },
     async onStart() {
@@ -405,7 +406,7 @@ const _sfc_main = {
         });
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/training/index.vue:651", "开始训练失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:700", "开始训练失败:", error);
         common_vendor.index.showToast({
           title: this.$t("training.startFailed"),
           icon: "none",
@@ -467,7 +468,7 @@ const _sfc_main = {
         });
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/training/index.vue:720", "上报失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:769", "上报失败:", error);
         let errorMsg = this.$t("training.reportFailed");
         if (error.message && error.message.includes("请先完成今日协同训练后再打卡")) {
           errorMsg = error.message;
@@ -533,7 +534,7 @@ const _sfc_main = {
         });
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/training/index.vue:795", "放弃训练失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:844", "放弃训练失败:", error);
         common_vendor.index.showToast({
           title: this.$t("training.abandonFailed"),
           icon: "none",
@@ -594,7 +595,7 @@ const _sfc_main = {
         });
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/training/index.vue:863", "获取组员进度失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:912", "获取组员进度失败:", error);
         common_vendor.index.showToast({
           title: this.$t("training.loadProgressFailed"),
           icon: "none",
@@ -654,110 +655,127 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: common_vendor.t($options.$t("training.todayStatus")),
-    b: common_vendor.t($data.started ? $options.$t("training.training") : $options.$t("training.notStarted")),
-    c: $data.started ? 1 : "",
-    d: $data.started
+    a: common_assets._imports_0$2,
+    b: common_vendor.t($options.$t("training.todayStatus")),
+    c: $data.started ? "/static/icons/home/play-blue.svg" : "/static/icons/home/clock-orange.svg",
+    d: common_vendor.t($data.started ? $options.$t("training.training") : $options.$t("training.notStarted")),
+    e: $data.started ? 1 : "",
+    f: $data.started
   }, $data.started ? {
-    e: common_vendor.t($options.$t("training.completed")),
-    f: common_vendor.t($data.report.done || 0),
-    g: common_vendor.t($options.$t("training.target")),
-    h: common_vendor.t($data.form.target || "-"),
-    i: common_vendor.t($options.$t("training.completionRate")),
-    j: common_vendor.t($options.calculateCompletionRate())
+    g: common_assets._imports_1$2,
+    h: common_vendor.t($options.$t("training.completed")),
+    i: common_vendor.t($data.report.done || 0),
+    j: common_assets._imports_4$1,
+    k: common_vendor.t($options.$t("training.target")),
+    l: common_vendor.t($data.form.target || "-"),
+    m: common_assets._imports_3$2,
+    n: common_vendor.t($options.$t("training.completionRate")),
+    o: common_vendor.t($options.calculateCompletionRate())
   } : {}, {
-    k: common_vendor.t($options.$t("training.trainingSettings")),
-    l: common_vendor.t($options.$t("training.configurePlan")),
-    m: common_vendor.t($options.$t("training.group")),
-    n: common_vendor.t($data.groups.length > 0 ? `当前可选 ${$data.groups.length} 个组` : "先加载组列表后再开始训练"),
-    o: $data.groups.length === 0
+    p: common_vendor.t($options.$t("training.trainingSettings")),
+    q: common_vendor.t($options.$t("training.configurePlan")),
+    r: common_assets._imports_4,
+    s: common_vendor.t($options.$t("training.group")),
+    t: common_vendor.t($data.groups.length > 0 ? `当前可选 ${$data.groups.length} 个组` : "先加载组列表后再开始训练"),
+    v: $data.groups.length === 0
   }, $data.groups.length === 0 ? {
-    p: common_vendor.t($options.$t("training.clickToLoadGroups")),
-    q: common_vendor.o((...args) => $options.loadUserGroups && $options.loadUserGroups(...args))
+    w: common_vendor.t($options.$t("training.clickToLoadGroups")),
+    x: common_vendor.o((...args) => $options.loadUserGroups && $options.loadUserGroups(...args))
   } : {
-    r: common_vendor.t($data.groupIndex === -1 ? $options.$t("training.selectGroup") : $data.groups[$data.groupIndex].groupName),
-    s: common_vendor.o((...args) => $options.bindGroupChange && $options.bindGroupChange(...args)),
-    t: $data.groupIndex,
-    v: $data.groups
+    y: common_vendor.t($data.groupIndex === -1 ? $options.$t("training.selectGroup") : $data.groups[$data.groupIndex].groupName),
+    z: common_vendor.o((...args) => $options.bindGroupChange && $options.bindGroupChange(...args)),
+    A: $data.groupIndex,
+    B: $data.groups
   }, {
-    w: $data.form.groupId
+    C: $data.form.groupId
   }, $data.form.groupId ? common_vendor.e({
-    x: common_vendor.t($options.$t("training.relatedChallenge")),
-    y: common_vendor.t($data.challenges.length > 0 ? `当前组可关联 ${$data.challenges.length} 个挑战` : "当前组还没有进行中的挑战"),
-    z: $data.challenges.length === 0
+    D: common_assets._imports_3$2,
+    E: common_vendor.t($options.$t("training.relatedChallenge")),
+    F: common_vendor.t($data.challenges.length > 0 ? `当前组可关联 ${$data.challenges.length} 个挑战` : "当前组还没有进行中的挑战"),
+    G: $data.challenges.length === 0
   }, $data.challenges.length === 0 ? {
-    A: common_vendor.t($options.$t("training.clickToLoadChallenges")),
-    B: common_vendor.o(($event) => $options.loadGroupChallenges($data.form.groupId))
+    H: common_vendor.t($options.$t("training.clickToLoadChallenges")),
+    I: common_vendor.o(($event) => $options.loadGroupChallenges($data.form.groupId))
   } : {
-    C: common_vendor.t($data.challengeIndex === -1 ? $options.$t("training.selectChallenge") : $data.challenges[$data.challengeIndex].displayName),
-    D: common_vendor.o((...args) => $options.bindChallengeChange && $options.bindChallengeChange(...args)),
-    E: $data.challengeIndex,
-    F: $data.challenges
+    J: common_vendor.t($data.challengeIndex === -1 ? $options.$t("training.selectChallenge") : $data.challenges[$data.challengeIndex].displayName),
+    K: common_vendor.o((...args) => $options.bindChallengeChange && $options.bindChallengeChange(...args)),
+    L: $data.challengeIndex,
+    M: $data.challenges
   }) : {}, {
-    G: common_vendor.o([common_vendor.m(($event) => $data.form.target = $event.detail.value, {
+    N: common_assets._imports_4$1,
+    O: common_vendor.o([common_vendor.m(($event) => $data.form.target = $event.detail.value, {
       number: true
     }), (...args) => $options.validateTargetInput && $options.validateTargetInput(...args)]),
-    H: $data.form.target,
-    I: $data.started
+    P: $data.form.target,
+    Q: $data.started
   }, $data.started ? {
-    J: common_vendor.o([common_vendor.m(($event) => $data.report.done = $event.detail.value, {
+    R: common_assets._imports_1$2,
+    S: common_vendor.o([common_vendor.m(($event) => $data.report.done = $event.detail.value, {
       number: true
     }), (...args) => $options.validateDoneInput && $options.validateDoneInput(...args)]),
-    K: $data.report.done
+    T: $data.report.done
   } : {}, {
-    L: common_vendor.t($options.$t("training.trainingDate")),
-    M: common_vendor.t($data.form.date || $options.$t("training.selectDate")),
-    N: $data.form.date,
-    O: common_vendor.o((...args) => $options.onDateChange && $options.onDateChange(...args)),
-    P: $data.started && ($data.form.groupId || $data.form.challengeId)
+    U: common_assets._imports_5$2,
+    V: common_vendor.t($options.$t("training.trainingDate")),
+    W: common_vendor.t($data.form.date || $options.$t("training.selectDate")),
+    X: $data.form.date,
+    Y: common_vendor.o((...args) => $options.onDateChange && $options.onDateChange(...args)),
+    Z: $data.started && ($data.form.groupId || $data.form.challengeId)
   }, $data.started && ($data.form.groupId || $data.form.challengeId) ? common_vendor.e({
-    Q: $data.groupIndex !== -1
+    aa: $data.groupIndex !== -1
   }, $data.groupIndex !== -1 ? {
-    R: common_vendor.t($data.groups[$data.groupIndex].groupName)
+    ab: common_vendor.t($data.groups[$data.groupIndex].groupName)
   } : {}, {
-    S: $data.challengeIndex !== -1
+    ac: $data.challengeIndex !== -1
   }, $data.challengeIndex !== -1 ? {
-    T: common_vendor.t($data.challenges[$data.challengeIndex].challengeName)
+    ad: common_vendor.t($data.challenges[$data.challengeIndex].challengeName)
   } : {}) : {}, {
-    U: !$data.started
+    ae: !$data.started
   }, !$data.started ? {
-    V: common_vendor.t($options.$t("training.startTraining")),
-    W: !$options.canStartTraining ? 1 : "",
-    X: common_vendor.o((...args) => $options.onStart && $options.onStart(...args))
+    af: common_assets._imports_5,
+    ag: common_vendor.t($options.$t("training.startTraining")),
+    ah: !$options.canStartTraining ? 1 : "",
+    ai: common_vendor.o((...args) => $options.onStart && $options.onStart(...args))
   } : {}, {
-    Y: $data.started
+    aj: $data.started
   }, $data.started ? {
-    Z: common_vendor.t($options.$t("training.abandonTraining")),
-    aa: common_vendor.o((...args) => $options.onAbandon && $options.onAbandon(...args))
+    ak: common_assets._imports_7$2,
+    al: common_vendor.t($options.$t("training.abandonTraining")),
+    am: common_vendor.o((...args) => $options.onAbandon && $options.onAbandon(...args))
   } : {}, {
-    ab: $data.started
+    an: $data.started
   }, $data.started ? {
-    ac: common_vendor.t($options.$t("training.reportProgress")),
-    ad: !$options.canReportProgress ? 1 : "",
-    ae: common_vendor.o((...args) => $options.onReport && $options.onReport(...args))
+    ao: common_assets._imports_8,
+    ap: common_vendor.t($options.$t("training.reportProgress")),
+    aq: !$options.canReportProgress ? 1 : "",
+    ar: common_vendor.o((...args) => $options.onReport && $options.onReport(...args))
   } : {}, {
-    af: $data.form.groupId
+    as: $data.form.groupId
   }, $data.form.groupId ? {
-    ag: common_vendor.t($options.$t("training.collaborationSettings")),
-    ah: common_vendor.t($options.$t("training.manageCollaboration")),
-    ai: common_vendor.t($options.$t("training.groupVisibility")),
-    aj: common_vendor.t($options.$t("training.visibilityDesc")),
-    ak: common_vendor.o((...args) => $options.onVisibilityChange && $options.onVisibilityChange(...args)),
-    al: $data.visibilitySetting,
-    am: common_vendor.t($options.$t("training.realTimeSync")),
-    an: common_vendor.t($options.$t("training.syncDesc")),
-    ao: common_vendor.o((...args) => $options.onSyncChange && $options.onSyncChange(...args)),
-    ap: $data.syncSetting,
-    aq: common_vendor.t($options.$t("training.viewGroupProgress")),
-    ar: common_vendor.t($options.$t("training.viewProgressDesc")),
-    as: common_vendor.t($options.$t("common.view")),
-    at: common_vendor.o((...args) => $options.viewGroupProgress && $options.viewGroupProgress(...args))
+    at: common_vendor.t($options.$t("training.collaborationSettings")),
+    av: common_vendor.t($options.$t("training.manageCollaboration")),
+    aw: common_assets._imports_9$1,
+    ax: common_vendor.t($options.$t("training.groupVisibility")),
+    ay: common_vendor.t($options.$t("training.visibilityDesc")),
+    az: common_vendor.o((...args) => $options.onVisibilityChange && $options.onVisibilityChange(...args)),
+    aA: $data.visibilitySetting,
+    aB: common_assets._imports_10$1,
+    aC: common_vendor.t($options.$t("training.realTimeSync")),
+    aD: common_vendor.t($options.$t("training.syncDesc")),
+    aE: common_vendor.o((...args) => $options.onSyncChange && $options.onSyncChange(...args)),
+    aF: $data.syncSetting,
+    aG: common_assets._imports_1$2,
+    aH: common_vendor.t($options.$t("training.viewGroupProgress")),
+    aI: common_vendor.t($options.$t("training.viewProgressDesc")),
+    aJ: common_assets._imports_9$1,
+    aK: common_vendor.t($options.$t("common.view")),
+    aL: common_vendor.o((...args) => $options.viewGroupProgress && $options.viewGroupProgress(...args))
   } : {}, {
-    av: $data.messages.length > 0
+    aM: $data.messages.length > 0
   }, $data.messages.length > 0 ? {
-    aw: common_vendor.t($options.$t("training.messageCenter")),
-    ax: common_vendor.t($data.messages.length),
-    ay: common_vendor.f($data.messages, (message, index, i0) => {
+    aN: common_vendor.t($options.$t("training.messageCenter")),
+    aO: common_vendor.t($data.messages.length),
+    aP: common_vendor.f($data.messages, (message, index, i0) => {
       return common_vendor.e({
         a: common_vendor.t($options.formatMessageType(message.type)),
         b: common_vendor.t(message.time),
@@ -768,11 +786,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       } : {}, {
         f: index
       });
-    })
+    }),
+    aQ: common_assets._imports_11
   } : $data.started ? {
-    aA: common_vendor.t($options.$t("training.noMessages"))
+    aS: common_assets._imports_11,
+    aT: common_vendor.t($options.$t("training.noMessages"))
   } : {}, {
-    az: $data.started
+    aR: $data.started
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-ab00163c"]]);

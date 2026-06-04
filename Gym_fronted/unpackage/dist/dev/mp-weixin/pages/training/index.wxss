@@ -27,13 +27,20 @@
 }
 .hero-badge.data-v-ab00163c {
   display: inline-flex;
-  height: 42rpx;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 44rpx;
   padding: 0 16rpx;
   margin-bottom: 18rpx;
   border-radius: 999rpx;
-  align-items: center;
-  justify-content: center;
   background: rgba(255, 255, 255, 0.14);
+}
+.hero-badge-icon.data-v-ab00163c {
+  width: 22rpx;
+  height: 22rpx;
+}
+.hero-badge-text.data-v-ab00163c {
   color: rgba(255, 255, 255, 0.92);
   font-size: 20rpx;
   letter-spacing: 1rpx;
@@ -87,9 +94,17 @@
 }
 .status-pill.data-v-ab00163c {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
   padding: 10rpx 16rpx;
   border-radius: 999rpx;
   background: #f2f5fb;
+}
+.status-pill-icon.data-v-ab00163c {
+  width: 22rpx;
+  height: 22rpx;
+  flex-shrink: 0;
 }
 .status-pill.active.data-v-ab00163c {
   background: #eef3ff;
@@ -114,6 +129,31 @@
   text-align: center;
   background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
 }
+.progress-icon-wrap.data-v-ab00163c {
+  width: 52rpx;
+  height: 52rpx;
+  margin: 0 auto 10rpx;
+  border-radius: 16rpx;
+  background: #eef3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.progress-icon.data-v-ab00163c {
+  width: 28rpx;
+  height: 28rpx;
+}
+.field-label-row.data-v-ab00163c {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 10rpx;
+}
+.field-label-icon.data-v-ab00163c {
+  width: 22rpx;
+  height: 22rpx;
+  flex-shrink: 0;
+}
 .progress-label.data-v-ab00163c {
   display: block;
   margin-bottom: 10rpx;
@@ -130,8 +170,6 @@
   margin-top: 20rpx;
 }
 .field-label.data-v-ab00163c {
-  display: block;
-  margin-bottom: 10rpx;
   font-size: 24rpx;
   font-weight: 600;
   color: #172233;
@@ -212,6 +250,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10rpx;
+}
+.action-btn-icon.data-v-ab00163c {
+  width: 24rpx;
+  height: 24rpx;
+  flex-shrink: 0;
 }
 .action-btn.primary.data-v-ab00163c {
   background: linear-gradient(150deg, #3253ef 0%, #6980ff 100%);
@@ -248,9 +292,18 @@
 .setting-copy.data-v-ab00163c {
   flex: 1;
 }
-.setting-title.data-v-ab00163c {
-  display: block;
+.setting-title-row.data-v-ab00163c {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
   margin-bottom: 8rpx;
+}
+.setting-icon.data-v-ab00163c {
+  width: 22rpx;
+  height: 22rpx;
+  flex-shrink: 0;
+}
+.setting-title.data-v-ab00163c {
   font-size: 26rpx;
   font-weight: 600;
   color: #172233;
@@ -270,6 +323,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8rpx;
+}
+.inline-btn-icon.data-v-ab00163c {
+  width: 20rpx;
+  height: 20rpx;
 }
 .inline-btn-text.data-v-ab00163c {
   font-size: 22rpx;
@@ -302,6 +360,16 @@
   gap: 12rpx;
   margin-bottom: 8rpx;
 }
+.message-type-wrap.data-v-ab00163c {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+.message-type-icon.data-v-ab00163c {
+  width: 22rpx;
+  height: 22rpx;
+  flex-shrink: 0;
+}
 .message-type.data-v-ab00163c {
   font-size: 23rpx;
   font-weight: 700;
@@ -325,6 +393,11 @@
 }
 .empty-message.data-v-ab00163c {
   text-align: center;
+}
+.empty-message-icon.data-v-ab00163c {
+  width: 36rpx;
+  height: 36rpx;
+  margin-bottom: 10rpx;
 }
 .empty-message-text.data-v-ab00163c {
   font-size: 24rpx;

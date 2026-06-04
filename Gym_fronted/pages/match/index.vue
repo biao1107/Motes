@@ -1,18 +1,27 @@
 <template>
   <view class="match-page">
     <view class="hero-section">
-      <view class="hero-badge">Smart Match</view>
+      <view class="hero-badge">
+        <image class="hero-badge-icon" src="/static/icons/home/compass-white.svg" mode="aspectFit" />
+        <text class="hero-badge-text">智能匹配</text>
+      </view>
       <text class="hero-title">为你推荐更适合长期坚持的健身搭子</text>
       <text class="hero-desc">
         推荐会综合训练目标、偏好时段、训练场景和监督需求，让第一次发起邀请更有把握。
       </text>
       <view class="hero-meta">
         <view class="hero-chip">
-          <text class="chip-label">推荐数量</text>
+          <view class="chip-head">
+            <image class="chip-icon" src="/static/icons/home/group-white.svg" mode="aspectFit" />
+            <text class="chip-label">推荐数量</text>
+          </view>
           <text class="chip-value">{{ matchResult.length }}</text>
         </view>
         <view class="hero-chip">
-          <text class="chip-label">当前状态</text>
+          <view class="chip-head">
+            <image class="chip-icon" src="/static/icons/home/chart-white.svg" mode="aspectFit" />
+            <text class="chip-label">当前状态</text>
+          </view>
           <text class="chip-value">{{ loaded ? '已生成' : '匹配中' }}</text>
         </view>
       </view>
@@ -68,18 +77,32 @@
               </view>
             </view>
 
-            <view class="tag-group">
-              <text v-if="item.goal" class="tag-item goal">{{ item.goal }}</text>
-              <text v-if="item.preferTime" class="tag-item time">{{ item.preferTime }}</text>
-              <text v-if="item.scene" class="tag-item scene">{{ item.scene }}</text>
-              <text v-if="item.mode" class="tag-item mode">{{ item.mode }}</text>
+                <view class="tag-group">
+              <view v-if="item.goal" class="tag-item goal">
+                <image class="tag-icon" src="/static/icons/home/target-blue.svg" mode="aspectFit" />
+                <text class="tag-text">{{ item.goal }}</text>
+              </view>
+              <view v-if="item.preferTime" class="tag-item time">
+                <image class="tag-icon" src="/static/icons/home/clock-orange.svg" mode="aspectFit" />
+                <text class="tag-text">{{ item.preferTime }}</text>
+              </view>
+              <view v-if="item.scene" class="tag-item scene">
+                <image class="tag-icon" src="/static/icons/home/location-green.svg" mode="aspectFit" />
+                <text class="tag-text">{{ item.scene }}</text>
+              </view>
+              <view v-if="item.mode" class="tag-item mode">
+                <image class="tag-icon" src="/static/icons/home/chart-blue.svg" mode="aspectFit" />
+                <text class="tag-text">{{ item.mode }}</text>
+              </view>
             </view>
 
             <view class="card-actions">
               <view class="action-btn secondary" @tap="goProfile">
+                <image class="action-btn-icon" src="/static/icons/home/profile-blue.svg" mode="aspectFit" />
                 <text class="action-btn-text secondary-text">完善档案</text>
               </view>
               <view class="action-btn primary" @tap="goToGroups">
+                <image class="action-btn-icon" src="/static/icons/home/group-white.svg" mode="aspectFit" />
                 <text class="action-btn-text">去发起组队</text>
               </view>
             </view>
@@ -88,16 +111,20 @@
       </view>
 
       <view v-else class="empty-card">
-        <view class="empty-icon">配</view>
+        <view class="empty-icon">
+          <image class="empty-icon-image" src="/static/icons/home/compass-white.svg" mode="aspectFit" />
+        </view>
         <text class="empty-title">暂时还没有合适的匹配结果</text>
         <text class="empty-desc">
           可以先补充你的目标、训练时间和训练场景，系统会给出更准确的推荐。
         </text>
         <view class="empty-actions">
           <view class="action-btn primary" @tap="goProfile">
+            <image class="action-btn-icon" src="/static/icons/home/profile-white.svg" mode="aspectFit" />
             <text class="action-btn-text">去完善档案</text>
           </view>
           <view class="action-btn secondary" @tap="loadData">
+            <image class="action-btn-icon" src="/static/icons/home/compass-blue.svg" mode="aspectFit" />
             <text class="action-btn-text secondary-text">重新匹配</text>
           </view>
         </view>
@@ -105,6 +132,7 @@
 
       <view class="refresh-bar">
         <view class="refresh-btn" @tap="loadData">
+          <image class="refresh-icon" src="/static/icons/home/sync-blue.svg" mode="aspectFit" />
           <text class="refresh-text">刷新推荐</text>
         </view>
       </view>
@@ -224,11 +252,20 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 42rpx;
+  gap: 8rpx;
+  height: 44rpx;
   padding: 0 16rpx;
   margin-bottom: 18rpx;
   border-radius: 999rpx;
   background: rgba(255, 255, 255, 0.14);
+}
+
+.hero-badge-icon {
+  width: 22rpx;
+  height: 22rpx;
+}
+
+.hero-badge-text {
   color: rgba(255, 255, 255, 0.92);
   font-size: 20rpx;
   letter-spacing: 1rpx;
@@ -263,9 +300,20 @@ export default {
   background: rgba(255, 255, 255, 0.12);
 }
 
-.chip-label {
-  display: block;
+.chip-head {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
   margin-bottom: 8rpx;
+}
+
+.chip-icon {
+  width: 22rpx;
+  height: 22rpx;
+  flex-shrink: 0;
+}
+
+.chip-label {
   font-size: 22rpx;
   color: rgba(255, 255, 255, 0.72);
 }
@@ -450,8 +498,22 @@ export default {
 }
 
 .tag-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
   padding: 8rpx 14rpx;
   border-radius: 999rpx;
+  font-size: 21rpx;
+  line-height: 1;
+}
+
+.tag-icon {
+  width: 20rpx;
+  height: 20rpx;
+  flex-shrink: 0;
+}
+
+.tag-text {
   font-size: 21rpx;
   line-height: 1;
 }
@@ -490,6 +552,13 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10rpx;
+}
+
+.action-btn-icon {
+  width: 24rpx;
+  height: 24rpx;
+  flex-shrink: 0;
 }
 
 .action-btn.primary {
@@ -525,9 +594,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #ffffff;
+}
+
+.empty-icon-image {
+  width: 42rpx;
+  height: 42rpx;
 }
 
 .empty-title {
@@ -556,7 +627,13 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10rpx;
   box-shadow: 0 10rpx 24rpx rgba(21, 35, 95, 0.08);
+}
+
+.refresh-icon {
+  width: 24rpx;
+  height: 24rpx;
 }
 
 .refresh-text {

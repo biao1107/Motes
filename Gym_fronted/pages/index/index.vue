@@ -27,28 +27,43 @@
 
         <view class="hero-card">
           <view class="hero-copy">
-            <text class="hero-eyebrow">Today's focus</text>
+            <text class="hero-eyebrow">今日重点</text>
             <text class="hero-title">{{ heroTitle }}</text>
             <text class="hero-desc">{{ heroDescription }}</text>
           </view>
 
           <view class="hero-actions">
             <view class="hero-primary-btn" @tap="navigateTo(primaryAction.url)">
+              <image class="btn-icon" :src="primaryAction.icon" mode="aspectFit" />
               <text class="hero-primary-text">{{ primaryAction.label }}</text>
-            </view>
-            <view class="hero-secondary-btn" @tap="navigateTo('/pages/match/index')">
-              <text class="hero-secondary-text">查看推荐搭子</text>
             </view>
           </view>
 
           <view class="hero-meta">
             <view class="hero-chip">
-              <text class="hero-chip-label">活跃挑战</text>
+              <view class="hero-chip-head">
+                <image class="hero-chip-icon" src="/static/icons/home/flame-white.svg" mode="aspectFit" />
+                <text class="hero-chip-label">活跃挑战</text>
+              </view>
               <text class="hero-chip-value">{{ stats.activeChallenges || 0 }}</text>
             </view>
             <view class="hero-chip">
-              <text class="hero-chip-label">未读消息</text>
+              <view class="hero-chip-head">
+                <image class="hero-chip-icon" src="/static/icons/home/message-white.svg" mode="aspectFit" />
+                <text class="hero-chip-label">未读消息</text>
+              </view>
               <text class="hero-chip-value">{{ unreadCount }}</text>
+            </view>
+          </view>
+
+          <view class="hero-link-row">
+            <view class="hero-link-wrap" @tap="navigateTo('/pages/match/index')">
+              <image class="hero-link-icon" src="/static/icons/home/compass-white.svg" mode="aspectFit" />
+              <text class="hero-link">查看推荐搭子</text>
+            </view>
+            <view class="hero-link-wrap subtle" @tap="navigateTo('/pages/group/index')">
+              <image class="hero-link-icon" src="/static/icons/home/group-white.svg" mode="aspectFit" />
+              <text class="hero-link subtle">查看搭子组</text>
             </view>
           </view>
         </view>
@@ -64,6 +79,9 @@
 
           <view class="data-list" v-if="!isLoading">
             <view class="data-item" v-for="item in dataList" :key="item.label">
+              <view class="data-icon-wrap">
+                <image class="data-icon" :src="item.icon" mode="aspectFit" />
+              </view>
               <text class="data-num">{{ item.value }}</text>
               <text class="data-label">{{ item.label }}</text>
               <view class="data-trend" v-if="item.trend !== null">
@@ -83,30 +101,38 @@
         <view class="core-actions">
           <view class="section-head">
             <text class="action-title">快速开始</text>
-            <text class="section-caption">把最常用的功能放在同一层级里，减少来回查找</text>
+            <text class="section-caption">先做最常用的动作，把训练流程尽量缩短到一步进入</text>
           </view>
 
           <view class="action-grid">
             <view class="action-item primary" @tap="navigateTo('/pages/match/index')">
-              <view class="action-icon">搭</view>
+              <view class="action-icon">
+                <image class="action-icon-image" src="/static/icons/home/group-white.svg" mode="aspectFit" />
+              </view>
               <text class="action-text">找健身搭子</text>
               <text class="action-desc">按目标、时段和场景推荐更合适的训练伙伴</text>
             </view>
 
             <view class="action-item" @tap="navigateTo('/pages/training/today')">
-              <view class="action-icon neutral">练</view>
+              <view class="action-icon neutral">
+                <image class="action-icon-image" src="/static/icons/home/dumbbell-blue.svg" mode="aspectFit" />
+              </view>
               <text class="action-text">今日训练</text>
               <text class="action-desc">查看今天的训练记录与完成情况</text>
             </view>
 
             <view class="action-item" @tap="navigateTo('/pages/challenge/index')">
-              <view class="action-icon warm">挑</view>
+              <view class="action-icon warm">
+                <image class="action-icon-image" src="/static/icons/home/trophy-orange.svg" mode="aspectFit" />
+              </view>
               <text class="action-text">健身挑战</text>
               <text class="action-desc">参加公开挑战或组内打卡，保持训练节奏</text>
             </view>
 
             <view class="action-item" @tap="navigateTo('/pages/stat/index')">
-              <view class="action-icon cool">数</view>
+              <view class="action-icon cool">
+                <image class="action-icon-image" src="/static/icons/home/chart-cyan.svg" mode="aspectFit" />
+              </view>
               <text class="action-text">数据统计</text>
               <text class="action-desc">复盘训练趋势、完成率和协同参与情况</text>
             </view>
@@ -139,29 +165,38 @@
 
     <view class="bottom-nav">
       <view class="nav-item" @tap="navigateTo('/pages/course/index')">
-        <view class="nav-icon">课</view>
+        <view class="nav-icon">
+          <image class="nav-icon-image" src="/static/icons/home/course-blue.svg" mode="aspectFit" />
+        </view>
         <text class="nav-text">课程</text>
       </view>
 
       <view class="nav-item" @tap="navigateTo('/pages/group/messages')">
-        <view class="nav-icon" :animation="msgAni">信</view>
+        <view class="nav-icon" :animation="msgAni">
+          <image class="nav-icon-image" src="/static/icons/home/message-blue.svg" mode="aspectFit" />
+        </view>
         <text class="nav-text">消息</text>
         <view class="badge" v-if="unreadCount > 0">{{ unreadCount }}</view>
       </view>
 
       <view class="nav-item main active" @tap="navigateTo('/pages/training/index')">
-        <view class="main-icon">
-          <text class="main-icon-text">开始运动</text>
+        <view class="main-icon" :class="{ urgent: hasTodo }">
+          <image class="main-icon-image" src="/static/icons/home/play-white.svg" mode="aspectFit" />
+          <text class="main-icon-text">开始</text>
         </view>
       </view>
 
       <view class="nav-item" @tap="navigateTo('/pages/group/index')">
-        <view class="nav-icon">组</view>
+        <view class="nav-icon">
+          <image class="nav-icon-image" src="/static/icons/home/group-blue.svg" mode="aspectFit" />
+        </view>
         <text class="nav-text">搭子组</text>
       </view>
 
       <view class="nav-item" @tap="showProfilePopup">
-        <view class="nav-icon">我</view>
+        <view class="nav-icon">
+          <image class="nav-icon-image" src="/static/icons/home/profile-blue.svg" mode="aspectFit" />
+        </view>
         <text class="nav-text">我的</text>
       </view>
     </view>
@@ -218,11 +253,22 @@ import {
   apiGetProfile,
   apiGetTodoCount,
   apiGetUnreadCount,
+  apiGetUnreadDetail,
   apiStatHome
 } from '@/common/api.js';
 
 const defaultAvatar =
   'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0';
+const iconMap = {
+  completeProfile: '/static/icons/home/profile-blue.svg',
+  challenge: '/static/icons/home/trophy-blue.svg',
+  training: '/static/icons/home/dumbbell-blue.svg',
+  group: '/static/icons/home/group-blue.svg',
+  match: '/static/icons/home/compass-blue.svg',
+  trainDays: '/static/icons/home/calendar-blue.svg',
+  partners: '/static/icons/home/group-blue.svg',
+  stats: '/static/icons/home/chart-blue.svg'
+};
 
 const userProfile = ref({});
 const stats = ref({
@@ -242,7 +288,8 @@ const heroTitle = ref('开始今天的协同训练');
 const heroDescription = ref('先约到合适的搭子，再把训练、打卡和反馈连成一个连续动作。');
 const primaryAction = ref({
   label: '去开始训练',
-  url: '/pages/training/index'
+  url: '/pages/training/index',
+  icon: iconMap.training
 });
 
 const checkLoginStatus = () => {
@@ -259,7 +306,8 @@ const updateHeroContent = () => {
     heroDescription.value = '补齐目标、时间和场景信息后，搭子推荐和挑战分发会更准确。';
     primaryAction.value = {
       label: '去完善档案',
-      url: '/pages/user/profile'
+      url: '/pages/user/profile',
+      icon: iconMap.completeProfile
     };
     return;
   }
@@ -269,7 +317,8 @@ const updateHeroContent = () => {
     heroDescription.value = '优先处理今日待办，更容易把训练节奏稳定下来。';
     primaryAction.value = {
       label: '去处理待办',
-      url: '/pages/challenge/index'
+      url: '/pages/challenge/index',
+      icon: iconMap.challenge
     };
     return;
   }
@@ -279,7 +328,8 @@ const updateHeroContent = () => {
     heroDescription.value = '你已经在进行挑战，继续上报训练和打卡，会更快形成正反馈。';
     primaryAction.value = {
       label: '继续训练',
-      url: '/pages/training/index'
+      url: '/pages/training/index',
+      icon: iconMap.training
     };
     return;
   }
@@ -289,7 +339,8 @@ const updateHeroContent = () => {
     heroDescription.value = '你已经建立了搭子关系，现在最重要的是把互动和训练形成固定节奏。';
     primaryAction.value = {
       label: '查看搭子组',
-      url: '/pages/group/index'
+      url: '/pages/group/index',
+      icon: iconMap.group
     };
     return;
   }
@@ -298,7 +349,8 @@ const updateHeroContent = () => {
   heroDescription.value = '先约到合适的搭子，再把训练、打卡和反馈连成一个连续动作。';
   primaryAction.value = {
     label: '去找搭子',
-    url: '/pages/match/index'
+    url: '/pages/match/index',
+    icon: iconMap.match
   };
 };
 
@@ -307,17 +359,20 @@ const formatDataList = () => {
     {
       value: stats.value.trainDays || 0,
       label: '累计训练',
-      trend: null
+      trend: null,
+      icon: iconMap.trainDays
     },
     {
       value: stats.value.partnersCount || 0,
       label: '健身搭子',
-      trend: null
+      trend: null,
+      icon: iconMap.partners
     },
     {
       value: stats.value.activeChallenges || 0,
       label: '进行挑战',
-      trend: null
+      trend: null,
+      icon: iconMap.stats
     }
   ];
 
@@ -368,13 +423,25 @@ const getUnreadSummary = async () => {
   }
 
   try {
-    const chatRes = await apiGetUnreadCount(userId);
-    const chatCount = chatRes?.data || chatRes || 0;
+    let chatCount = 0;
+    try {
+      const unreadDetail = await apiGetUnreadDetail(userId);
+      if (Array.isArray(unreadDetail)) {
+        chatCount = unreadDetail.reduce((sum, item) => sum + Number(item?.unreadCount || 0), 0);
+      } else {
+        const chatRes = await apiGetUnreadCount(userId);
+        chatCount = Number(chatRes || 0);
+      }
+    } catch (detailError) {
+      console.error('获取未读详情失败，回退到总数接口:', detailError);
+      const chatRes = await apiGetUnreadCount(userId);
+      chatCount = Number(chatRes || 0);
+    }
 
     let invitations = 0;
     try {
       const inviteRes = await apiGetInvitations();
-      invitations = inviteRes?.data?.length || inviteRes?.length || 0;
+      invitations = Array.isArray(inviteRes) ? inviteRes.length : 0;
     } catch (error) {
       console.error('获取邀请列表失败:', error);
     }
@@ -506,6 +573,7 @@ const handleManualRefresh = async () => {
 
 onMounted(() => {
   msgAni.value = uni.createAnimation({ duration: 200, timingFunction: 'ease' });
+  uni.$on('refresh-home-unread', getUnreadSummary);
 
   if (!checkLoginStatus()) {
     return;
@@ -548,6 +616,7 @@ const onUnload = () => {
 
 onUnmounted(() => {
   wsNative.setMessageCallback(null);
+  uni.$off('refresh-home-unread', getUnreadSummary);
 });
 
 defineExpose({
@@ -575,11 +644,11 @@ defineExpose({
   top: 0;
   left: 0;
   width: 100%;
-  height: 430rpx;
+  height: 368rpx;
   background: linear-gradient(140deg, #1737b6 0%, #4e69f6 46%, #7c93ff 100%);
-  border-radius: 0 0 56rpx 56rpx;
+  border-radius: 0 0 44rpx 44rpx;
   z-index: 1;
-  box-shadow: 0 20rpx 60rpx rgba(38, 68, 189, 0.24);
+  box-shadow: 0 16rpx 42rpx rgba(38, 68, 189, 0.18);
 }
 
 .top-orb {
@@ -614,7 +683,7 @@ defineExpose({
 .content-wrapper {
   position: relative;
   z-index: 2;
-  padding: 32rpx 24rpx 184rpx;
+  padding: 24rpx 24rpx 176rpx;
   box-sizing: border-box;
 }
 
@@ -622,7 +691,7 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 28rpx;
+  margin-bottom: 20rpx;
 }
 
 .logo-box {
@@ -706,83 +775,78 @@ defineExpose({
 }
 
 .hero-card {
-  padding: 32rpx 30rpx;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  padding: 28rpx 28rpx 26rpx;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08));
   border: 1rpx solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 18rpx 42rpx rgba(17, 33, 97, 0.18);
+  box-shadow: 0 14rpx 32rpx rgba(17, 33, 97, 0.14);
   backdrop-filter: blur(18rpx);
 }
 
 .hero-copy {
-  margin-bottom: 26rpx;
+  margin-bottom: 22rpx;
 }
 
 .hero-eyebrow {
   display: inline-block;
-  margin-bottom: 14rpx;
+  margin-bottom: 12rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
   font-size: 20rpx;
-  letter-spacing: 2rpx;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.74);
+  letter-spacing: 1rpx;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .hero-title {
   display: block;
-  margin-bottom: 12rpx;
-  font-size: 40rpx;
+  margin-bottom: 10rpx;
+  font-size: 38rpx;
   font-weight: 700;
-  line-height: 1.28;
+  line-height: 1.24;
   color: #ffffff;
 }
 
 .hero-desc {
   display: block;
-  font-size: 25rpx;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.86);
+  max-width: 90%;
+  font-size: 24rpx;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .hero-actions {
-  display: flex;
-  gap: 16rpx;
-  margin-bottom: 24rpx;
+  display: block;
+  margin-bottom: 18rpx;
 }
 
 .hero-primary-btn,
-.hero-secondary-btn,
 .popup-btn {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.hero-primary-btn,
-.hero-secondary-btn {
+.hero-primary-btn {
   height: 84rpx;
   border-radius: 999rpx;
 }
 
 .hero-primary-btn {
-  flex: 1;
+  gap: 10rpx;
   background: #ffffff;
-  box-shadow: 0 12rpx 24rpx rgba(10, 21, 71, 0.12);
+  box-shadow: 0 10rpx 20rpx rgba(10, 21, 71, 0.1);
+}
+
+.btn-icon {
+  width: 28rpx;
+  height: 28rpx;
+  flex-shrink: 0;
 }
 
 .hero-primary-text {
   font-size: 27rpx;
   font-weight: 700;
   color: #2340c3;
-}
-
-.hero-secondary-btn {
-  padding: 0 28rpx;
-  border: 1rpx solid rgba(255, 255, 255, 0.28);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.hero-secondary-text {
-  font-size: 25rpx;
-  color: #ffffff;
 }
 
 .hero-meta {
@@ -797,9 +861,20 @@ defineExpose({
   background: rgba(6, 19, 79, 0.16);
 }
 
-.hero-chip-label {
-  display: block;
+.hero-chip-head {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
   margin-bottom: 10rpx;
+}
+
+.hero-chip-icon {
+  width: 24rpx;
+  height: 24rpx;
+  flex-shrink: 0;
+}
+
+.hero-chip-label {
   font-size: 22rpx;
   color: rgba(255, 255, 255, 0.72);
 }
@@ -811,14 +886,44 @@ defineExpose({
   color: #ffffff;
 }
 
+.hero-link-row {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+  margin-top: 18rpx;
+}
+
+.hero-link-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.hero-link-icon {
+  width: 24rpx;
+  height: 24rpx;
+  flex-shrink: 0;
+  opacity: 0.92;
+}
+
+.hero-link {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.hero-link.subtle {
+  color: rgba(255, 255, 255, 0.72);
+}
+
 .data-card,
 .todo-section {
   background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 18rpx 36rpx rgba(28, 46, 110, 0.08);
+  box-shadow: 0 14rpx 28rpx rgba(28, 46, 110, 0.07);
 }
 
 .data-card {
-  padding: 30rpx 24rpx;
+  padding: 26rpx 22rpx;
 }
 
 .card-header {
@@ -826,7 +931,7 @@ defineExpose({
   align-items: flex-start;
   justify-content: space-between;
   gap: 20rpx;
-  margin-bottom: 26rpx;
+  margin-bottom: 22rpx;
 }
 
 .card-header-copy {
@@ -860,14 +965,30 @@ defineExpose({
 .data-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14rpx;
+  gap: 12rpx;
 }
 
 .data-item {
-  padding: 20rpx 12rpx;
-  border-radius: 22rpx;
+  padding: 18rpx 10rpx;
+  border-radius: 20rpx;
   text-align: center;
   background: linear-gradient(180deg, #f8faff 0%, #f3f6ff 100%);
+}
+
+.data-icon-wrap {
+  width: 52rpx;
+  height: 52rpx;
+  margin: 0 auto 10rpx;
+  border-radius: 16rpx;
+  background: #eef3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.data-icon {
+  width: 28rpx;
+  height: 28rpx;
 }
 
 .data-num {
@@ -942,7 +1063,7 @@ defineExpose({
 }
 
 .section-head {
-  margin-bottom: 18rpx;
+  margin-bottom: 16rpx;
 }
 
 .action-title {
@@ -963,15 +1084,15 @@ defineExpose({
 .action-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18rpx;
+  gap: 14rpx;
 }
 
 .action-item {
-  min-height: 214rpx;
-  padding: 24rpx 22rpx;
-  border-radius: 28rpx;
+  min-height: 204rpx;
+  padding: 22rpx 20rpx;
+  border-radius: 24rpx;
   background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 16rpx 34rpx rgba(24, 35, 56, 0.07);
+  box-shadow: 0 12rpx 24rpx rgba(24, 35, 56, 0.06);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -999,6 +1120,11 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.action-icon-image {
+  width: 32rpx;
+  height: 32rpx;
 }
 
 .action-item:not(.primary) .action-icon {
@@ -1131,11 +1257,11 @@ defineExpose({
   left: 18rpx;
   right: 18rpx;
   bottom: 18rpx;
-  height: 116rpx;
+  height: 108rpx;
   padding: 0 8rpx calc(env(safe-area-inset-bottom, 0) + 4rpx);
-  border-radius: 34rpx;
+  border-radius: 30rpx;
   background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 18rpx 48rpx rgba(21, 35, 95, 0.16);
+  box-shadow: 0 14rpx 30rpx rgba(21, 35, 95, 0.13);
   display: flex;
   align-items: center;
   z-index: 99;
@@ -1158,17 +1284,22 @@ defineExpose({
 }
 
 .nav-icon {
-  width: 46rpx;
-  height: 46rpx;
+  width: 42rpx;
+  height: 42rpx;
   margin-bottom: 8rpx;
-  border-radius: 16rpx;
+  border-radius: 14rpx;
   background: #eef3ff;
   color: #3152ef;
-  font-size: 24rpx;
+  font-size: 22rpx;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.nav-icon-image {
+  width: 24rpx;
+  height: 24rpx;
 }
 
 .nav-text {
@@ -1177,26 +1308,37 @@ defineExpose({
 }
 
 .nav-item.main {
-  flex: 0 0 150rpx;
-  margin-top: -40rpx;
+  flex: 0 0 138rpx;
+  margin-top: -28rpx;
 }
 
 .main-icon {
-  width: 124rpx;
-  height: 124rpx;
+  width: 104rpx;
+  height: 104rpx;
   border-radius: 50%;
   background: linear-gradient(160deg, #3558ef 0%, #7084ff 100%);
-  box-shadow: 0 18rpx 38rpx rgba(48, 80, 234, 0.34);
+  box-shadow: 0 12rpx 26rpx rgba(48, 80, 234, 0.24);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.main-icon-image {
+  width: 30rpx;
+  height: 30rpx;
+  margin-bottom: 6rpx;
+}
+
+.main-icon.urgent {
   animation: breath 3s infinite ease-in-out;
+  box-shadow: 0 16rpx 30rpx rgba(48, 80, 234, 0.3);
 }
 
 .main-icon-text {
-  width: 74rpx;
-  font-size: 24rpx;
-  line-height: 1.3;
+  width: auto;
+  font-size: 20rpx;
+  line-height: 1.1;
   text-align: center;
   font-weight: 700;
   color: #ffffff;

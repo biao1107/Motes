@@ -3,6 +3,7 @@ const common_vendor = require("../../common/vendor.js");
 const common_api = require("../../common/api.js");
 const common_auth = require("../../common/auth.js");
 const common_ws = require("../../common/ws.js");
+const common_assets = require("../../common/assets.js");
 const isMiniProgram = typeof common_vendor.wx$1 !== "undefined" && common_vendor.wx$1.getSystemInfoSync;
 const _sfc_main = {
   data() {
@@ -13,6 +14,9 @@ const _sfc_main = {
       inputFocus: false,
       userId: null,
       nickname: "",
+      groupName: "搭子组",
+      groupMembers: [],
+      brokenAvatarMap: {},
       scrollTop: 0,
       loadingMore: false,
       hasMore: true,
@@ -52,13 +56,15 @@ const _sfc_main = {
     }
     this.userId = common_auth.getUserIdFromToken();
     this.loadUserProfile();
+    this.loadGroupProfile();
+    common_vendor.index.$emit("refresh-home-unread");
     this.$nextTick(() => {
       this.initWebSocketConnection().then(() => {
         this.loadChatHistory();
         this.startListening();
         this.markMessagesAsRead();
       }).catch((error) => {
-        common_vendor.index.__f__("error", "at pages/group/chat.vue:174", "WebSocket初始化失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/chat.vue:221", "WebSocket初始化失败:", error);
         this.loadChatHistory();
         this.markMessagesAsRead();
       });
@@ -89,12 +95,14 @@ const _sfc_main = {
       }
       this.userId = common_auth.getUserIdFromToken();
       this.loadUserProfile();
+      this.loadGroupProfile();
+      common_vendor.index.$emit("refresh-home-unread");
       this.$nextTick(() => {
         this.initWebSocketConnection().then(() => {
           this.loadChatHistory();
           this.startListening();
         }).catch((error) => {
-          common_vendor.index.__f__("error", "at pages/group/chat.vue:214", "WebSocket初始化失败:", error);
+          common_vendor.index.__f__("error", "at pages/group/chat.vue:263", "WebSocket初始化失败:", error);
           this.loadChatHistory();
         });
       });
@@ -106,6 +114,48 @@ const _sfc_main = {
     },
     loadUserProfile() {
       this.nickname = common_auth.getUserNickname();
+    },
+    async loadGroupProfile() {
+      if (!this.id || Number.isNaN(Number(this.id)) || Number(this.id) <= 0)
+        return;
+      try {
+        const detail = await common_api.apiGroupDetailWithMembers(Number(this.id));
+        this.groupName = (detail == null ? void 0 : detail.groupName) || "搭子组";
+        this.groupMembers = Array.isArray(detail == null ? void 0 : detail.members) ? detail.members : [];
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/group/chat.vue:284", "加载聊天群组信息失败:", error);
+        this.groupName = "搭子组";
+        this.groupMembers = [];
+      }
+    },
+    getGroupAvatarList() {
+      return this.groupMembers.slice(0, 4).map((member) => ({
+        avatar: (member == null ? void 0 : member.avatar) || "",
+        nickname: (member == null ? void 0 : member.nickname) || ""
+      }));
+    },
+    getGroupAvatarFallback(index) {
+      const member = this.groupMembers[index];
+      const name = (member == null ? void 0 : member.nickname) || "";
+      return name ? name.charAt(0) : "组";
+    },
+    getAvatarLabel(nickname, groupName) {
+      const name = (nickname || "").trim();
+      if (name)
+        return name.charAt(0);
+      const group = (groupName || "").trim();
+      if (group)
+        return group.charAt(0);
+      return "组";
+    },
+    markBrokenAvatar(index) {
+      this.brokenAvatarMap = {
+        ...this.brokenAvatarMap,
+        [`chat-${index}`]: true
+      };
+    },
+    isBrokenAvatar(index) {
+      return !!this.brokenAvatarMap[`chat-${index}`];
     },
     async loadChatHistory() {
       if (!this.hasMore || this.loadingMore)
@@ -166,7 +216,7 @@ const _sfc_main = {
           this.lastMessageId = Math.max(...history.map((message) => message.id));
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/group/chat.vue:292", "加载聊天历史失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/chat.vue:381", "加载聊天历史失败:", error);
         common_vendor.index.showToast({
           title: "加载聊天历史失败: " + (error.message || "未知错误"),
           icon: "none",
@@ -214,7 +264,7 @@ const _sfc_main = {
           });
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/group/chat.vue:343", "发送消息失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/chat.vue:432", "发送消息失败:", error);
         common_vendor.index.showToast({
           title: "发送失败",
           icon: "none"
@@ -254,7 +304,7 @@ const _sfc_main = {
               throw new Error("图片上传失败");
             }
           } catch (error) {
-            common_vendor.index.__f__("error", "at pages/group/chat.vue:385", "图片发送失败:", error);
+            common_vendor.index.__f__("error", "at pages/group/chat.vue:474", "图片发送失败:", error);
             common_vendor.index.showToast({ title: "图片发送失败", icon: "none" });
           } finally {
             common_vendor.index.hideLoading();
@@ -273,7 +323,7 @@ const _sfc_main = {
         common_ws.initWebSocket().then(() => {
           this.subscription = common_ws.subscribeGroupChat(this.id, this.handleWsMessage);
         }).catch((error) => {
-          common_vendor.index.__f__("error", "at pages/group/chat.vue:407", "WebSocket重新连接失败:", error);
+          common_vendor.index.__f__("error", "at pages/group/chat.vue:496", "WebSocket重新连接失败:", error);
         });
         return;
       }
@@ -322,7 +372,7 @@ const _sfc_main = {
           });
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/group/chat.vue:463", "轮询获取新消息失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/chat.vue:552", "轮询获取新消息失败:", error);
       }
     },
     stopListening() {
@@ -387,7 +437,7 @@ const _sfc_main = {
       if (!this.id || !this.userId)
         return;
       common_api.apiMarkGroupRead(Number(this.id), Number(this.userId)).catch((error) => {
-        common_vendor.index.__f__("error", "at pages/group/chat.vue:536", "标记群组消息已读失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/chat.vue:625", "标记群组消息已读失败:", error);
         common_vendor.index.showToast({
           title: "同步阅读状态失败，请稍后重试",
           icon: "none",
@@ -401,11 +451,32 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: $data.showError
   }, $data.showError ? {
-    b: common_vendor.o((...args) => $options.goBack && $options.goBack(...args))
+    b: common_assets._imports_0$3,
+    c: common_vendor.o((...args) => $options.goBack && $options.goBack(...args))
   } : common_vendor.e({
-    c: $data.loadingMore
+    d: common_assets._imports_0$3,
+    e: $options.getGroupAvatarList().length > 0
+  }, $options.getGroupAvatarList().length > 0 ? {
+    f: common_vendor.f($options.getGroupAvatarList(), (member, index, i0) => {
+      return common_vendor.e({
+        a: common_vendor.t($options.getAvatarLabel(member.nickname, $data.groupName)),
+        b: member.avatar && !$options.isBrokenAvatar(index)
+      }, member.avatar && !$options.isBrokenAvatar(index) ? {
+        c: member.avatar,
+        d: common_vendor.o(($event) => $options.markBrokenAvatar(index), `chat-${index}`)
+      } : {}, {
+        e: `chat-${index}`
+      });
+    }),
+    g: common_vendor.n(`count-${$options.getGroupAvatarList().length}`)
+  } : {}, {
+    h: common_vendor.t($data.groupName),
+    i: common_assets._imports_0$3,
+    j: common_vendor.t($data.messages.length),
+    k: common_assets._imports_1$4,
+    l: $data.loadingMore
   }, $data.loadingMore ? {} : {}, {
-    d: common_vendor.f($data.messages, (message, index, i0) => {
+    m: common_vendor.f($data.messages, (message, index, i0) => {
       return common_vendor.e({
         a: !message.isSelf
       }, !message.isSelf ? common_vendor.e({
@@ -430,15 +501,17 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         n: message.isSelf ? 1 : ""
       });
     }),
-    e: $data.scrollTop,
-    f: common_vendor.o((...args) => $options.onScroll && $options.onScroll(...args)),
-    g: common_vendor.o((...args) => $options.chooseImage && $options.chooseImage(...args)),
-    h: common_vendor.o((...args) => $options.sendMessage && $options.sendMessage(...args)),
-    i: $data.inputFocus,
-    j: $data.inputMessage,
-    k: common_vendor.o(($event) => $data.inputMessage = $event.detail.value),
-    l: !$data.inputMessage.trim() ? 1 : "",
-    m: common_vendor.o((...args) => $options.sendMessage && $options.sendMessage(...args))
+    n: $data.scrollTop,
+    o: common_vendor.o((...args) => $options.onScroll && $options.onScroll(...args)),
+    p: common_assets._imports_1$4,
+    q: common_vendor.o((...args) => $options.chooseImage && $options.chooseImage(...args)),
+    r: common_vendor.o((...args) => $options.sendMessage && $options.sendMessage(...args)),
+    s: $data.inputFocus,
+    t: $data.inputMessage,
+    v: common_vendor.o(($event) => $data.inputMessage = $event.detail.value),
+    w: common_assets._imports_2$2,
+    x: !$data.inputMessage.trim() ? 1 : "",
+    y: common_vendor.o((...args) => $options.sendMessage && $options.sendMessage(...args))
   }));
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-394fd9eb"]]);

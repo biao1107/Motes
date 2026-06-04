@@ -1,7 +1,10 @@
 <template>
   <view class="training-page">
     <view class="hero-card">
-      <view class="hero-badge">Training Flow</view>
+      <view class="hero-badge">
+        <image class="hero-badge-icon" src="/static/icons/home/dumbbell-blue.svg" mode="aspectFit" />
+        <text class="hero-badge-text">协同训练</text>
+      </view>
       <text class="hero-title">把训练开始、进度上报和协同反馈压缩成一条更顺的单页流程</text>
       <text class="hero-desc">
         先选组和目标，再开始训练；训练中可以实时上报进度，并在页面底部直接看到协同消息反馈。
@@ -15,20 +18,34 @@
           <text class="section-subtitle">当前训练状态会影响你今天能否继续上报和参与挑战</text>
         </view>
         <view class="status-pill" :class="{ active: started }">
+          <image
+            class="status-pill-icon"
+            :src="started ? '/static/icons/home/play-blue.svg' : '/static/icons/home/clock-orange.svg'"
+            mode="aspectFit"
+          />
           <text class="status-pill-text">{{ started ? $t('training.training') : $t('training.notStarted') }}</text>
         </view>
       </view>
 
       <view class="progress-grid" v-if="started">
         <view class="progress-card">
+          <view class="progress-icon-wrap">
+            <image class="progress-icon" src="/static/icons/home/chart-blue.svg" mode="aspectFit" />
+          </view>
           <text class="progress-label">{{ $t('training.completed') }}</text>
           <text class="progress-value">{{ report.done || 0 }}</text>
         </view>
         <view class="progress-card">
+          <view class="progress-icon-wrap">
+            <image class="progress-icon" src="/static/icons/home/target-blue.svg" mode="aspectFit" />
+          </view>
           <text class="progress-label">{{ $t('training.target') }}</text>
           <text class="progress-value">{{ form.target || '-' }}</text>
         </view>
         <view class="progress-card">
+          <view class="progress-icon-wrap">
+            <image class="progress-icon" src="/static/icons/home/trophy-blue.svg" mode="aspectFit" />
+          </view>
           <text class="progress-label">{{ $t('training.completionRate') }}</text>
           <text class="progress-value">{{ calculateCompletionRate() }}%</text>
         </view>
@@ -44,7 +61,10 @@
       </view>
 
       <view class="form-group">
-        <text class="field-label">{{ $t('training.group') }}</text>
+        <view class="field-label-row">
+          <image class="field-label-icon" src="/static/icons/home/group-blue.svg" mode="aspectFit" />
+          <text class="field-label">{{ $t('training.group') }}</text>
+        </view>
         <view class="field-help">{{ groups.length > 0 ? `当前可选 ${groups.length} 个组` : '先加载组列表后再开始训练' }}</view>
         <view class="empty-selector" v-if="groups.length === 0" @tap="loadUserGroups">
           <text class="empty-selector-text">{{ $t('training.clickToLoadGroups') }}</text>
@@ -60,7 +80,10 @@
       </view>
 
       <view class="form-group" v-if="form.groupId">
-        <text class="field-label">{{ $t('training.relatedChallenge') }}</text>
+        <view class="field-label-row">
+          <image class="field-label-icon" src="/static/icons/home/trophy-blue.svg" mode="aspectFit" />
+          <text class="field-label">{{ $t('training.relatedChallenge') }}</text>
+        </view>
         <view class="field-help">
           {{ challenges.length > 0 ? `当前组可关联 ${challenges.length} 个挑战` : '当前组还没有进行中的挑战' }}
         </view>
@@ -78,7 +101,10 @@
       </view>
 
       <view class="form-group">
-        <text class="field-label">今日目标</text>
+        <view class="field-label-row">
+          <image class="field-label-icon" src="/static/icons/home/target-blue.svg" mode="aspectFit" />
+          <text class="field-label">今日目标</text>
+        </view>
         <input
           class="field-input"
           type="number"
@@ -89,7 +115,10 @@
       </view>
 
       <view class="form-group" v-if="started">
-        <text class="field-label">已完成次数</text>
+        <view class="field-label-row">
+          <image class="field-label-icon" src="/static/icons/home/chart-blue.svg" mode="aspectFit" />
+          <text class="field-label">已完成次数</text>
+        </view>
         <input
           class="field-input"
           type="number"
@@ -100,7 +129,10 @@
       </view>
 
       <view class="form-group">
-        <text class="field-label">{{ $t('training.trainingDate') }}</text>
+        <view class="field-label-row">
+          <image class="field-label-icon" src="/static/icons/home/calendar-blue.svg" mode="aspectFit" />
+          <text class="field-label">{{ $t('training.trainingDate') }}</text>
+        </view>
         <picker mode="date" :value="form.date" @change="onDateChange">
           <view class="field-picker">
             <text class="field-picker-text">{{ form.date || $t('training.selectDate') }}</text>
@@ -117,9 +149,11 @@
 
       <view class="action-row">
         <view class="action-btn primary" :class="{ disabled: !canStartTraining }" v-if="!started" @tap="onStart">
+          <image class="action-btn-icon" src="/static/icons/home/play-white.svg" mode="aspectFit" />
           <text class="action-btn-text">{{ $t('training.startTraining') }}</text>
         </view>
         <view class="action-btn danger" v-if="started" @tap="onAbandon">
+          <image class="action-btn-icon" src="/static/icons/home/close-white.svg" mode="aspectFit" />
           <text class="action-btn-text">{{ $t('training.abandonTraining') }}</text>
         </view>
         <view
@@ -128,6 +162,7 @@
           v-if="started"
           @tap="onReport"
         >
+          <image class="action-btn-icon" src="/static/icons/home/chart-white.svg" mode="aspectFit" />
           <text class="action-btn-text">{{ $t('training.reportProgress') }}</text>
         </view>
       </view>
@@ -143,7 +178,10 @@
 
       <view class="setting-row">
         <view class="setting-copy">
-          <text class="setting-title">{{ $t('training.groupVisibility') }}</text>
+          <view class="setting-title-row">
+            <image class="setting-icon" src="/static/icons/home/eye-blue.svg" mode="aspectFit" />
+            <text class="setting-title">{{ $t('training.groupVisibility') }}</text>
+          </view>
           <text class="setting-desc">{{ $t('training.visibilityDesc') }}</text>
         </view>
         <switch @change="onVisibilityChange" :checked="visibilitySetting" />
@@ -151,7 +189,10 @@
 
       <view class="setting-row">
         <view class="setting-copy">
-          <text class="setting-title">{{ $t('training.realTimeSync') }}</text>
+          <view class="setting-title-row">
+            <image class="setting-icon" src="/static/icons/home/sync-blue.svg" mode="aspectFit" />
+            <text class="setting-title">{{ $t('training.realTimeSync') }}</text>
+          </view>
           <text class="setting-desc">{{ $t('training.syncDesc') }}</text>
         </view>
         <switch @change="onSyncChange" :checked="syncSetting" />
@@ -159,10 +200,14 @@
 
       <view class="setting-row">
         <view class="setting-copy">
-          <text class="setting-title">{{ $t('training.viewGroupProgress') }}</text>
+          <view class="setting-title-row">
+            <image class="setting-icon" src="/static/icons/home/chart-blue.svg" mode="aspectFit" />
+            <text class="setting-title">{{ $t('training.viewGroupProgress') }}</text>
+          </view>
           <text class="setting-desc">{{ $t('training.viewProgressDesc') }}</text>
         </view>
         <view class="inline-btn" @tap="viewGroupProgress">
+          <image class="inline-btn-icon" src="/static/icons/home/eye-blue.svg" mode="aspectFit" />
           <text class="inline-btn-text">{{ $t('common.view') }}</text>
         </view>
       </view>
@@ -180,7 +225,10 @@
       <view class="message-list">
         <view v-for="(message, index) in messages" :key="index" class="message-item">
           <view class="message-head">
-            <text class="message-type">{{ formatMessageType(message.type) }}</text>
+            <view class="message-type-wrap">
+              <image class="message-type-icon" src="/static/icons/home/message-blue.svg" mode="aspectFit" />
+              <text class="message-type">{{ formatMessageType(message.type) }}</text>
+            </view>
             <text class="message-time">{{ message.time }}</text>
           </view>
           <text class="message-text">{{ message.message || $t('training.defaultMessage') }}</text>
@@ -190,6 +238,7 @@
     </view>
 
     <view class="empty-message" v-else-if="started">
+      <image class="empty-message-icon" src="/static/icons/home/message-blue.svg" mode="aspectFit" />
       <text class="empty-message-text">{{ $t('training.noMessages') }}</text>
     </view>
   </view>
@@ -956,13 +1005,22 @@ export default {
 
 .hero-badge {
   display: inline-flex;
-  height: 42rpx;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 44rpx;
   padding: 0 16rpx;
   margin-bottom: 18rpx;
   border-radius: 999rpx;
-  align-items: center;
-  justify-content: center;
   background: rgba(255, 255, 255, 0.14);
+}
+
+.hero-badge-icon {
+  width: 22rpx;
+  height: 22rpx;
+}
+
+.hero-badge-text {
   color: rgba(255, 255, 255, 0.92);
   font-size: 20rpx;
   letter-spacing: 1rpx;
@@ -1024,9 +1082,18 @@ export default {
 
 .status-pill {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
   padding: 10rpx 16rpx;
   border-radius: 999rpx;
   background: #f2f5fb;
+}
+
+.status-pill-icon {
+  width: 22rpx;
+  height: 22rpx;
+  flex-shrink: 0;
 }
 
 .status-pill.active {
@@ -1057,6 +1124,35 @@ export default {
   background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
 }
 
+.progress-icon-wrap {
+  width: 52rpx;
+  height: 52rpx;
+  margin: 0 auto 10rpx;
+  border-radius: 16rpx;
+  background: #eef3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-icon {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+.field-label-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 10rpx;
+}
+
+.field-label-icon {
+  width: 22rpx;
+  height: 22rpx;
+  flex-shrink: 0;
+}
+
 .progress-label {
   display: block;
   margin-bottom: 10rpx;
@@ -1076,8 +1172,6 @@ export default {
 }
 
 .field-label {
-  display: block;
-  margin-bottom: 10rpx;
   font-size: 24rpx;
   font-weight: 600;
   color: #172233;
@@ -1173,6 +1267,13 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10rpx;
+}
+
+.action-btn-icon {
+  width: 24rpx;
+  height: 24rpx;
+  flex-shrink: 0;
 }
 
 .action-btn.primary {
@@ -1219,9 +1320,20 @@ export default {
   flex: 1;
 }
 
-.setting-title {
-  display: block;
+.setting-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
   margin-bottom: 8rpx;
+}
+
+.setting-icon {
+  width: 22rpx;
+  height: 22rpx;
+  flex-shrink: 0;
+}
+
+.setting-title {
   font-size: 26rpx;
   font-weight: 600;
   color: #172233;
@@ -1243,6 +1355,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8rpx;
+}
+
+.inline-btn-icon {
+  width: 20rpx;
+  height: 20rpx;
 }
 
 .inline-btn-text {
@@ -1281,6 +1399,18 @@ export default {
   margin-bottom: 8rpx;
 }
 
+.message-type-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.message-type-icon {
+  width: 22rpx;
+  height: 22rpx;
+  flex-shrink: 0;
+}
+
 .message-type {
   font-size: 23rpx;
   font-weight: 700;
@@ -1308,6 +1438,12 @@ export default {
 
 .empty-message {
   text-align: center;
+}
+
+.empty-message-icon {
+  width: 36rpx;
+  height: 36rpx;
+  margin-bottom: 10rpx;
 }
 
 .empty-message-text {

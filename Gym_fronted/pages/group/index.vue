@@ -2,11 +2,12 @@
   <view class="group-page">
     <template v-if="loaded">
       <view class="hero-card">
-        <view class="hero-badge">Partner Group</view>
-        <text class="hero-title">把搭子关系、固定训练时间和组内协作放在一个地方管理</text>
-        <text class="hero-desc">
-          这里更像你的“训练小队主页”。你可以创建新的搭子组，也可以查看已有小组的协同安排。
-        </text>
+        <view class="hero-badge">
+          <image class="hero-badge-icon" src="/static/icons/home/group-white.svg" mode="aspectFit" />
+          <text class="hero-badge-text">搭子组</text>
+        </view>
+        <text class="hero-title">搭子关系和训练时间都在这里</text>
+        <text class="hero-desc">创建小组，查看协作安排。</text>
       </view>
 
       <view class="action-bar">
@@ -16,18 +17,37 @@
       </view>
 
       <view v-if="groups.length > 0" class="section-card">
-        <view class="section-head">
-          <view>
-            <text class="section-title">我的搭子组</text>
-            <text class="section-subtitle">优先展示你已经建立好协作关系的小组</text>
+          <view class="section-head">
+            <view>
+              <text class="section-title">我的搭子组</text>
+              <text class="section-subtitle">协作关系优先显示</text>
+            </view>
+            <text class="section-count">{{ groups.length }} 个组</text>
           </view>
-          <text class="section-count">{{ groups.length }} 个组</text>
-        </view>
 
         <view class="group-list">
           <view v-for="item in groups" :key="item.id" class="group-card">
             <view class="card-main" @tap="goDetail(item.id)">
-              <view class="group-icon">组</view>
+              <view class="group-avatar">
+                <template v-if="getGroupAvatarCount(item.id) > 0">
+                  <view
+                    v-for="(member, index) in getGroupAvatarList(item.id)"
+                    :key="`${item.id}-${index}`"
+                    class="avatar-cell"
+                    :class="`count-${getGroupAvatarCount(item.id)}`"
+                  >
+                    <view class="avatar-fallback">{{ getAvatarLabel(member.nickname, item.groupName) }}</view>
+                    <image
+                      v-if="member.avatar && !isBrokenAvatar(item.id, index)"
+                      :src="member.avatar"
+                      class="avatar-image"
+                      mode="aspectFill"
+                      @error="markBrokenAvatar(item.id, index)"
+                    ></image>
+                  </view>
+                </template>
+                <view v-else class="group-avatar-empty">组</view>
+              </view>
 
               <view class="group-content">
                 <view class="group-head">
@@ -37,11 +57,12 @@
 
                 <view class="meta-row">
                   <text class="meta-chip">{{ item.fixedTime || '未设置固定时间' }}</text>
-                  <text class="meta-chip">{{ isAdminInGroup(item.id) ? '你是管理员' : '普通成员' }}</text>
+                  <text class="meta-chip role">{{ getGroupMemberCount(item.id) }}人</text>
+                  <text class="meta-chip role">{{ isAdminInGroup(item.id) ? '管理员' : '成员' }}</text>
                 </view>
 
                 <text v-if="item.desc" class="group-desc">{{ item.desc }}</text>
-                <text v-else class="group-desc muted">还没有补充组内说明，可以去详情页完善。</text>
+                <text v-else class="group-desc muted">还没有组内说明</text>
               </view>
             </view>
 
@@ -143,7 +164,8 @@ export default {
         name: '',
         fixedTime: ''
       },
-      groupMembers: {}
+      groupMembers: {},
+      brokenAvatarMap: {}
     };
   },
   onShow() {
@@ -182,10 +204,16 @@ export default {
       for (const group of this.groups) {
         try {
           const detail = await apiGroupDetailWithMembers(group.id);
-          this.groupMembers[group.id] = detail.members || [];
+          this.groupMembers = {
+            ...this.groupMembers,
+            [group.id]: detail?.members || []
+          };
         } catch (error) {
           console.error(`加载组 ${group.id} 成员失败:`, error);
-          this.groupMembers[group.id] = [];
+          this.groupMembers = {
+            ...this.groupMembers,
+            [group.id]: []
+          };
         }
       }
     },
@@ -194,6 +222,45 @@ export default {
       const userId = getUserIdFromToken();
       const userMember = members.find((member) => member.userId == userId);
       return userMember && userMember.role === 'ADMIN';
+    },
+    getGroupAvatarList(groupId) {
+      const members = this.groupMembers[groupId] || [];
+      return members
+        .slice(0, 4)
+        .map((member) => ({
+          avatar: member?.avatar || '',
+          nickname: member?.nickname || ''
+        }));
+    },
+    getGroupAvatarCount(groupId) {
+      const members = this.groupMembers[groupId] || [];
+      return Math.min(members.length, 4);
+    },
+    getGroupMemberCount(groupId) {
+      const members = this.groupMembers[groupId] || [];
+      return members.length;
+    },
+    getGroupAvatarFallback(groupId, index) {
+      const members = this.groupMembers[groupId] || [];
+      const member = members[index];
+      const name = member?.nickname || '';
+      return name ? name.charAt(0) : '组';
+    },
+    getAvatarLabel(nickname, groupName) {
+      const name = (nickname || '').trim();
+      if (name) return name.charAt(0);
+      const group = (groupName || '').trim();
+      if (group) return group.charAt(0);
+      return '组';
+    },
+    markBrokenAvatar(groupId, index) {
+      this.brokenAvatarMap = {
+        ...this.brokenAvatarMap,
+        [`${groupId}-${index}`]: true
+      };
+    },
+    isBrokenAvatar(groupId, index) {
+      return !!this.brokenAvatarMap[`${groupId}-${index}`];
     },
     async onCreateGroup() {
       if (!this.createForm.name) {
@@ -321,13 +388,22 @@ export default {
 
 .hero-badge {
   display: inline-flex;
-  height: 42rpx;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 44rpx;
   padding: 0 16rpx;
   margin-bottom: 18rpx;
   border-radius: 999rpx;
-  align-items: center;
-  justify-content: center;
   background: rgba(255, 255, 255, 0.14);
+}
+
+.hero-badge-icon {
+  width: 22rpx;
+  height: 22rpx;
+}
+
+.hero-badge-text {
   color: rgba(255, 255, 255, 0.92);
   font-size: 20rpx;
   letter-spacing: 1rpx;
@@ -345,7 +421,7 @@ export default {
 .hero-desc {
   display: block;
   font-size: 24rpx;
-  line-height: 1.65;
+  line-height: 1.5;
   color: rgba(255, 255, 255, 0.82);
 }
 
@@ -427,19 +503,79 @@ export default {
   gap: 18rpx;
 }
 
-.group-icon {
+.group-avatar {
   width: 88rpx;
   height: 88rpx;
   border-radius: 28rpx;
   background: linear-gradient(150deg, #3253ef 0%, #6a7dff 100%);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 4rpx;
+  padding: 6rpx;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  box-shadow: 0 14rpx 26rpx rgba(50, 83, 239, 0.2);
+  overflow: hidden;
+}
+
+.group-avatar-empty {
+  grid-column: 1 / -1;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
   font-size: 30rpx;
   font-weight: 700;
   color: #ffffff;
-  box-shadow: 0 14rpx 26rpx rgba(50, 83, 239, 0.2);
+}
+
+.avatar-cell {
+  position: relative;
+  border-radius: 16rpx;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.avatar-cell.count-1 {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+}
+
+.avatar-cell.count-2:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1 / -1;
+}
+
+.avatar-cell.count-2:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1 / -1;
+}
+
+.avatar-cell.count-3:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1 / -1;
+}
+
+.avatar-image,
+.avatar-fallback {
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-image {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .group-content {
@@ -482,6 +618,11 @@ export default {
   background: #eef3ff;
   font-size: 21rpx;
   color: #5f6d83;
+}
+
+.meta-chip.role {
+  background: #f3f5fa;
+  color: #7b879a;
 }
 
 .group-desc {

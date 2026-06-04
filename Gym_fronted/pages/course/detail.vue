@@ -7,27 +7,42 @@
       </view>
 
       <view class="hero-overlay">
-        <view class="hero-badge">Course Detail</view>
+        <view class="hero-badge">
+          <image class="hero-badge-icon" src="/static/icons/home/course-white.svg" mode="aspectFit" />
+          <text class="hero-badge-text">课程详情</text>
+        </view>
         <text class="hero-title">{{ course.courseName || '课程详情' }}</text>
-        <text class="hero-desc">{{ course.description || '查看课程结构、训练时长和视频内容。' }}</text>
+        <text class="hero-desc">{{ course.description || '查看动作结构、时长和视频。' }}</text>
       </view>
     </view>
 
     <view class="summary-card">
       <view class="summary-grid">
         <view class="summary-item">
+          <view class="summary-icon-wrap">
+            <image class="summary-icon" src="/static/icons/home/clock-orange.svg" mode="aspectFit" />
+          </view>
           <text class="summary-label">时长</text>
           <text class="summary-value">{{ course.duration || 0 }} 分钟</text>
         </view>
         <view class="summary-item">
+          <view class="summary-icon-wrap">
+            <image class="summary-icon" src="/static/icons/home/flame-white.svg" mode="aspectFit" />
+          </view>
           <text class="summary-label">卡路里</text>
           <text class="summary-value">{{ course.calories || 0 }} kcal</text>
         </view>
         <view class="summary-item">
+          <view class="summary-icon-wrap">
+            <image class="summary-icon" src="/static/icons/home/course-blue.svg" mode="aspectFit" />
+          </view>
           <text class="summary-label">类型</text>
           <text class="summary-value">{{ course.courseType || '未分类' }}</text>
         </view>
         <view class="summary-item">
+          <view class="summary-icon-wrap">
+            <image class="summary-icon" src="/static/icons/home/target-blue.svg" mode="aspectFit" />
+          </view>
           <text class="summary-label">难度</text>
           <text class="summary-value difficulty" :class="difficultyClass">{{ course.difficulty || '入门' }}</text>
         </view>
@@ -38,7 +53,7 @@
       <view class="section-head">
         <view>
           <text class="section-title">课程内容</text>
-          <text class="section-subtitle">把动作、时长和组数拆开看，会更适合边练边跟进</text>
+          <text class="section-subtitle">动作和节奏拆开看</text>
         </view>
       </view>
 
@@ -58,6 +73,7 @@
       </view>
 
       <view v-else class="empty-inline">
+        <image class="empty-inline-icon" src="/static/icons/home/course-blue.svg" mode="aspectFit" />
         <text class="empty-inline-text">当前课程还没有结构化内容说明。</text>
       </view>
     </view>
@@ -66,7 +82,7 @@
       <view class="section-head">
         <view>
           <text class="section-title">视频教程</text>
-          <text class="section-subtitle">适合在训练前快速过一遍动作节奏和执行方式</text>
+          <text class="section-subtitle">训练前快速过一遍动作</text>
         </view>
       </view>
 
@@ -83,9 +99,11 @@
     </view>
 
     <view class="error-card" v-if="videoError">
-      <view class="error-icon">视</view>
+      <view class="error-icon">
+        <image class="error-icon-image" src="/static/icons/home/play-white.svg" mode="aspectFit" />
+      </view>
       <text class="error-title">视频加载失败</text>
-      <text class="error-desc">请检查当前网络，或者稍后重新进入课程详情页。</text>
+      <text class="error-desc">检查网络后再试一次。</text>
       <view class="error-action" @tap="retryVideoLoad">
         <text class="error-action-text">重新加载视频</text>
       </view>
@@ -93,6 +111,7 @@
 
     <view class="action-bar">
       <view class="action-btn secondary" @tap="addToFavorites">
+        <image class="action-btn-icon" src="/static/icons/home/bookmark-blue.svg" mode="aspectFit" />
         <text class="action-btn-text secondary-text">收藏课程</text>
       </view>
     </view>
@@ -233,13 +252,22 @@ export default {
 .hero-badge {
   display: inline-flex;
   width: fit-content;
-  height: 42rpx;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 44rpx;
   padding: 0 16rpx;
   margin-bottom: 18rpx;
   border-radius: 999rpx;
-  align-items: center;
-  justify-content: center;
   background: rgba(255, 255, 255, 0.14);
+}
+
+.hero-badge-icon {
+  width: 22rpx;
+  height: 22rpx;
+}
+
+.hero-badge-text {
   color: rgba(255, 255, 255, 0.92);
   font-size: 20rpx;
   letter-spacing: 1rpx;
@@ -257,7 +285,7 @@ export default {
 .hero-desc {
   display: block;
   font-size: 24rpx;
-  line-height: 1.65;
+  line-height: 1.5;
   color: rgba(255, 255, 255, 0.84);
 }
 
@@ -280,6 +308,22 @@ export default {
   padding: 20rpx 18rpx;
   border-radius: 24rpx;
   background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
+}
+
+.summary-icon-wrap {
+  width: 52rpx;
+  height: 52rpx;
+  margin-bottom: 10rpx;
+  border-radius: 16rpx;
+  background: #eef3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary-icon {
+  width: 28rpx;
+  height: 28rpx;
 }
 
 .summary-label {
@@ -419,9 +463,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #ffffff;
+}
+
+.error-icon-image {
+  width: 42rpx;
+  height: 42rpx;
 }
 
 .error-title {
@@ -469,6 +515,12 @@ export default {
 .action-btn.secondary {
   border: 1rpx solid #cfd8ec;
   background: #ffffff;
+  gap: 8rpx;
+}
+
+.action-btn-icon {
+  width: 22rpx;
+  height: 22rpx;
 }
 
 .action-btn-text {
@@ -482,6 +534,12 @@ export default {
 
 .empty-inline {
   text-align: center;
+}
+
+.empty-inline-icon {
+  width: 36rpx;
+  height: 36rpx;
+  margin-bottom: 10rpx;
 }
 
 .empty-inline-text {

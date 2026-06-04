@@ -12,24 +12,23 @@
               <image class="logo-img" src="/static/icons/page-style-logo.svg" mode="aspectFit" />
             </view>
             <view class="brand-copy">
-              <text class="brand-kicker">Fitness Social</text>
+              <text class="brand-kicker">训练入口</text>
               <text class="brand-title">健身搭子</text>
-              <text class="brand-subtitle">把匹配、训练、挑战和聊天放进同一个行动流里。</text>
+              <text class="brand-subtitle">匹配、训练、挑战和聊天都在这里。</text>
+              <text class="brand-caption">继续今天的训练安排</text>
             </view>
           </view>
 
           <view class="feature-list">
             <view class="feature-chip">
+              <image class="feature-icon" src="/static/icons/home/compass-white.svg" mode="aspectFit" />
               <text class="feature-chip-title">智能匹配</text>
-              <text class="feature-chip-text">按目标、时间和场景推荐更合适的训练伙伴</text>
+              <text class="feature-chip-text">按目标和时段找搭子</text>
             </view>
             <view class="feature-chip">
+              <image class="feature-icon" src="/static/icons/home/dumbbell-blue.svg" mode="aspectFit" />
               <text class="feature-chip-title">协同训练</text>
-              <text class="feature-chip-text">实时上报训练进度，让搭子之间真正形成监督关系</text>
-            </view>
-            <view class="feature-chip">
-              <text class="feature-chip-title">挑战打卡</text>
-              <text class="feature-chip-text">把坚持训练这件事，变成有反馈、有节奏的日常动作</text>
+              <text class="feature-chip-text">实时同步训练进度</text>
             </view>
           </view>
         </view>
@@ -37,7 +36,7 @@
         <view class="login-card">
           <view class="card-head">
             <text class="card-title">登录你的训练空间</text>
-            <text class="card-subtitle">继续查看搭子、挑战和今天的训练进度</text>
+            <text class="card-subtitle">继续今天的训练安排</text>
           </view>
 
           <view class="login-tabs">
@@ -117,7 +116,7 @@
           </view>
 
           <view class="security-note">
-            <text class="security-note-text">登录后将自动同步你的个人档案、训练统计和未读消息。</text>
+            <text class="security-note-text">登录后自动同步档案、训练统计和未读消息。</text>
           </view>
 
           <button class="login-primary-btn" @tap="handleLogin" hover-class="btn-hover">
@@ -404,14 +403,14 @@ const viewPrivacy = () => {
 
 .intro-panel {
   padding-top: 8rpx;
-  margin-bottom: 20rpx;
+  margin-bottom: 16rpx;
 }
 
 .intro-top {
   display: flex;
   align-items: center;
   gap: 18rpx;
-  margin-bottom: 16rpx;
+  margin-bottom: 14rpx;
 }
 
 .logo-shell {
@@ -472,25 +471,44 @@ const viewPrivacy = () => {
 
 .brand-subtitle {
   display: block;
+  margin-bottom: 8rpx;
   font-size: 23rpx;
   line-height: 1.5;
   color: rgba(232, 241, 255, 0.82);
 }
 
+.brand-caption {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: rgba(232, 241, 255, 0.76);
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .feature-list {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10rpx;
 }
 
 .feature-chip {
   min-width: 0;
-  padding: 14rpx 14rpx 16rpx;
+  min-height: 120rpx;
+  padding: 16rpx 14rpx 14rpx;
   border-radius: 20rpx;
   background: rgba(255, 255, 255, 0.08);
   border: 1rpx solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12rpx);
   box-sizing: border-box;
+}
+
+.feature-icon {
+  width: 26rpx;
+  height: 26rpx;
+  margin-bottom: 8rpx;
 }
 
 .feature-chip-title {
@@ -751,10 +769,6 @@ const viewPrivacy = () => {
 }
 
 @media (max-width: 750rpx) {
-  .feature-list {
-    grid-template-columns: 1fr;
-  }
-
   .intro-top {
     align-items: flex-start;
   }
