@@ -18,10 +18,18 @@
   box-sizing: border-box;
 }
 .hero-card.data-v-93d7d659 {
+  position: relative;
   padding: 34rpx 30rpx;
   margin-bottom: 24rpx;
   background: linear-gradient(150deg, #1638b8 0%, #4c67f4 46%, #7790ff 100%);
   box-shadow: 0 20rpx 50rpx rgba(23, 56, 182, 0.22);
+  overflow: hidden;
+}
+.hero-photo.data-v-93d7d659 {
+  position: absolute;
+  inset: 0;
+  opacity: 0.14;
+  pointer-events: none;
 }
 .hero-top.data-v-93d7d659 {
   display: flex;

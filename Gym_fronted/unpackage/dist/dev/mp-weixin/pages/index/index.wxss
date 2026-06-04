@@ -22,6 +22,16 @@
   z-index: 1;
   box-shadow: 0 16rpx 42rpx rgba(38, 68, 189, 0.18);
 }
+.hero-bg-photo.data-v-1cf27b2a {
+  position: fixed;
+  z-index: 1;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 368rpx;
+  opacity: 0.12;
+}
 .top-orb.data-v-1cf27b2a {
   position: fixed;
   z-index: 1;

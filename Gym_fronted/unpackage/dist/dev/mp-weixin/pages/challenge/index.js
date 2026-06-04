@@ -75,7 +75,7 @@ const _sfc_main = {
         this.hasMore = false;
         this.noMoreData = true;
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/challenge/index.vue:377", "加载挑战列表失败:", error);
+        common_vendor.index.__f__("error", "at pages/challenge/index.vue:378", "加载挑战列表失败:", error);
         common_vendor.index.showToast({
           title: "加载失败",
           icon: "none"
@@ -223,7 +223,7 @@ const _sfc_main = {
           this.groups = res || [];
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/challenge/index.vue:535", "加载群组列表失败:", error);
+        common_vendor.index.__f__("error", "at pages/challenge/index.vue:536", "加载群组列表失败:", error);
         common_vendor.index.showToast({
           title: "加载群组失败",
           icon: "none"
@@ -379,7 +379,7 @@ const _sfc_main = {
             });
           } catch (error) {
             common_vendor.index.hideLoading();
-            common_vendor.index.__f__("error", "at pages/challenge/index.vue:705", "上传失败:", error);
+            common_vendor.index.__f__("error", "at pages/challenge/index.vue:706", "上传失败:", error);
             common_vendor.index.showToast({
               title: "上传失败",
               icon: "none"
@@ -488,7 +488,7 @@ const _sfc_main = {
         this.refreshData();
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/challenge/index.vue:827", "创建挑战失败:", error);
+        common_vendor.index.__f__("error", "at pages/challenge/index.vue:828", "创建挑战失败:", error);
         common_vendor.index.showToast({
           title: error.errMsg || "创建失败，请稍后重试",
           icon: "none"
@@ -506,7 +506,7 @@ const _sfc_main = {
         });
         this.refreshData();
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/challenge/index.vue:845", "刷新挑战状态失败:", error);
+        common_vendor.index.__f__("error", "at pages/challenge/index.vue:846", "刷新挑战状态失败:", error);
         common_vendor.index.showToast({
           title: "刷新失败",
           icon: "none"

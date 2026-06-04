@@ -141,7 +141,7 @@ const _sfc_main = {
           common_vendor.index.showToast({ title: "数据已刷新", icon: "success", duration: 1e3 });
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:410", "数据刷新失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:411", "数据刷新失败:", error);
         stats.value = { trainDays: 0, partnersCount: 0, activeChallenges: 0 };
         formatDataList();
         common_vendor.index.showToast({ title: "数据加载失败", icon: "none", duration: 1500 });
@@ -167,7 +167,7 @@ const _sfc_main = {
             chatCount = Number(chatRes || 0);
           }
         } catch (detailError) {
-          common_vendor.index.__f__("error", "at pages/index/index.vue:438", "获取未读详情失败，回退到总数接口:", detailError);
+          common_vendor.index.__f__("error", "at pages/index/index.vue:439", "获取未读详情失败，回退到总数接口:", detailError);
           const chatRes = await common_api.apiGetUnreadCount(userId);
           chatCount = Number(chatRes || 0);
         }
@@ -176,12 +176,12 @@ const _sfc_main = {
           const inviteRes = await common_api.apiGetInvitations();
           invitations = Array.isArray(inviteRes) ? inviteRes.length : 0;
         } catch (error) {
-          common_vendor.index.__f__("error", "at pages/index/index.vue:448", "获取邀请列表失败:", error);
+          common_vendor.index.__f__("error", "at pages/index/index.vue:449", "获取邀请列表失败:", error);
         }
         inviteCount.value = invitations;
         unreadCount.value = chatCount + invitations;
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:454", "获取未读消息失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:455", "获取未读消息失败:", error);
         unreadCount.value = 0;
         inviteCount.value = 0;
       }
@@ -194,7 +194,7 @@ const _sfc_main = {
         hasTodo.value = count > 0;
         updateHeroContent();
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:468", "获取待办数量失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:469", "获取待办数量失败:", error);
         todoCount.value = 0;
         hasTodo.value = false;
         updateHeroContent();
@@ -218,7 +218,7 @@ const _sfc_main = {
         common_vendor.index.showToast({ title: "已加入搭子组", icon: "success", duration: 1200 });
         await Promise.all([refreshUserData(), getUnreadSummary(), getTodoSummary()]);
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:494", "接受邀请失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:495", "接受邀请失败:", error);
         common_vendor.index.showToast({ title: "操作失败，请稍后重试", icon: "none", duration: 1500 });
       }
     };
@@ -266,7 +266,7 @@ const _sfc_main = {
         await common_wsNative.initNativeWebSocket();
         common_wsNative.setMessageCallback(handleMessage);
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:548", "首页 WebSocket 初始化失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:549", "首页 WebSocket 初始化失败:", error);
       }
     };
     const navigateTo = (url) => {

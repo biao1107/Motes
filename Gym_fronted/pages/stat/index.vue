@@ -1,6 +1,7 @@
 <template>
   <view class="stats-page">
     <view class="hero-card">
+      <image class="hero-photo" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1400&q=80" mode="aspectFill" />
       <view class="hero-badge">Training Insight</view>
       <text class="hero-title">把训练表现、组队协同和挑战完成度放到同一张看板里</text>
       <text class="hero-desc">
@@ -228,10 +229,19 @@ export default {
 }
 
 .hero-card {
+  position: relative;
   padding: 34rpx 30rpx;
   margin-bottom: 24rpx;
   background: linear-gradient(150deg, #1638b8 0%, #4c67f4 46%, #7790ff 100%);
   box-shadow: 0 20rpx 50rpx rgba(23, 56, 182, 0.22);
+  overflow: hidden;
+}
+
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  pointer-events: none;
 }
 
 .hero-badge {

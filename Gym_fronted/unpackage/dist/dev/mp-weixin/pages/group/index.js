@@ -41,7 +41,7 @@ const _sfc_main = {
         common_vendor.index.hideLoading();
         await this.loadAllGroupMembers();
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/group/index.vue:200", "加载搭子组失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/index.vue:201", "加载搭子组失败:", error);
         this.loaded = true;
         common_vendor.index.hideLoading();
         common_vendor.index.showToast({
@@ -59,7 +59,7 @@ const _sfc_main = {
             [group.id]: (detail == null ? void 0 : detail.members) || []
           };
         } catch (error) {
-          common_vendor.index.__f__("error", "at pages/group/index.vue:218", `加载组 ${group.id} 成员失败:`, error);
+          common_vendor.index.__f__("error", "at pages/group/index.vue:219", `加载组 ${group.id} 成员失败:`, error);
           this.groupMembers = {
             ...this.groupMembers,
             [group.id]: []
@@ -140,7 +140,7 @@ const _sfc_main = {
         this.loadData();
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/group/index.vue:304", "创建搭子组失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/index.vue:305", "创建搭子组失败:", error);
         common_vendor.index.showToast({
           title: (error == null ? void 0 : error.message) || "创建失败，请稍后重试",
           icon: "none"
@@ -191,7 +191,7 @@ const _sfc_main = {
         });
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/group/index.vue:358", "删除搭子组失败:", error);
+        common_vendor.index.__f__("error", "at pages/group/index.vue:359", "删除搭子组失败:", error);
         common_vendor.index.showToast({
           title: error.errMsg || error.message || "删除失败，请稍后重试",
           icon: "none"

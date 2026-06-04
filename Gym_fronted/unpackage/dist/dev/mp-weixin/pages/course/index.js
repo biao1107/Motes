@@ -36,7 +36,7 @@ const _sfc_main = {
         const res = await common_api.apiGetRecommendCourses(6);
         this.recommendCourses = res || [];
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/course/index.vue:188", "加载推荐课程失败:", error);
+        common_vendor.index.__f__("error", "at pages/course/index.vue:189", "加载推荐课程失败:", error);
       }
     },
     async loadCourseList(reset = false) {
@@ -60,7 +60,7 @@ const _sfc_main = {
         this.hasMore = this.courseList.length < this.total;
         this.page += 1;
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/course/index.vue:215", "加载课程列表失败:", error);
+        common_vendor.index.__f__("error", "at pages/course/index.vue:216", "加载课程列表失败:", error);
         common_vendor.index.showToast({
           title: "加载失败",
           icon: "none"
@@ -82,7 +82,7 @@ const _sfc_main = {
         this.total = res.total || 0;
         this.hasMore = false;
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/course/index.vue:239", "搜索课程失败:", error);
+        common_vendor.index.__f__("error", "at pages/course/index.vue:240", "搜索课程失败:", error);
         common_vendor.index.showToast({
           title: "搜索失败",
           icon: "none"

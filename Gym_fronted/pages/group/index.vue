@@ -2,6 +2,7 @@
   <view class="group-page">
     <template v-if="loaded">
       <view class="hero-card">
+        <image class="hero-photo" src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1400&q=80" mode="aspectFill" />
         <view class="hero-badge">
           <image class="hero-badge-icon" src="/static/icons/home/group-white.svg" mode="aspectFit" />
           <text class="hero-badge-text">搭子组</text>
@@ -386,10 +387,19 @@ export default {
 }
 
 .hero-card {
+  position: relative;
   padding: 34rpx 30rpx;
   margin-bottom: 24rpx;
   background: linear-gradient(150deg, #1638b8 0%, #4c67f4 46%, #7790ff 100%);
   box-shadow: 0 20rpx 50rpx rgba(23, 56, 182, 0.22);
+  overflow: hidden;
+}
+
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  pointer-events: none;
 }
 
 .hero-badge {

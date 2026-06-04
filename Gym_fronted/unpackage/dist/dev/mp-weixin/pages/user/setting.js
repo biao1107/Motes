@@ -27,7 +27,7 @@ const _sfc_main = {
         };
         currentProfileData.value = data;
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/user/setting.vue:102", "加载设置失败:", error);
+        common_vendor.index.__f__("error", "at pages/user/setting.vue:103", "加载设置失败:", error);
         common_vendor.index.showToast({ title: "加载失败", icon: "none" });
       } finally {
         common_vendor.index.hideLoading();
@@ -55,7 +55,7 @@ const _sfc_main = {
         common_vendor.index.showToast({ title: "保存成功", icon: "success", duration: 1500 });
         setTimeout(() => common_vendor.index.navigateBack(), 1500);
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/user/setting.vue:131", "保存设置失败:", error);
+        common_vendor.index.__f__("error", "at pages/user/setting.vue:132", "保存设置失败:", error);
         common_vendor.index.showToast({ title: "保存失败，请重试", icon: "none" });
       } finally {
         common_vendor.index.hideLoading();
@@ -98,7 +98,7 @@ const _sfc_main = {
               throw new Error("上传响应中未包含有效的 URL");
             }
           } catch (error) {
-            common_vendor.index.__f__("error", "at pages/user/setting.vue:182", "头像上传失败:", error);
+            common_vendor.index.__f__("error", "at pages/user/setting.vue:183", "头像上传失败:", error);
             common_vendor.index.showToast({ title: error.errMsg || "上传失败", icon: "none" });
           } finally {
             common_vendor.index.hideLoading();

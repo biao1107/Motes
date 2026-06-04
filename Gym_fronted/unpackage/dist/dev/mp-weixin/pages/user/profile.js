@@ -28,7 +28,7 @@ const _sfc_main = {
         form.value = Object.assign({}, form.value, data || {});
         loaded.value = true;
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/user/profile.vue:139", "加载用户档案失败:", error);
+        common_vendor.index.__f__("error", "at pages/user/profile.vue:140", "加载用户档案失败:", error);
         common_vendor.index.showToast({ title: "加载失败", icon: "none" });
         loaded.value = true;
       } finally {
@@ -55,7 +55,7 @@ const _sfc_main = {
           getCurrentPages().length > 1 ? common_vendor.index.navigateBack() : loadData();
         }, 1500);
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/user/profile.vue:168", "保存用户档案失败:", error);
+        common_vendor.index.__f__("error", "at pages/user/profile.vue:169", "保存用户档案失败:", error);
         common_vendor.index.showToast({ title: "保存失败，请重试", icon: "none" });
       } finally {
         common_vendor.index.hideLoading();

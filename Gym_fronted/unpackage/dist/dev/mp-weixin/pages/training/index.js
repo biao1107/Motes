@@ -204,7 +204,7 @@ const _sfc_main = {
           this.loadGroupChallenges(this.form.groupId);
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/training/index.vue:474", "加载组列表失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:475", "加载组列表失败:", error);
         common_vendor.index.showToast({
           title: this.$t("training.loadGroupsFailed"),
           icon: "none",
@@ -274,7 +274,7 @@ const _sfc_main = {
           challengeCount: this.challenges.length
         });
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/training/index.vue:554", "加载挑战列表失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:555", "加载挑战列表失败:", error);
         common_vendor.index.showToast({
           title: this.$t("training.loadChallengesFailed"),
           icon: "none",
@@ -304,7 +304,7 @@ const _sfc_main = {
       try {
         return common_auth.getUserIdFromToken();
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/training/index.vue:585", "获取用户ID失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:586", "获取用户ID失败:", error);
         return null;
       }
     },
@@ -322,7 +322,7 @@ const _sfc_main = {
         });
         common_wsNative.subscribeGroup(groupId);
       } catch (error) {
-        common_vendor.index.__f__("warn", "at pages/training/index.vue:606", "订阅组频道失败（不影响基本功能）:", error.message);
+        common_vendor.index.__f__("warn", "at pages/training/index.vue:607", "订阅组频道失败（不影响基本功能）:", error.message);
       }
     },
     handleWsMessage(payload) {
@@ -358,7 +358,7 @@ const _sfc_main = {
           groupId: payload.groupId
         });
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/training/index.vue:645", "处理WebSocket消息失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:646", "处理WebSocket消息失败:", error);
       }
     },
     async onStart() {
@@ -406,7 +406,7 @@ const _sfc_main = {
         });
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/training/index.vue:700", "开始训练失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:701", "开始训练失败:", error);
         common_vendor.index.showToast({
           title: this.$t("training.startFailed"),
           icon: "none",
@@ -468,7 +468,7 @@ const _sfc_main = {
         });
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/training/index.vue:769", "上报失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:770", "上报失败:", error);
         let errorMsg = this.$t("training.reportFailed");
         if (error.message && error.message.includes("请先完成今日协同训练后再打卡")) {
           errorMsg = error.message;
@@ -534,7 +534,7 @@ const _sfc_main = {
         });
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/training/index.vue:844", "放弃训练失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:845", "放弃训练失败:", error);
         common_vendor.index.showToast({
           title: this.$t("training.abandonFailed"),
           icon: "none",
@@ -595,7 +595,7 @@ const _sfc_main = {
         });
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/training/index.vue:912", "获取组员进度失败:", error);
+        common_vendor.index.__f__("error", "at pages/training/index.vue:913", "获取组员进度失败:", error);
         common_vendor.index.showToast({
           title: this.$t("training.loadProgressFailed"),
           icon: "none",

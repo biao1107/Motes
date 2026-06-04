@@ -40,7 +40,7 @@ const _sfc_main = {
         this.loaded = true;
         common_vendor.index.hideLoading();
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/match/index.vue:186", "加载匹配结果失败:", error);
+        common_vendor.index.__f__("error", "at pages/match/index.vue:187", "加载匹配结果失败:", error);
         this.matchResult = [];
         this.loaded = true;
         common_vendor.index.hideLoading();
@@ -77,7 +77,7 @@ const _sfc_main = {
       common_vendor.index.navigateTo({ url: "/pages/group/index" });
     },
     onAvatarLoadError(error) {
-      common_vendor.index.__f__("log", "at pages/match/index.vue:220", "头像加载失败:", error);
+      common_vendor.index.__f__("log", "at pages/match/index.vue:221", "头像加载失败:", error);
     }
   }
 };

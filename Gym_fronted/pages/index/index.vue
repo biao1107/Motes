@@ -1,6 +1,7 @@
 <template>
   <view class="fitness-home">
     <view class="top-bg"></view>
+    <image class="hero-bg-photo" src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1600&q=80" mode="aspectFill" />
     <view class="top-orb orb-left"></view>
     <view class="top-orb orb-right"></view>
 
@@ -654,6 +655,17 @@ onUnmounted(() => {
   border-radius: 0 0 44rpx 44rpx;
   z-index: 1;
   box-shadow: 0 16rpx 42rpx rgba(38, 68, 189, 0.18);
+}
+
+.hero-bg-photo {
+  position: fixed;
+  z-index: 1;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 368rpx;
+  opacity: 0.12;
 }
 
 .top-orb {

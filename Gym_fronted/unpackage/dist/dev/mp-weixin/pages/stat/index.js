@@ -26,7 +26,7 @@ const _sfc_main = {
         common_vendor.index.hideLoading();
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/stat/index.vue:155", "加载统计数据失败:", error);
+        common_vendor.index.__f__("error", "at pages/stat/index.vue:156", "加载统计数据失败:", error);
         common_vendor.index.showToast({
           title: "加载失败",
           icon: "none"
@@ -45,7 +45,7 @@ const _sfc_main = {
           this.group = null;
         }
       } catch (error) {
-        common_vendor.index.__f__("log", "at pages/stat/index.vue:174", "获取组统计失败:", error);
+        common_vendor.index.__f__("log", "at pages/stat/index.vue:175", "获取组统计失败:", error);
         this.group = null;
       }
     },
@@ -61,7 +61,7 @@ const _sfc_main = {
           this.challenge = null;
         }
       } catch (error) {
-        common_vendor.index.__f__("log", "at pages/stat/index.vue:190", "获取挑战统计失败:", error);
+        common_vendor.index.__f__("log", "at pages/stat/index.vue:191", "获取挑战统计失败:", error);
         this.challenge = null;
       }
     },
