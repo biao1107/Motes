@@ -459,10 +459,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: $data.showError
   }, $data.showError ? {
-    b: common_assets._imports_0$4,
+    b: common_assets._imports_0$5,
     c: common_vendor.o((...args) => $options.goBack && $options.goBack(...args))
   } : common_vendor.e({
-    d: common_assets._imports_0$4,
+    d: common_assets._imports_0$5,
     e: $options.getGroupAvatarList().length > 0
   }, $options.getGroupAvatarList().length > 0 ? {
     f: common_vendor.f($options.getGroupAvatarList(), (member, index, i0) => {
@@ -479,9 +479,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     g: common_vendor.n(`count-${$options.getGroupAvatarList().length}`)
   } : {}, {
     h: common_vendor.t($data.groupName),
-    i: common_assets._imports_0$4,
+    i: common_assets._imports_0$5,
     j: common_vendor.t($data.messages.length),
-    k: common_assets._imports_1$4,
+    k: common_assets._imports_1$5,
     l: $data.loadingMore
   }, $data.loadingMore ? {} : {}, {
     m: common_vendor.f($data.messages, (message, index, i0) => {
@@ -511,7 +511,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     n: $data.scrollTop,
     o: common_vendor.o((...args) => $options.onScroll && $options.onScroll(...args)),
-    p: common_assets._imports_1$4,
+    p: common_assets._imports_1$5,
     q: common_vendor.o((...args) => $options.chooseImage && $options.chooseImage(...args)),
     r: common_vendor.o((...args) => $options.sendMessage && $options.sendMessage(...args)),
     s: $data.inputFocus,

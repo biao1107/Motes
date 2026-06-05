@@ -21,6 +21,7 @@ if (!Math) {
   "./pages/course/index.js";
   "./pages/course/detail.js";
   "./pages/ai/advisor.js";
+  "./pages/map/index.js";
 }
 const _sfc_main = {
   /**

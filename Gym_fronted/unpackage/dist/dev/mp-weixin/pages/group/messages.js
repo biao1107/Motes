@@ -248,8 +248,8 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: common_assets._imports_0$4,
-    b: common_assets._imports_0$4,
+    a: common_assets._imports_0$5,
+    b: common_assets._imports_0$5,
     c: common_vendor.t($options.totalUnreadCount),
     d: common_assets._imports_1,
     e: common_vendor.t($data.invitations.length),

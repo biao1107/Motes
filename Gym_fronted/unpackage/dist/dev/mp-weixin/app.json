@@ -17,7 +17,8 @@
     "pages/stat/index",
     "pages/course/index",
     "pages/course/detail",
-    "pages/ai/advisor"
+    "pages/ai/advisor",
+    "pages/map/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

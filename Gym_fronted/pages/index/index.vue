@@ -70,6 +70,7 @@
               <image class="hero-link-icon" src="/static/icons/home/group-white.svg" mode="aspectFit" />
               <text class="hero-link subtle">查看搭子组</text>
             </view>
+
           </view>
         </view>
 
@@ -142,6 +143,16 @@
               </view>
               <text class="action-text">AI 顾问</text>
               <text class="action-desc">问训练计划、饮食建议，或上传动作图让 AI 帮你分析姿势</text>
+            </view>
+
+            <view class="action-item map-action-item" @tap="navigateTo('/pages/map/index')">
+              <view class="action-icon fresh">
+                <image class="action-icon-image" src="/static/icons/home/location-green.svg" mode="aspectFit" />
+              </view>
+              <text class="map-action-title">附近健身房</text>
+              <text class="map-action-desc">打开地图页，查看周边健身房位置和距离，方便快速找场地开练</text>
+              <text class="action-text">附近健身房</text>
+              <text class="action-desc">打开地图页，查看周边健身房位置和距离，方便快速找场地开练</text>
             </view>
           </view>
         </view>
@@ -1136,6 +1147,30 @@ onUnmounted(() => {
 .action-icon.cool {
   background: #e8f8ff;
   color: #0d8ccf;
+}
+
+.action-icon.fresh {
+  background: #ecfbf2;
+  color: #1d9b5f;
+}
+
+.map-action-item .action-text,
+.map-action-item .action-desc {
+  display: none;
+}
+
+.map-action-title {
+  display: block;
+  margin-bottom: 10rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #182338;
+}
+
+.map-action-desc {
+  font-size: 22rpx;
+  line-height: 1.55;
+  color: #7a869c;
 }
 
 .action-text {

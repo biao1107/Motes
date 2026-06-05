@@ -239,7 +239,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     f: common_assets._imports_1,
     g: common_vendor.t($data.detail.groupName || "未命名搭子组"),
     h: common_vendor.t($data.detail.fixedTime ? $data.detail.fixedTime : "还没设固定训练时间"),
-    i: common_assets._imports_1$3,
+    i: common_assets._imports_1$4,
     j: common_vendor.o(($event) => $data.showInvite = true),
     k: common_assets._imports_1,
     l: common_vendor.t($options.memberCount),
@@ -247,7 +247,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     n: common_vendor.t($options.myRoleLabel),
     o: common_assets._imports_3$1,
     p: common_vendor.t($options.formatDate($data.detail.createTime) || "未知"),
-    q: common_assets._imports_0$4,
+    q: common_assets._imports_0$5,
     r: common_vendor.o((...args) => $options.goToChatRoom && $options.goToChatRoom(...args)),
     s: common_assets._imports_3$2,
     t: common_vendor.o(($event) => $data.showCreateChallenge = true),
@@ -256,7 +256,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     x: common_assets._imports_0$2,
     y: common_assets._imports_7$1,
     z: common_vendor.t($data.detail.status === 1 ? "正常" : "已停用"),
-    A: common_assets._imports_1$1,
+    A: common_assets._imports_1$2,
     B: common_vendor.t($data.detail.fixedTime || "未设置"),
     C: common_assets._imports_3$2,
     D: common_vendor.t($data.groupChallenges.length),
@@ -334,7 +334,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     })),
     ak: !$data.challengeCoverImageUrl
   }, !$data.challengeCoverImageUrl ? {
-    al: common_assets._imports_1$2
+    al: common_assets._imports_1$3
   } : {
     am: $data.challengeCoverImageUrl
   }, {

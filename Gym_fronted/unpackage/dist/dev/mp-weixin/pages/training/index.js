@@ -662,7 +662,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     e: $data.started ? 1 : "",
     f: $data.started
   }, $data.started ? {
-    g: common_assets._imports_1$2,
+    g: common_assets._imports_1$3,
     h: common_vendor.t($options.$t("training.completed")),
     i: common_vendor.t($data.report.done || 0),
     j: common_assets._imports_4$1,
@@ -709,13 +709,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     P: $data.form.target,
     Q: $data.started
   }, $data.started ? {
-    R: common_assets._imports_1$2,
+    R: common_assets._imports_1$3,
     S: common_vendor.o([common_vendor.m(($event) => $data.report.done = $event.detail.value, {
       number: true
     }), (...args) => $options.validateDoneInput && $options.validateDoneInput(...args)]),
     T: $data.report.done
   } : {}, {
-    U: common_assets._imports_5$2,
+    U: common_assets._imports_5$1,
     V: common_vendor.t($options.$t("training.trainingDate")),
     W: common_vendor.t($data.form.date || $options.$t("training.selectDate")),
     X: $data.form.date,
@@ -759,12 +759,12 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     ay: common_vendor.t($options.$t("training.visibilityDesc")),
     az: common_vendor.o((...args) => $options.onVisibilityChange && $options.onVisibilityChange(...args)),
     aA: $data.visibilitySetting,
-    aB: common_assets._imports_10$1,
+    aB: common_assets._imports_1$1,
     aC: common_vendor.t($options.$t("training.realTimeSync")),
     aD: common_vendor.t($options.$t("training.syncDesc")),
     aE: common_vendor.o((...args) => $options.onSyncChange && $options.onSyncChange(...args)),
     aF: $data.syncSetting,
-    aG: common_assets._imports_1$2,
+    aG: common_assets._imports_1$3,
     aH: common_vendor.t($options.$t("training.viewGroupProgress")),
     aI: common_vendor.t($options.$t("training.viewProgressDesc")),
     aJ: common_assets._imports_9$1,
