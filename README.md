@@ -1,232 +1,338 @@
-# Motes - 健身搭子智能匹配与协同训练系统
+# Gym 健身搭子
 
-聚焦“找搭子难、监督弱、易放弃”的健身痛点，围绕「智能匹配 + 搭子组协作 + 协同训练 + 挑战打卡 + 实时聊天」构建一套完整的健身社交闭环。
-
-## 项目亮点
-
-- 智能匹配：根据健身目标、训练时间、训练场景、监督需求和基础水平做多维匹配。
-- 搭子组协作：支持创建小组、邀请成员、查看组内协作安排与挑战节奏。
-- 协同训练：训练过程支持实时上报进度，形成更强的陪伴感和监督感。
-- 挑战打卡：支持公开挑战和组内挑战，把训练坚持做成可追踪的节奏。
-- 实时消息：组内聊天、邀约通知、未读消息聚合到统一消息中心。
-- 数据看板：从个人训练、组内协作、挑战进度多个维度做复盘。
-
-## 项目效果
-
-### 1. 登录、首页与邀请
 <p align="center">
-  <img src="screenshots/图片1.png" width="220" alt="登录页">
-  <img src="screenshots/图片2.png" width="220" alt="首页">
-  <img src="screenshots/Snipaste_2026-03-13_15-24-00.png" width="220" alt="邀请弹窗">
+  一个面向微信小程序 / uni-app 场景的健身社交项目，围绕
+  <strong>找搭子、一起练、挑战打卡、消息协同、AI 辅助</strong>
+  搭建完整训练闭环。
 </p>
 
-### 2. 搭子组、消息与聊天
 <p align="center">
-  <img src="screenshots/Snipaste_2026-03-13_14-22-53.png" width="220" alt="搭子组详情">
-  <img src="screenshots/图片7.png" width="220" alt="消息中心">
-  <img src="screenshots/Snipaste_2026-03-13_15-16-48.png" width="220" alt="聊天室">
+  <img src="https://img.shields.io/badge/Java-17-1677ff?style=flat-square" alt="Java 17" />
+  <img src="https://img.shields.io/badge/Spring%20Boot-3.2.5-65b045?style=flat-square" alt="Spring Boot 3.2.5" />
+  <img src="https://img.shields.io/badge/uni--app-Vue%203-4c6fff?style=flat-square" alt="uni-app Vue 3" />
+  <img src="https://img.shields.io/badge/MySQL-8%2B-2f6feb?style=flat-square" alt="MySQL 8+" />
+  <img src="https://img.shields.io/badge/Redis-RabbitMQ-MinIO-f08c00?style=flat-square" alt="Redis RabbitMQ MinIO" />
 </p>
 
-### 3. 协同训练、匹配与课程
-<p align="center">
-  <img src="screenshots/图片5.png" width="220" alt="协同训练">
-  <img src="screenshots/图片6.png" width="220" alt="智能匹配">
-  <img src="screenshots/图片4.png" width="220" alt="课程库">
-</p>
+## 项目简介
 
-### 4. 档案与组管理
-<p align="center">
-  <img src="screenshots/图片3.png" width="220" alt="个人档案">
-  <img src="screenshots/Snipaste_2026-03-13_14-22-19.png" width="220" alt="档案编辑">
-</p>
+Gym 是一个“健身搭子 + 协同训练 + AI 顾问”的综合项目，分为：
+
+- `Spring Boot` 后端：提供认证、匹配、组队、挑战、训练、课程、统计、消息、AI 等能力
+- `uni-app` 前端：适配移动端 / 小程序场景，承载核心业务页面和交互
+- `screenshots/`：项目效果图，适合直接用于 GitHub README 展示
+
+项目重点不是“单次训练”，而是帮助用户持续训练：
+
+- 找到更合适的健身搭子
+- 建立固定训练小组
+- 通过挑战和打卡保持节奏
+- 用消息和实时通知增强协作
+- 借助 AI 获取训练、饮食和动作分析建议
+
+## 效果预览
+
+### 首页 / 地图 / AI
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="./screenshots/index.png" alt="首页" width="240" />
+    </td>
+    <td align="center">
+      <img src="./screenshots/map.png" alt="附近健身房地图页" width="240" />
+    </td>
+    <td align="center">
+      <img src="./screenshots/ai-chat2.png" alt="AI 顾问页" width="240" />
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><strong>首页</strong><br />快捷入口、训练数据、待办提醒</td>
+    <td align="center"><strong>附近健身房</strong><br />地图定位、筛选、搜索、导航</td>
+    <td align="center"><strong>AI 顾问</strong><br />训练计划、饮食建议、动作分析</td>
+  </tr>
+</table>
+
+### 组队 / 聊天 / 课程
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="./screenshots/Snipaste_2026-03-13_14-22-53.png" alt="搭子组详情页" width="240" />
+    </td>
+    <td align="center">
+      <img src="./screenshots/Snipaste_2026-03-13_15-16-48.png" alt="组内聊天页" width="240" />
+    </td>
+    <td align="center">
+      <img src="./screenshots/图片4.png" alt="课程页" width="240" />
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><strong>搭子组详情</strong><br />固定训练时间、成员、挑战概览</td>
+    <td align="center"><strong>组内聊天</strong><br />交流训练进度与图片内容</td>
+    <td align="center"><strong>课程中心</strong><br />按类型与难度筛选课程</td>
+  </tr>
+</table>
+
+### 地图细节 / 个人档案 / 登录
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="./screenshots/map1.png" alt="健身房列表" width="240" />
+    </td>
+    <td align="center">
+      <img src="./screenshots/Snipaste_2026-03-13_14-22-19.png" alt="个人档案页" width="240" />
+    </td>
+    <td align="center">
+      <img src="./screenshots/图片1.png" alt="登录页" width="240" />
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><strong>场馆卡片</strong><br />距离、评分、导航、电话咨询</td>
+    <td align="center"><strong>个人档案</strong><br />目标、时间、场景、监督偏好</td>
+    <td align="center"><strong>认证页</strong><br />密码登录与验证码登录入口</td>
+  </tr>
+</table>
 
 ## 核心功能
 
-### 用户认证
-- 手机号 + 密码登录
-- 手机号 + 验证码登录
-- JWT Token 认证
-- Spring Security 权限控制
+### 1. 智能匹配
 
-### 用户档案
-- 健身目标、训练时间、训练场景、监督需求等档案管理
-- 档案信息缓存
-- 档案更新后自动影响匹配结果
+- 根据健身目标、训练时间、训练场景、健身基础等维度推荐搭子
+- 首页可直接进入匹配页，缩短从“打开应用”到“开始训练”的路径
 
-### 搭子匹配
-- 多维度匹配算法
-- Redis 分桶粗筛优化
-- 匹配结果缓存
-- 支持 1v1 和多人组队
+### 2. 搭子组协作
 
-### 搭子组与消息
-- 创建搭子组
-- 发送 / 接受 / 拒绝邀约
-- 组详情、成员管理、组内挑战
-- 消息中心与组内聊天
+- 创建 2~3 人训练小组
+- 支持按用户名邀请成员
+- 展示固定训练时间、成员关系和组内挑战情况
 
-### 协同训练
-- 开始训练 / 放弃训练 / 上报进度
-- 训练进度实时同步
-- Redis + 定时任务做状态同步
+### 3. 协同训练
 
-### 挑战系统
-- 创建公开挑战 / 组内挑战
-- 参与挑战、打卡、防重处理
-- 挑战报告与状态跟踪
+- 开始训练、上报进度、放弃训练
+- 支持查看今日训练记录
+- 训练过程可以和组队协作、挑战打卡联动
 
-### 数据统计
-- 个人训练统计
-- 组内协作统计
-- 挑战完成度统计
-- 首页概览数据
+### 4. 挑战与打卡
 
-### 课程系统
-- 推荐课程、课程筛选、课程详情
-- 支持不同类型和难度等级
+- 支持公开挑战和组内挑战
+- 支持加入挑战、每日打卡、进度统计
+- 首页展示待办数量，帮助形成持续训练节奏
+
+### 5. 实时消息
+
+- H5 环境支持 `WebSocket + STOMP`
+- 组内聊天、进度通知、打卡提醒等能力可实时触达
+- 小程序环境已做兼容处理，不强依赖 STOMP
+
+### 6. 数据统计
+
+- 统计训练天数、挑战参与度、搭子数量等信息
+- 首页和统计页联合展示个人训练表现
+
+### 7. 课程中心
+
+- 支持课程列表、课程详情、推荐课程
+- 支持按课程类型、难度等级和关键词检索
+
+### 8. 地图找健身房
+
+- 基于当前位置搜索附近健身房 / 私教工作室 / 体育馆
+- 支持关键字搜索、半径筛选、卡片聚焦、电话咨询、导航前往
+- 地图页效果图在 `screenshots/map.png`、`screenshots/map1.png`、`screenshots/map2.png`
+
+### 9. AI 健身顾问
+
+- 支持文字咨询训练计划、饮食建议、健身知识
+- 支持上传动作图片进行姿势分析
+- 后端通过 `LangChain4j + DashScope/Qwen` 提供统一对话与图文分析能力
 
 ## 技术栈
 
 ### 前端
+
 - `uni-app`
-- `Vue`
+- `Vue 3`
 - `SCSS`
-- `WebSocket / 轮询`
+- `uni.request`
+- `WebSocket + STOMP`（H5）
 
 ### 后端
+
+- `Java 17`
 - `Spring Boot 3.2.5`
 - `Spring Security`
-- `JWT`
 - `MyBatis-Plus`
-- `MySQL 8`
+- `MySQL`
 - `Redis`
 - `RabbitMQ`
-- `WebSocket + STOMP`
 - `MinIO`
-- `Swagger / OpenAPI`
-
-## 系统架构图
-
-```mermaid
-flowchart LR
-    U[用户 / 微信小程序 / H5] --> FE[uni-app 前端]
-    FE --> API[Spring Boot API]
-    FE --> WS[WebSocket / STOMP]
-
-    API --> SEC[Spring Security + JWT]
-    API --> SVC[业务服务层]
-    SVC --> DB[(MySQL)]
-    SVC --> REDIS[(Redis)]
-    SVC --> MQ[(RabbitMQ)]
-    SVC --> MINIO[(MinIO)]
-
-    WS --> CHAT[实时聊天 / 训练推送]
-    MQ --> ASYNC[异步提醒 / 报告生成]
-    REDIS --> CACHE[匹配缓存 / 统计缓存 / 进度缓存]
-```
-
-## 业务流程图
-
-```mermaid
-flowchart TD
-    A[用户注册 / 登录] --> B[完善健身档案]
-    B --> C[智能匹配搭子]
-    C --> D[创建或加入搭子组]
-    D --> E[组内聊天 / 邀请成员]
-    D --> F[发起或参与挑战]
-    D --> G[开始协同训练]
-    G --> H[实时上报训练进度]
-    H --> I[完成训练 / 打卡挑战]
-    I --> J[首页与统计页复盘]
-    E --> J
-    F --> J
-```
+- `Spring WebSocket`
+- `SpringDoc OpenAPI`
+- `LangChain4j`
 
 ## 项目结构
 
 ```text
-Gym/
-├── src/main/java/com/gym/          # 后端代码
-├── src/main/resources/             # 配置与资源
-├── Gym_fronted/                    # 前端 uni-app 项目
-│   ├── pages/                      # 页面
-│   ├── common/                     # API / auth / ws / config
-│   ├── static/                     # 图标、背景等静态资源
-│   └── components/                 # 公共组件
-├── docs/                           # 数据库脚本与说明文档
-├── screenshots/                    # 项目截图
-├── PROJECT_OVERVIEW.md             # 项目总览
-└── CODE_DOCUMENTATION.md           # 代码注释说明
+Gym
+├─ src/main/java/com/gym
+│  ├─ ai/                 # AI 顾问、图像上传、统一对话
+│  ├─ common/             # 通用响应、异常、错误码
+│  ├─ config/             # 安全、WebSocket、Swagger、MinIO 等配置
+│  ├─ controller/         # 认证、用户、匹配、组队、挑战、训练、课程、统计
+│  ├─ dto/                # 数据传输对象
+│  ├─ entity/             # 实体类
+│  ├─ mapper/             # MyBatis Mapper
+│  ├─ service/            # 业务服务
+│  ├─ consumer/           # MQ 消费者
+│  └─ job/                # 定时任务
+├─ src/main/resources
+│  ├─ application.yml
+│  ├─ application-local.yml
+│  └─ system-prompt.txt
+├─ Gym_fronted
+│  ├─ common/             # API、HTTP、认证、WebSocket、配置
+│  ├─ pages/              # 业务页面
+│  ├─ static/             # 图标、背景图、脚本资源
+│  ├─ App.vue
+│  ├─ main.js
+│  └─ pages.json
+├─ screenshots/           # README 效果图素材
+├─ PROJECT_OVERVIEW.md    # 项目概览
+├─ CODE_DOCUMENTATION.md  # 代码讲解文档
+└─ README.md
 ```
+
+## 主要页面与模块
+
+| 模块 | 前端页面 | 后端接口/能力 |
+| --- | --- | --- |
+| 认证 | `pages/auth/login.vue` `pages/auth/register.vue` | `AuthController` / JWT / 验证码 |
+| 首页 | `pages/index/index.vue` | `StatController` / 待办与概览统计 |
+| 匹配 | `pages/match/index.vue` | `MatchController` |
+| 搭子组 | `pages/group/*` | `GroupController` |
+| 训练 | `pages/training/*` | `TrainingController` |
+| 挑战 | `pages/challenge/*` | `ChallengeController` |
+| 课程 | `pages/course/*` | `CourseController` |
+| 统计 | `pages/stat/index.vue` | `StatController` |
+| 地图 | `pages/map/index.vue` | 高德地图 Web API |
+| AI 顾问 | `pages/ai/advisor.vue` | `AiController` |
 
 ## 快速开始
 
 ### 环境要求
-- JDK 17+
-- Maven 3.6+
-- MySQL 8+
-- Redis 6+
-- RabbitMQ 3.8+
-- MinIO（可选）
 
-### 1. 初始化数据库
+- `JDK 17+`
+- `Maven 3.9+`
+- `MySQL 8+`
+- `Redis 6+`
+- `RabbitMQ 3.8+`
+- `MinIO` 或兼容对象存储
+- `Node.js 16+`
+- `HBuilderX` 或 `uni-app CLI`
 
-```bash
-mysql -u root -p gym < docs/gym.sql
-```
+### 1. 启动后端
 
-### 2. 修改后端配置
+先根据你的本地环境修改以下配置：
 
-编辑 `src/main/resources/application.yml`，配置：
-- MySQL
-- Redis
-- RabbitMQ
-- MinIO
+- `src/main/resources/application.yml`
+- `src/main/resources/application-local.yml`
 
-### 3. 启动后端
+重点检查：
+
+- MySQL 连接
+- Redis 连接
+- RabbitMQ 连接
+- MinIO / OSS 配置
+- JWT 密钥
+- AI 模型 API Key
+
+启动命令：
 
 ```bash
 mvn spring-boot:run
 ```
 
-或
+或：
 
 ```bash
 mvn clean package
 java -jar target/gym-0.0.1-SNAPSHOT.jar
 ```
 
-### 4. 启动前端
+启动后默认地址：
 
-编辑 `Gym_fronted/common/config.js` 中的后端地址，然后：
-- 使用 `HBuilderX` 打开 `Gym_fronted`
-- 运行到微信开发者工具或 H5
+- API: `http://localhost:8080`
+- Swagger: `http://localhost:8080/swagger-ui.html`
 
-### 5. 查看接口文档
+### 2. 启动前端
 
-```text
-http://localhost:8080/swagger-ui/index.html
+先修改：
+
+- `Gym_fronted/common/config.js`
+
+默认配置为：
+
+```js
+const BASE_URL = 'http://localhost:8080';
 ```
 
-## 典型页面
+如果是真机调试或局域网访问，请改成你的本机 IP。
 
-- 首页：`Gym_fronted/pages/index/index.vue`
-- 智能匹配：`Gym_fronted/pages/match/index.vue`
-- 搭子组：`Gym_fronted/pages/group/index.vue`
-- 消息中心：`Gym_fronted/pages/group/messages.vue`
-- 组内聊天：`Gym_fronted/pages/group/chat.vue`
-- 协同训练：`Gym_fronted/pages/training/index.vue`
-- 挑战系统：`Gym_fronted/pages/challenge/index.vue`
-- 课程系统：`Gym_fronted/pages/course/index.vue`
+在 `Gym_fronted` 目录下：
 
-## 相关文档
+```bash
+npm install
+npm run dev:h5
+```
 
-- [项目总览](PROJECT_OVERVIEW.md)
-- [代码注释说明](CODE_DOCUMENTATION.md)
-- [数据库初始化脚本](docs/gym.sql)
-- [数据库配置说明](docs/DATABASE_SETUP.md)
-- [聊天功能说明](docs/CHAT_FEATURE.md)
+也可以直接使用 `HBuilderX` 打开 `Gym_fronted` 目录运行到：
 
-## 许可证
+- H5 浏览器
+- 微信开发者工具
+- 手机真机
 
-MIT
+## 运行说明
+
+### 地图能力
+
+地图页位于：
+
+- `Gym_fronted/pages/map/index.vue`
+
+当前页面依赖两个高德配置项：
+
+- `amap-key`
+- `webKey`
+
+如果你要部署自己的版本，建议替换为自己的 Key，并在对应平台开通地图、周边搜索、逆地理解析等能力。
+
+### WebSocket
+
+- H5 环境连接入口：`/ws`
+- 前端封装：`Gym_fronted/common/ws.js`
+- 登录后携带 JWT 建立 STOMP 连接
+- 小程序环境已做兼容判断，不会强制初始化 STOMP
+
+### AI 顾问
+
+- 前端页面：`Gym_fronted/pages/ai/advisor.vue`
+- 后端控制器：`src/main/java/com/gym/ai/controller/AiController.java`
+- 支持文字对话、统一图文对话、动作图片上传与分析
+
+## 开发建议
+
+- 根目录 README 用于 GitHub 展示和快速上手
+- 更完整的背景说明可以查看 `PROJECT_OVERVIEW.md`
+- 代码讲解和注释说明可以查看 `CODE_DOCUMENTATION.md`
+
+## 注意事项
+
+- 当前仓库中未看到数据库初始化 SQL 脚本，落地时需要自行准备建表脚本或补充初始化数据
+- 地图导航、定位、电话咨询建议优先在真机环境测试
+- 提交到 GitHub 前，建议把本地 AI / OSS 密钥改为环境变量或本地私有配置，避免泄露敏感信息
+
+## License
+
+本项目当前更适合作为学习、演示和课程设计项目使用，如需商用请自行补充授权、合规和安全治理策略。
