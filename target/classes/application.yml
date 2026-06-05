@@ -1,6 +1,8 @@
 spring:
   application:
     name: gym
+  profiles:
+    active: local
   datasource:
     url: jdbc:mysql://localhost:3306/gym?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
@@ -21,6 +23,21 @@ spring:
       virtual-host: /gym
       username: gym
       password: 123
+langchain4j:
+  community:
+    dashscope:
+      chat-model:
+        model-name: qwen-max
+        api-key: ${DASHSCOPE_API_KEY:${AI_API_KEY:}}
+      chat-language-model:
+        model-name: qwen-vl-max
+        api-key: ${DASHSCOPE_API_KEY:${AI_API_KEY:}}
+      embedding-model:
+        model-name: text-embedding-v4
+        api-key: ${DASHSCOPE_API_KEY:${AI_API_KEY:}}
+      streaming-chat-model:
+        model-name: qwen-max
+        api-key: ${DASHSCOPE_API_KEY:${AI_API_KEY:}}
 
 
 mybatis-plus:
@@ -59,6 +76,14 @@ minio:
   avatars-bucket: avatars
   courses-bucket: courses
   challenges-bucket: challenges
+
+ai:
+  oss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    public-endpoint: https://gym-ai-helper.oss-cn-beijing.aliyuncs.com
+    bucket: gym-ai-helper
+    access-key-id:
+    access-key-secret:
 
 logging:
   level:

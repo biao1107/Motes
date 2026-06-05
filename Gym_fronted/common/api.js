@@ -379,6 +379,97 @@ export function apiSearchCourses(keyword, page = 1, size = 10) {
 	return get(`/course/search?keyword=${encodeURIComponent(keyword)}&page=${page}&size=${size}`);
 }
 
+// ==================== AI 健身顾问 ====================
 
+export function apiAiFitnessChat(memoryId, message) {
+	return get('/ai/chat/sync', {
+		memoryId,
+		message
+	});
+}
 
+export function apiAiUnifiedChat(data) {
+	return post('/ai/chat-unified', data);
+}
 
+export function apiAiAnalyzeAction(filePath, message = '') {
+	return new Promise((resolve, reject) => {
+		if (!filePath || typeof filePath !== 'string') {
+			reject(new Error('Invalid file path'));
+			return;
+		}
+
+		const formData = {};
+		if (message) {
+			formData.message = message;
+		}
+
+		uni.uploadFile({
+			url: BASE_URL + '/ai/analyze-action',
+			filePath,
+			name: 'file',
+			formData,
+			header: {
+				'Authorization': uni.getStorageSync('gym_token') ? `Bearer ${uni.getStorageSync('gym_token')}` : ''
+			},
+			success: (res) => {
+				try {
+					const body = JSON.parse(res.data || '{}');
+					if (typeof body.code === 'number') {
+						if (body.code === 0) {
+							resolve(body.data);
+						} else {
+							uni.showToast({ title: body.message || '分析失败', icon: 'none' });
+							reject(body);
+						}
+						return;
+					}
+					resolve(body);
+				} catch (error) {
+					resolve(res.data);
+				}
+			},
+			fail: reject
+		});
+	});
+}
+
+export function apiAiAnalyzeActionByUrl(data) {
+	return post('/ai/analyze-action', data);
+}
+
+export function apiAiUploadActionImage(filePath) {
+	return new Promise((resolve, reject) => {
+		if (!filePath || typeof filePath !== 'string') {
+			reject(new Error('Invalid file path'));
+			return;
+		}
+
+		uni.uploadFile({
+			url: BASE_URL + '/ai/upload-action-image',
+			filePath,
+			name: 'file',
+			header: {
+				'Authorization': uni.getStorageSync('gym_token') ? `Bearer ${uni.getStorageSync('gym_token')}` : ''
+			},
+			success: (res) => {
+				try {
+					const body = JSON.parse(res.data || '{}');
+					if (typeof body.code === 'number') {
+						if (body.code === 0) {
+							resolve(body.data);
+						} else {
+							uni.showToast({ title: body.message || '上传失败', icon: 'none' });
+							reject(body);
+						}
+						return;
+					}
+					resolve(body);
+				} catch (error) {
+					resolve(res.data);
+				}
+			},
+			fail: reject
+		});
+	});
+}

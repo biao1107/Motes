@@ -77,7 +77,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, $data.course.coverImage ? {
     b: $data.course.coverImage
   } : {}, {
-    c: common_assets._imports_0$4,
+    c: common_assets._imports_0$5,
     d: common_vendor.t($data.course.courseName || "课程详情"),
     e: common_vendor.t($data.course.description || "查看动作结构、时长和视频。"),
     f: common_assets._imports_1$1,

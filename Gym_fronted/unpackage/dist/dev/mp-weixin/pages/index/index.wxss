@@ -189,8 +189,6 @@
 .hero-primary-btn.data-v-1cf27b2a {
   height: 84rpx;
   border-radius: 999rpx;
-}
-.hero-primary-btn.data-v-1cf27b2a {
   gap: 10rpx;
   background: #ffffff;
   box-shadow: 0 10rpx 20rpx rgba(10, 21, 71, 0.1);
@@ -337,28 +335,6 @@
   display: block;
   font-size: 22rpx;
   color: #6e7a90;
-}
-.data-trend.data-v-1cf27b2a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 8rpx;
-}
-.trend-icon.data-v-1cf27b2a,
-.trend-text.data-v-1cf27b2a {
-  font-size: 20rpx;
-}
-.trend-icon.data-v-1cf27b2a {
-  margin-right: 4rpx;
-}
-.trend-icon.up.data-v-1cf27b2a {
-  color: #1fa45a;
-}
-.trend-icon.down.data-v-1cf27b2a {
-  color: #e55045;
-}
-.trend-text.data-v-1cf27b2a {
-  color: #7a869c;
 }
 .data-loading.data-v-1cf27b2a {
   display: flex;

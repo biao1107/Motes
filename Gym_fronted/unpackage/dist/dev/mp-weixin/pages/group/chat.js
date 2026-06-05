@@ -459,10 +459,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: $data.showError
   }, $data.showError ? {
-    b: common_assets._imports_0$3,
+    b: common_assets._imports_0$4,
     c: common_vendor.o((...args) => $options.goBack && $options.goBack(...args))
   } : common_vendor.e({
-    d: common_assets._imports_0$3,
+    d: common_assets._imports_0$4,
     e: $options.getGroupAvatarList().length > 0
   }, $options.getGroupAvatarList().length > 0 ? {
     f: common_vendor.f($options.getGroupAvatarList(), (member, index, i0) => {
@@ -479,7 +479,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     g: common_vendor.n(`count-${$options.getGroupAvatarList().length}`)
   } : {}, {
     h: common_vendor.t($data.groupName),
-    i: common_assets._imports_0$3,
+    i: common_assets._imports_0$4,
     j: common_vendor.t($data.messages.length),
     k: common_assets._imports_1$4,
     l: $data.loadingMore

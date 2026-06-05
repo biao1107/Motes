@@ -214,7 +214,46 @@ function apiGetRecommendCourses(limit = 6) {
 function apiSearchCourses(keyword, page = 1, size = 10) {
   return common_http.get(`/course/search?keyword=${encodeURIComponent(keyword)}&page=${page}&size=${size}`);
 }
+function apiAiUnifiedChat(data) {
+  return common_http.post("/ai/chat-unified", data);
+}
+function apiAiUploadActionImage(filePath) {
+  return new Promise((resolve, reject) => {
+    if (!filePath || typeof filePath !== "string") {
+      reject(new Error("Invalid file path"));
+      return;
+    }
+    common_vendor.index.uploadFile({
+      url: common_config.BASE_URL + "/ai/upload-action-image",
+      filePath,
+      name: "file",
+      header: {
+        "Authorization": common_vendor.index.getStorageSync("gym_token") ? `Bearer ${common_vendor.index.getStorageSync("gym_token")}` : ""
+      },
+      success: (res) => {
+        try {
+          const body = JSON.parse(res.data || "{}");
+          if (typeof body.code === "number") {
+            if (body.code === 0) {
+              resolve(body.data);
+            } else {
+              common_vendor.index.showToast({ title: body.message || "上传失败", icon: "none" });
+              reject(body);
+            }
+            return;
+          }
+          resolve(body);
+        } catch (error) {
+          resolve(res.data);
+        }
+      },
+      fail: reject
+    });
+  });
+}
 exports.apiAcceptInvite = apiAcceptInvite;
+exports.apiAiUnifiedChat = apiAiUnifiedChat;
+exports.apiAiUploadActionImage = apiAiUploadActionImage;
 exports.apiChallengeCreate = apiChallengeCreate;
 exports.apiChallengeDetail = apiChallengeDetail;
 exports.apiChallengeJoin = apiChallengeJoin;

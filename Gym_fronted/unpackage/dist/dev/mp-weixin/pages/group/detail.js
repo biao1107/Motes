@@ -247,7 +247,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     n: common_vendor.t($options.myRoleLabel),
     o: common_assets._imports_3$1,
     p: common_vendor.t($options.formatDate($data.detail.createTime) || "未知"),
-    q: common_assets._imports_0$3,
+    q: common_assets._imports_0$4,
     r: common_vendor.o((...args) => $options.goToChatRoom && $options.goToChatRoom(...args)),
     s: common_assets._imports_3$2,
     t: common_vendor.o(($event) => $data.showCreateChallenge = true),

@@ -787,9 +787,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         f: index
       });
     }),
-    aQ: common_assets._imports_11
+    aQ: common_assets._imports_0$3
   } : $data.started ? {
-    aS: common_assets._imports_11,
+    aS: common_assets._imports_0$3,
     aT: common_vendor.t($options.$t("training.noMessages"))
   } : {}, {
     aR: $data.started

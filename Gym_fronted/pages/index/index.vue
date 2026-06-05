@@ -1,7 +1,11 @@
 <template>
   <view class="fitness-home">
     <view class="top-bg"></view>
-    <image class="hero-bg-photo" src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1600&q=80" mode="aspectFill" />
+    <image
+      class="hero-bg-photo"
+      src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1600&q=80"
+      mode="aspectFill"
+    />
     <view class="top-orb orb-left"></view>
     <view class="top-orb orb-right"></view>
 
@@ -16,7 +20,7 @@
           <view class="user-greet">
             <text class="greet-text">嗨，{{ userProfile.nickname || '健身达人' }}</text>
             <text class="greet-subtext">
-              {{ userProfile.fitnessGoal ? `目标：${userProfile.fitnessGoal}` : '先设定你的训练目标，系统会给出更准的推荐' }}
+              {{ userProfile.fitnessGoal ? `目标：${userProfile.fitnessGoal}` : '先完善你的训练档案，系统会给出更准确的推荐' }}
             </text>
           </view>
 
@@ -85,12 +89,6 @@
               </view>
               <text class="data-num">{{ item.value }}</text>
               <text class="data-label">{{ item.label }}</text>
-              <view class="data-trend" v-if="item.trend !== null">
-                <text class="trend-icon" :class="item.trend > 0 ? 'up' : 'down'">
-                  {{ item.trend > 0 ? '↑' : '↓' }}
-                </text>
-                <text class="trend-text">{{ Math.abs(item.trend) }}%</text>
-              </view>
             </view>
           </view>
 
@@ -101,7 +99,7 @@
 
         <view class="core-actions">
           <view class="section-head">
-            <text class="action-title">快速开始</text>
+            <text class="action-title">快捷开始</text>
             <text class="section-caption">先做最常用的动作，把训练流程尽量缩短到一步进入</text>
           </view>
 
@@ -136,6 +134,14 @@
               </view>
               <text class="action-text">数据统计</text>
               <text class="action-desc">复盘训练趋势、完成率和协同参与情况</text>
+            </view>
+
+            <view class="action-item" @tap="navigateTo('/pages/ai/advisor')">
+              <view class="action-icon neutral">
+                <image class="action-icon-image" src="/static/icons/home/message-blue.svg" mode="aspectFit" />
+              </view>
+              <text class="action-text">AI 顾问</text>
+              <text class="action-desc">问训练计划、饮食建议，或上传动作图让 AI 帮你分析姿势</text>
             </view>
           </view>
         </view>
@@ -446,7 +452,7 @@ const getUnreadSummary = async () => {
       const inviteRes = await apiGetInvitations();
       invitations = Array.isArray(inviteRes) ? inviteRes.length : 0;
     } catch (error) {
-      console.error('获取邀请列表失败:', error);
+      console.error('获取邀请列表失败', error);
     }
 
     inviteCount.value = invitations;
@@ -846,9 +852,6 @@ onUnmounted(() => {
 .hero-primary-btn {
   height: 84rpx;
   border-radius: 999rpx;
-}
-
-.hero-primary-btn {
   gap: 10rpx;
   background: #ffffff;
   box-shadow: 0 10rpx 20rpx rgba(10, 21, 71, 0.1);
@@ -1021,34 +1024,6 @@ onUnmounted(() => {
   display: block;
   font-size: 22rpx;
   color: #6e7a90;
-}
-
-.data-trend {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 8rpx;
-}
-
-.trend-icon,
-.trend-text {
-  font-size: 20rpx;
-}
-
-.trend-icon {
-  margin-right: 4rpx;
-}
-
-.trend-icon.up {
-  color: #1fa45a;
-}
-
-.trend-icon.down {
-  color: #e55045;
-}
-
-.trend-text {
-  color: #7a869c;
 }
 
 .data-loading {

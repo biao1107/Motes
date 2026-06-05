@@ -101,6 +101,12 @@
 			"style": {
 				"navigationBarTitleText": "课程详情"
 			}
+		},
+		{
+			"path": "pages/ai/advisor",
+			"style": {
+				"navigationBarTitleText": "AI 健身顾问"
+			}
 		}
 	],
 	"globalStyle": {

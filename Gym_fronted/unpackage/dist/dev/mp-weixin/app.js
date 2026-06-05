@@ -20,6 +20,7 @@ if (!Math) {
   "./pages/stat/index.js";
   "./pages/course/index.js";
   "./pages/course/detail.js";
+  "./pages/ai/advisor.js";
 }
 const _sfc_main = {
   /**
