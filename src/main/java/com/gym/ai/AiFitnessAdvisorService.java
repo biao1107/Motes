@@ -10,6 +10,4 @@ public interface AiFitnessAdvisorService {
     @SystemMessage(fromResource = "system-prompt.txt")
     String chat(@MemoryId int memoryId, @UserMessage String message);
 
-    @SystemMessage(fromResource = "system-prompt.txt")
-    Flux<String> chatStream(@MemoryId int memoryId, @UserMessage String message);
 }

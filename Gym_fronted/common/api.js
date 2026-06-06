@@ -1,40 +1,40 @@
-/**
+﻿/**
  * ============================================
- * API 接口封装模块
+ * API 鎺ュ彛灏佽妯″潡
  * ============================================
- * 作用：
- * 封装所有后端接口调用，提供统一的 API 调用方式
+ * 浣滅敤锛?
+ * 灏佽鎵€鏈夊悗绔帴鍙ｈ皟鐢紝鎻愪緵缁熶竴鐨?API 璋冪敤鏂瑰紡
  * 
- * 模块分类：
- * 1. 认证模块：注册、登录、验证码
- * 2. 用户模块：用户信息、档案管理
- * 3. 匹配模块：健身搭子匹配
- * 4. 组管理模块：创建组、邀请成员、组详情
- * 5. 训练模块：训练记录、打卡
- * 6. 挑战模块：创建挑战、加入挑战、打卡
- * 7. 统计模块：个人统计、组统计、挑战统计
- * 8. 聊天模块：聊天历史、未读消息
- * 9. 文件模块：文件上传、头像上传
- * 10. 课程模块：课程列表、课程详情、推荐课程
+ * 妯″潡鍒嗙被锛?
+ * 1. 璁よ瘉妯″潡锛氭敞鍐屻€佺櫥褰曘€侀獙璇佺爜
+ * 2. 鐢ㄦ埛妯″潡锛氱敤鎴蜂俊鎭€佹。妗堢鐞?
+ * 3. 鍖归厤妯″潡锛氬仴韬惌瀛愬尮閰?
+ * 4. 缁勭鐞嗘ā鍧楋細鍒涘缓缁勩€侀個璇锋垚鍛樸€佺粍璇︽儏
+ * 5. 璁粌妯″潡锛氳缁冭褰曘€佹墦鍗?
+ * 6. 鎸戞垬妯″潡锛氬垱寤烘寫鎴樸€佸姞鍏ユ寫鎴樸€佹墦鍗?
+ * 7. 缁熻妯″潡锛氫釜浜虹粺璁°€佺粍缁熻銆佹寫鎴樼粺璁?
+ * 8. 鑱婂ぉ妯″潡锛氳亰澶╁巻鍙层€佹湭璇绘秷鎭?
+ * 9. 鏂囦欢妯″潡锛氭枃浠朵笂浼犮€佸ご鍍忎笂浼?
+ * 10. 璇剧▼妯″潡锛氳绋嬪垪琛ㄣ€佽绋嬭鎯呫€佹帹鑽愯绋?
  * 
- * 注意事项：
- * - 所有函数返回 Promise
- * - 请求成功时直接返回 data 字段
- * - 请求失败时会自动显示错误信息
+ * 娉ㄦ剰浜嬮」锛?
+ * - 鎵€鏈夊嚱鏁拌繑鍥?Promise
+ * - 璇锋眰鎴愬姛鏃剁洿鎺ヨ繑鍥?data 瀛楁
+ * - 璇锋眰澶辫触鏃朵細鑷姩鏄剧ず閿欒淇℃伅
  * ============================================
  */
 
 import { get, post, put } from './http.js';
 import { BASE_URL } from './config.js';
 
-// ==================== 认证模块 ====================
+// ==================== 璁よ瘉妯″潡 ====================
 
 /**
- * 用户注册
- * @param {Object} data - 注册信息
- * @param {string} data.username - 用户名
- * @param {string} data.password - 密码
- * @param {string} data.phone - 手机号
+ * 鐢ㄦ埛娉ㄥ唽
+ * @param {Object} data - 娉ㄥ唽淇℃伅
+ * @param {string} data.username - 鐢ㄦ埛鍚?
+ * @param {string} data.password - 瀵嗙爜
+ * @param {string} data.phone - 鎵嬫満鍙?
  * @returns {Promise}
  */
 export function apiRegister(data) {
@@ -42,21 +42,21 @@ export function apiRegister(data) {
 }
 
 /**
- * 密码登录
- * @param {Object} data - 登录信息
- * @param {string} data.username - 用户名
- * @param {string} data.password - 密码
- * @returns {Promise<{token: string}>} 返回 JWT Token
+ * 瀵嗙爜鐧诲綍
+ * @param {Object} data - 鐧诲綍淇℃伅
+ * @param {string} data.username - 鐢ㄦ埛鍚?
+ * @param {string} data.password - 瀵嗙爜
+ * @returns {Promise<{token: string}>} 杩斿洖 JWT Token
  */
 export function apiLoginByPassword(data) {
 	return post('/auth/login', data);
 }
 
 /**
- * 验证码登录
- * @param {Object} data - 登录信息
- * @param {string} data.phone - 手机号
- * @param {string} data.code - 验证码
+ * 楠岃瘉鐮佺櫥褰?
+ * @param {Object} data - 鐧诲綍淇℃伅
+ * @param {string} data.phone - 鎵嬫満鍙?
+ * @param {string} data.code - 楠岃瘉鐮?
  * @returns {Promise<{token: string}>}
  */
 export function apiLoginByCode(data) {
@@ -64,20 +64,20 @@ export function apiLoginByCode(data) {
 }
 
 /**
- * 发送验证码
- * @param {Object} data - 请求信息
- * @param {string} data.phone - 手机号
+ * 鍙戦€侀獙璇佺爜
+ * @param {Object} data - 璇锋眰淇℃伅
+ * @param {string} data.phone - 鎵嬫満鍙?
  * @returns {Promise}
  */
 export function apiSendCode(data) {
 	return post('/auth/send-code', data);
 }
 
-// ==================== 用户模块 ====================
+// ==================== 鐢ㄦ埛妯″潡 ====================
 
 /**
- * 获取用户档案（详细信息）
- * @returns {Promise<Object>} 用户档案对象
+ * 鑾峰彇鐢ㄦ埛妗ｆ锛堣缁嗕俊鎭級
+ * @returns {Promise<Object>} 鐢ㄦ埛妗ｆ瀵硅薄
  */
 export function apiGetProfile() {
 	return get('/user/profile');
@@ -91,12 +91,12 @@ export function apiUpdateProfile(data) {
 	return put('/user/profile', data);
 }
 
-// 匹配
+// 鍖归厤
 export function apiGetTopMatch(limit = 3) {
 	return get(`/match/top?limit=${limit}`);
 }
 
-// 组管理
+// 缁勭鐞?
 export function apiCreateGroup(data) {
 	return post('/group/create', data);
 }
@@ -142,7 +142,7 @@ export function apiDeleteGroup(groupId) {
 	});
 }
 
-// 训练
+// 璁粌
 export function apiTrainingStart(data) {
 	return post('/training/start', data);
 }
@@ -155,27 +155,27 @@ export function apiTrainingAbandon(data) {
 	return post('/training/abandon', data);
 }
 
-// 新增：挑战打卡接口
+// 鏂板锛氭寫鎴樻墦鍗℃帴鍙?
 export function apiTrainingPunchChallenge(data) {
 	return post('/challenge/punch', data);
 }
 
-// 新增：获取用户挑战列表接口
+// 鏂板锛氳幏鍙栫敤鎴锋寫鎴樺垪琛ㄦ帴鍙?
 export function apiGetUserTrainingChallenges(params) {
 	return get('/training/user-challenges', params);
 }
 
-// 新增：获取今日训练记录
+// 鏂板锛氳幏鍙栦粖鏃ヨ缁冭褰?
 export function apiGetTodayTraining() {
 	return get('/training/today');
 }
 
-// 新增：获取今日待办训练任务数量
+// 鏂板锛氳幏鍙栦粖鏃ュ緟鍔炶缁冧换鍔℃暟閲?
 export function apiGetTodoCount() {
 	return get('/training/todo/count');
 }
 
-// 挑战
+// 鎸戞垬
 export function apiChallengeCreate(data) {
 	return post('/challenge/create', data);
 }
@@ -204,12 +204,12 @@ export function apiCheckChallengeParticipation(challengeId) {
 	return get(`/challenge/${challengeId}/participation`);
 }
 
-// 统计
+// 缁熻
 export function apiStatPersonal() {
 	return get('/stat/personal');
 }
 
-// 首页统计数据
+// 棣栭〉缁熻鏁版嵁
 export function apiStatHome() {
 	return get('/stat/home');
 }
@@ -222,7 +222,7 @@ export function apiStatChallenge(params) {
 	return get('/stat/challenge', params);
 }
 
-// 聊天
+// 鑱婂ぉ
 export function apiGetGroupChatHistory(groupId, limit = 50) {
 	return get(`/chat/group/${groupId}/history?limit=${limit}`);
 }
@@ -231,92 +231,92 @@ export function apiGetLatestMessages(groupId, lastMessageId) {
 	return get(`/chat/group/${groupId}/latest?lastMessageId=${lastMessageId}`);
 }
 
-// 获取未读消息数量
+// 鑾峰彇鏈娑堟伅鏁伴噺
 export function apiGetUnreadCount(userId) {
 	return get(`/chat/unread/count?userId=${userId}`);
 }
 
-// 获取未读消息详情列表
+// 鑾峰彇鏈娑堟伅璇︽儏鍒楄〃
 export function apiGetUnreadDetail(userId) {
 	return get(`/chat/unread/detail?userId=${userId}`);
 }
 
-// 标记群组消息为已读
+// 鏍囪缇ょ粍娑堟伅涓哄凡璇?
 export function apiMarkGroupRead(groupId, userId) {
 	return post(`/chat/group/${groupId}/read?userId=${userId}`, {});
 }
 
-// 发送聊天消息（小程序专用HTTP接口）
+// 鍙戦€佽亰澶╂秷鎭紙灏忕▼搴忎笓鐢℉TTP鎺ュ彛锛?
 export function apiSendChatMessage(data) {
 	return post('/chat/send', data);
 }
 
-// ==================== 文件模块 ====================
+// ==================== 鏂囦欢妯″潡 ====================
 
 /**
- * 通用文件上传
- * 用于上传图片、视频等文件到 MinIO 存储
+ * 閫氱敤鏂囦欢涓婁紶
+ * 鐢ㄤ簬涓婁紶鍥剧墖銆佽棰戠瓑鏂囦欢鍒?MinIO 瀛樺偍
  * 
- * @param {string} filePath - 本地文件临时路径（从 uni.chooseImage 等API获取）
- * @returns {Promise<Object>} 返回包含文件URL的对象 { url: string, filename: string }
+ * @param {string} filePath - 鏈湴鏂囦欢涓存椂璺緞锛堜粠 uni.chooseImage 绛堿PI鑾峰彇锛?
+ * @returns {Promise<Object>} 杩斿洖鍖呭惈鏂囦欢URL鐨勫璞?{ url: string, filename: string }
  * 
  * @example
- * // 选择图片并上传
+ * // 閫夋嫨鍥剧墖骞朵笂浼?
  * uni.chooseImage({
  *   count: 1,
  *   success: async (res) => {
  *     const result = await apiUploadAction(res.tempFilePaths[0]);
- *     console.log('文件URL:', result.url);
+ *     console.log('鏂囦欢URL:', result.url);
  *   }
  * });
  */
 export function apiUploadAction(filePath) {
 	return new Promise((resolve, reject) => {
-		// 参数校验：确保filePath是正确的字符串格式
+		// 鍙傛暟鏍￠獙锛氱‘淇漟ilePath鏄纭殑瀛楃涓叉牸寮?
 		if (!filePath || typeof filePath !== 'string') {
 			reject(new Error('Invalid file path'));
 			return;
 		}
-		// 使用 uni.uploadFile 进行文件上传（小程序专用API）
+		// 浣跨敤 uni.uploadFile 杩涜鏂囦欢涓婁紶锛堝皬绋嬪簭涓撶敤API锛?
 		uni.uploadFile({
 			url: BASE_URL + '/storage/upload/action',
-			filePath,           // 要上传的文件路径
-			name: 'file',       // 后端接收文件的字段名
+			filePath,           // 瑕佷笂浼犵殑鏂囦欢璺緞
+			name: 'file',       // 鍚庣鎺ユ敹鏂囦欢鐨勫瓧娈靛悕
 			header: {
-				// 携带 JWT Token 进行身份认证
+				// 鎼哄甫 JWT Token 杩涜韬唤璁よ瘉
 				'Authorization': uni.getStorageSync('gym_token') ? `Bearer ${uni.getStorageSync('gym_token')}` : ''
 			},
 			success: (res) => {
 				try {
-					// 尝试解析 JSON 响应
+					// 灏濊瘯瑙ｆ瀽 JSON 鍝嶅簲
 					const data = JSON.parse(res.data || '{}');
 					resolve(data);
 				} catch (e) {
-					// 非 JSON 响应，直接返回原始数据
+					// 闈?JSON 鍝嶅簲锛岀洿鎺ヨ繑鍥炲師濮嬫暟鎹?
 					resolve(res.data);
 				}
 			},
-			fail: reject        // 上传失败时拒绝 Promise
+			fail: reject        // 涓婁紶澶辫触鏃舵嫆缁?Promise
 		});
 	});
 }
 
 /**
- * 获取文件访问URL
- * 用于获取 MinIO 存储中文件的临时访问链接
+ * 鑾峰彇鏂囦欢璁块棶URL
+ * 鐢ㄤ簬鑾峰彇 MinIO 瀛樺偍涓枃浠剁殑涓存椂璁块棶閾炬帴
  * 
- * @param {Object} params - 查询参数
- * @param {string} params.filename - 文件名
- * @returns {Promise<string>} 文件访问URL
+ * @param {Object} params - 鏌ヨ鍙傛暟
+ * @param {string} params.filename - 鏂囦欢鍚?
+ * @returns {Promise<string>} 鏂囦欢璁块棶URL
  */
 export function apiGetFileUrl(params) {
 	return get('/storage/url', params);
 }
 
-// 头像上传
+// 澶村儚涓婁紶
 export function apiUploadAvatar(filePath) {
 	return new Promise((resolve, reject) => {
-		// 确保filePath是正确的字符串格式
+		// 纭繚filePath鏄纭殑瀛楃涓叉牸寮?
 		if (!filePath || typeof filePath !== 'string') {
 			reject(new Error('Invalid file path'));
 			return;
@@ -341,7 +341,7 @@ export function apiUploadAvatar(filePath) {
 	});
 }
 
-// 组内挑战
+// 缁勫唴鎸戞垬
 export function apiCreateGroupChallenge(data) {
 	return post('/challenge/create-group-challenge', data);
 }
@@ -350,12 +350,12 @@ export function apiGetGroupChallenges(groupId) {
 	return get(`/challenge/group/${groupId}`);
 }
 
-// 挑战状态更新
+// 鎸戞垬鐘舵€佹洿鏂?
 export function apiUpdateChallengeStatus() {
 	return post('/challenge/update-status', {});
 }
 
-// 课程相关接口
+// 璇剧▼鐩稿叧鎺ュ彛
 export function apiGetCourseList(page = 1, size = 10, courseType = null, difficulty = null) {
 	let url = `/course/list?page=${page}&size=${size}`;
 	if (courseType) url += `&courseType=${courseType}`;
@@ -379,63 +379,10 @@ export function apiSearchCourses(keyword, page = 1, size = 10) {
 	return get(`/course/search?keyword=${encodeURIComponent(keyword)}&page=${page}&size=${size}`);
 }
 
-// ==================== AI 健身顾问 ====================
-
-export function apiAiFitnessChat(memoryId, message) {
-	return get('/ai/chat/sync', {
-		memoryId,
-		message
-	});
-}
+// ==================== AI 鍋ヨ韩椤鹃棶 ====================
 
 export function apiAiUnifiedChat(data) {
 	return post('/ai/chat-unified', data);
-}
-
-export function apiAiAnalyzeAction(filePath, message = '') {
-	return new Promise((resolve, reject) => {
-		if (!filePath || typeof filePath !== 'string') {
-			reject(new Error('Invalid file path'));
-			return;
-		}
-
-		const formData = {};
-		if (message) {
-			formData.message = message;
-		}
-
-		uni.uploadFile({
-			url: BASE_URL + '/ai/analyze-action',
-			filePath,
-			name: 'file',
-			formData,
-			header: {
-				'Authorization': uni.getStorageSync('gym_token') ? `Bearer ${uni.getStorageSync('gym_token')}` : ''
-			},
-			success: (res) => {
-				try {
-					const body = JSON.parse(res.data || '{}');
-					if (typeof body.code === 'number') {
-						if (body.code === 0) {
-							resolve(body.data);
-						} else {
-							uni.showToast({ title: body.message || '分析失败', icon: 'none' });
-							reject(body);
-						}
-						return;
-					}
-					resolve(body);
-				} catch (error) {
-					resolve(res.data);
-				}
-			},
-			fail: reject
-		});
-	});
-}
-
-export function apiAiAnalyzeActionByUrl(data) {
-	return post('/ai/analyze-action', data);
 }
 
 export function apiAiUploadActionImage(filePath) {
@@ -459,7 +406,7 @@ export function apiAiUploadActionImage(filePath) {
 						if (body.code === 0) {
 							resolve(body.data);
 						} else {
-							uni.showToast({ title: body.message || '上传失败', icon: 'none' });
+							uni.showToast({ title: body.message || '涓婁紶澶辫触', icon: 'none' });
 							reject(body);
 						}
 						return;

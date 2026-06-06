@@ -1,9 +1,5 @@
 package com.gym.ai.controller;
 
-import com.gym.ai.AiFitnessAdvisor;
-import com.gym.ai.AiFitnessAdvisorService;
-import com.gym.ai.AiFitnessContextBuilder;
-import com.gym.ai.dto.AiActionAnalysisRequest;
 import com.gym.ai.dto.AiImageUploadResponse;
 import com.gym.ai.dto.AiUnifiedChatRequest;
 import com.gym.ai.service.AiImageStorageService;
@@ -13,57 +9,56 @@ import com.gym.common.ErrorCode;
 import com.gym.common.exception.BizException;
 import com.gym.controller.BaseAuthenticatedController;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import reactor.core.publisher.Flux;
 
+/**
+ * AI 健身顾问控制器
+ *
+ * <p>提供 AI 相关的所有 REST API 接口，包括：
+ * <ul>
+ *   <li>图文统一对话</li>
+ *   <li>动作图片上传</li>
+ * </ul>
+ *
+ * <p>所有接口都需要登录认证（JWT Token），用户信息通过 {@link BaseAuthenticatedController#requireUserId} 获取。
+ *
+ * @see AiUnifiedChatService
+ */
 @RestController
 @RequestMapping("/ai")
 @RequiredArgsConstructor
 @Validated
 public class AiController extends BaseAuthenticatedController {
 
-    private final AiFitnessAdvisorService aiFitnessAdvisorService;
-    private final AiFitnessAdvisor aiFitnessAdvisor;
-    private final AiFitnessContextBuilder aiFitnessContextBuilder;
     private final AiImageStorageService aiImageStorageService;
     private final AiUnifiedChatService aiUnifiedChatService;
 
-    @GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<ServerSentEvent<String>> chat(
-            @RequestParam @Min(1) int memoryId,
-            @RequestParam @NotBlank String message,
-            Authentication authentication
-    ) {
-        Long userId = requireUserId(authentication);
-        String prompt = aiFitnessContextBuilder.buildChatPrompt(userId, message);
-        return aiFitnessAdvisorService.chatStream(memoryId, prompt)
-                .map(chunk -> ServerSentEvent.<String>builder().data(chunk).build());
-    }
-
-    @GetMapping("/chat/sync")
-    public ApiResponse<String> chatSync(
-            @RequestParam @Min(1) int memoryId,
-            @RequestParam @NotBlank String message,
-            Authentication authentication
-    ) {
-        Long userId = requireUserId(authentication);
-        String prompt = aiFitnessContextBuilder.buildChatPrompt(userId, message);
-        return ApiResponse.ok(aiFitnessAdvisorService.chat(memoryId, prompt));
-    }
-
+    /**
+     * 统一图文对话接口
+     *
+     * <p>支持同时传入文本和图片进行多模态对话，仅传文本时自动跳过图片处理。
+     * 图片需要先通过 {@link #uploadActionImage} 上传获取 URL。
+     *
+     * <p>如果 {@code imageUrl} 不为空：
+     * <ol>
+     *   <li>校验图片 URL 格式合法性</li>
+     *   <li>调用 {@link AiUnifiedChatService} 进行图文分析</li>
+     * </ol>
+     * 如果 {@code imageUrl} 为空，则仅处理文本对话。
+     *
+     * @param request       请求体（包含 memoryId、message、imageUrl）
+     * @param authentication Spring Security 认证对象，自动注入
+     * @return AI 分析结果的统一响应
+     */
     @PostMapping(value = "/chat-unified", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<String> chatUnified(
             @RequestBody @Valid AiUnifiedChatRequest request,
@@ -82,6 +77,22 @@ public class AiController extends BaseAuthenticatedController {
         return ApiResponse.ok(result);
     }
 
+    /**
+     * 上传动作图片
+     *
+     * <p>用户拍摄或选择健身动作照片（如深蹲、卧推），上传到 OSS 存储，
+     * 返回可访问的图片 URL，供后续 {@link #chatUnified} 进行动作分析使用。
+     *
+     * <p>校验规则：
+     * <ul>
+     *   <li>文件不能为空</li>
+     *   <li>仅支持图片类型（MIME 以 "image/" 开头）</li>
+     * </ul>
+     *
+     * @param file          上传的图片文件（Multipart）
+     * @param authentication Spring Security 认证对象，自动注入
+     * @return 包含图片 URL 的统一响应
+     */
     @PostMapping(value = "/upload-action-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<AiImageUploadResponse> uploadActionImage(
             @RequestParam("file") MultipartFile file,
@@ -99,18 +110,15 @@ public class AiController extends BaseAuthenticatedController {
         return ApiResponse.ok(new AiImageUploadResponse(imageUrl));
     }
 
-    @PostMapping(value = "/analyze-action", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<String> analyzeAction(
-            @RequestBody @Valid AiActionAnalysisRequest request,
-            Authentication authentication
-    ) {
-        Long userId = requireUserId(authentication);
-        validateImageUrl(request.getImageUrl());
-        String prompt = aiFitnessContextBuilder.buildActionAnalysisPrompt(userId, request.getMessage());
-        String result = aiFitnessAdvisor.analyzeActionImageByUrl(prompt, request.getImageUrl());
-        return ApiResponse.ok(result);
-    }
-
+    /**
+     * 校验图片 URL 格式
+     *
+     * <p>检查图片地址是否为空，以及是否以 http://、https:// 或 data:image/ 开头。
+     * 被 {@link #chatUnified} 调用。
+     *
+     * @param imageUrl 待校验的图片 URL
+     * @throws BizException 如果 URL 为空或格式不正确
+     */
     private void validateImageUrl(String imageUrl) {
         if (imageUrl == null || imageUrl.isBlank()) {
             throw new BizException(ErrorCode.BAD_REQUEST, "图片地址不能为空");
